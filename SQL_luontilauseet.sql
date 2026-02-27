@@ -58,8 +58,8 @@ CREATE TABLE lasku (
 
 INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-15', null, true, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-15', '2025-12-01', true, 2, 2);
-INSERT INTO lasku VALUES (3, true, '2026-02-01', '2025-02-15', null, false, 3, 3);
-INSERT INTO lasku VALUES (4, true, '2025-03-01', '2025-03-15', null, false, 2, 5);
+INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-15', null, false, 3, 3);
+INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-15', null, false, 2, 5);
 INSERT INTO lasku VALUES (5, true, '2026-03-01', '2025-03-15', null, false, 3, 4);
 
 
@@ -159,4 +159,5 @@ CREATE TABLE lisalasku (
 INSERT INTO lisalasku VALUES (1, '2025-10-25', '2025-11-10', null, null, 1);
 INSERT INTO lisalasku VALUES (2, '2025-11-27', '2025-12-13', '2025-12-01', 1, 1);
 INSERT INTO lisalasku VALUES (3, '2026-02-15', '2026-03-01', null, null, 3);
+
 INSERT INTO lisalasku VALUES (4, '2026-03-05', '2026-03-20', null, 3, 3);
