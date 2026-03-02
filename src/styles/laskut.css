@@ -1,0 +1,28 @@
+th, td { 
+    text-align: center; 
+}
+
+.tarvikkeet-container {
+    padding-top: 10px;
+}
+
+.tarvikkeet-legend {
+    font-weight: bold;
+}
+
+.hinta-arvio-tarvike-input {
+    width: 50px;
+}
+
+.hinta-arvio-tunti-input {
+    width: 100px;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.lasku-arvio-label {
+    font-weight: bold;
+}

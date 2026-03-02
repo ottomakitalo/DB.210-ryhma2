@@ -1,0 +1,23 @@
+body { 
+    font-family: Arial; 
+}
+
+ul { 
+    list-style: none;
+    padding: 0; 
+}
+        
+li { 
+    display: inline; 
+    margin-right: 15px; 
+}
+
+a { 
+    text-decoration: none; 
+    color: black;
+}
+
+.active { 
+    font-weight: bold; 
+    color: green; 
+}
