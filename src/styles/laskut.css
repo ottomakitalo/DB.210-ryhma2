@@ -1,25 +1,22 @@
 .hinta-arvio {
     h4 {
-        margin-bottom: 0px;
+        margin-top: 32px;
+        margin-bottom: 16px
     }
 
-    .tarvikkeet-container {
-       padding-top: 10px;
-    }
+    table {
+        .tarvike-input,
+        .alennus-input {
+            width: 50px;
+        }
+        
+        .tunti-input {
+            width: 100px;
+        }
     
-    .tarvike-input,
-    .alennus-input {
-        width: 50px;
-    }
-    
-    .tunti-input {
-        width: 100px;
-    }
-
-    .value-input-container {
-        display: flex;
-        flex-direction: row;
-        gap: 30px;
+        td {
+            padding: 8px 4px;
+        }
     }
 }
 
@@ -40,4 +37,3 @@
     }
 
 }
-

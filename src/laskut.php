@@ -30,61 +30,81 @@ require_once('demo_data.php');
             </select>
         </div>
 
-        <h4>Tuntityöt:</h4>
-        <div>
-            <?php foreach($tuntityohinnat as $id => $tyo): ?>
-            <div class="value-input-container">
-                <div>
-                    <label for="<?= $id ?>"><?= $id ?></label>
-                    <input
-                        class="tunti-input" 
-                        type="number" 
-                        name="<?= $id ?>" 
-                        placeholder="0"
-                        min="0">
-                    <span>h</span>
-                </div>
-                <div>
-                    <input 
-                        class="alennus-input" 
-                        type="number" 
-                        name="<?= $id ?>-alennus" 
-                        placeholder="0" 
-                        min="0"
-                        max="100">
-                    <span>%</span>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
+        <h4>Tuntityöt</h4>
+        <table>
+            <tr>
+                <th>Tuntityötyyppi</th>
+                <th>Tunnit</th>
+                <th>Alennusprosentti</th>
+            </tr>
 
-        <h4>Tarvikkeet:</h4>
-        <div class="tarvikkeet-container">
-            <?php foreach($tarvikkeet as $id => $tarvike): ?>
-            <div class="value-input-container">
-                <div>
-                    <label for="<?= $tarvike['tarvike'] ?>"><?= $tarvike['tarvike'] ?></label>
-                    <input
-                        class="tarvike-input" 
-                        type="number" 
-                        name="<?= $tarvike['tarvike'] ?>" 
-                        placeholder="0"
-                        min="0">
-                    <span><?= $tarvike['yksikkö'] ?></span>
-                </div>
-                <div>
-                    <input 
-                        class="alennus-input" 
-                        type="number" 
-                        name="<?= $tarvike['tarvike'] ?>-alennus" 
-                        placeholder="0" 
-                        min="0"
-                        max="100">
-                    <span>%</span>
-                </div>
-            </div>
+            <?php foreach($tuntityohinnat as $id => $tyo): ?>
+            <tr>
+                <td><?= $id ?></td>
+                <td>
+                    <div>
+                        <input
+                            class="tunti-input" 
+                            type="number" 
+                            name="<?= $id ?>" 
+                            placeholder="0"
+                            min="0">
+                        <span>h</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input 
+                            class="alennus-input" 
+                            type="number" 
+                            name="<?= $id ?>-alennus" 
+                            placeholder="0" 
+                            min="0"
+                            max="100">
+                        <span>%</span>
+                    </div>
+                </td>
+            </tr>
             <?php endforeach; ?>
-        </div>
+        </table>
+
+        <h4>Tarvikkeet</h4>
+        <table>
+            <tr>
+                <th>Tarvike</th>
+                <th>Määrä</th>
+                <th>Alennusprosentti</th>
+            </tr>
+
+            <?php foreach($tarvikkeet as $id => $tarvike): ?>
+            <tr>
+                <td><?= $tarvike['tarvike'] ?></td>
+                <td>
+                    <div>
+                        <input
+                            class="tarvike-input" 
+                            type="number" 
+                            name="<?= $tarvike['tarvike'] ?>" 
+                            placeholder="0"
+                            min="0">
+                        <span><?= $tarvike['yksikkö'] ?></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input 
+                            class="alennus-input" 
+                            type="number" 
+                            name="<?= $tarvike['tarvike'] ?>-alennus" 
+                            placeholder="0" 
+                            min="0"
+                            max="100">
+                        <span>%</span>
+                    </div>
+                <td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
 
         <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
     </form>
