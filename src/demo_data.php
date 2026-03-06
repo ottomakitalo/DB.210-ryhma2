@@ -112,27 +112,31 @@ if(isset($_POST['luo_hinta-arvio'])) {
 
     $valitutTyöt = [];
     foreach($tuntityohinnat as $tuntityö => $tuntityohinta) {
-        $kesto = (floatval($_POST[$tuntityö]) ?? 0);
+        $kesto = intval($_POST[$tuntityö]) ?? 0;
+        $alennusprosentti = intval($_POST[$tuntityö . '-alennus']) ?? 0;
 
         if($kesto > 0) {
-            $summa += $kesto * $tuntityohinta;
+            $summa += (($kesto * $tuntityohinta) * (1 - ($alennusprosentti / 100)));
 
             $valitutTyöt[] = [
                 'tyyppi' => $tuntityö,
                 'kesto' => $kesto,
+                'alennus' => $alennusprosentti
             ];
         }
     }
 
     $valitutTarvikkeet = [];
     foreach($tarvikkeet as $id => $tarvike) {
-        $määrä = floatval($_POST[$tarvike['tarvike']]) ?? 0;
+        $määrä = intval($_POST[$tarvike['tarvike']]) ?? 0;
+        $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']) ?? 0;
 
         if($määrä > 0) {
-            $summa += $määrä * $tarvike['hinta'];
+            $summa += ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
             $valitutTarvikkeet[] = [
                 'tarvike' => $tarvike,
-                'määrä' => $määrä
+                'määrä' => $määrä,
+                'alennus' => $alennusprosentti,
             ];
         }
     }
