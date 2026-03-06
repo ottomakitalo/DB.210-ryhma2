@@ -16,8 +16,8 @@ require_once('demo_data.php');
     <h2>Luo tuntityölasku</h2>
     <h3>Hinta-arvio</h3>
     <form method="post" class="hinta-arvio">
+        <h4>Työkohde</h4>
         <div>
-            <label for="tyokohde">Työkohde: </label>
             <select name="tyokohde" required>
                 <option value="">Valitse työkohde</option>
                 <?php foreach($asiakkaat as $asiakasid => $asiakas) {
@@ -29,6 +29,43 @@ require_once('demo_data.php');
                 }?>
             </select>
         </div>
+
+        <h4>Työtyyppi</h4>
+        <div class="tyotyyppi-container">
+            <div>
+                <input type="radio" name="tyotyyppi" value="tuntityo" id="tuntityo" required>
+                <label for="tuntityo">Tuntityö</label>
+            </div>
+            <div>
+                <input type="radio" name="tyotyyppi" value="urakka" id="urakka" required>
+                <label for="urakka">Urakka</label>
+            </div>
+        </div>
+
+        <h5>Urakka</h5>
+        <div class="urakkahinta-container">
+            <div>
+                <span>Urakkahinta:</span>
+                <input
+                    class="urakkahinta-input" 
+                    type="number" 
+                    name="urakkahinta" 
+                    placeholder="0"
+                    min="0">
+                <span>€</span>
+            </div>
+            <div>
+                <span>Alennusprosentti:</span>
+                <input 
+                    class="alennus-input" 
+                    type="number" 
+                    name="urakka-alennus" 
+                    placeholder="0" 
+                    min="0"
+                    max="100">
+                <span>%</span>
+            </div>   
+        </div>     
 
         <h4>Tuntityöt</h4>
         <table>
@@ -122,6 +159,11 @@ require_once('demo_data.php');
             <div>
                 <span class="tieto-label">Kohde:</span>
                 <span><?= $nykyinenKohde ?></span>
+            </div>
+
+            <div>
+                <span class="tieto-label">Työtyyppi:</span>
+                <span><?= $tyotyyppi ?></span>
             </div>
     
             <div>

@@ -4,6 +4,22 @@
         margin-bottom: 16px
     }
 
+    .tyotyyppi-container {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .urakkahinta-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .urakkahinta-input {
+            width: 93px;
+        }
+    }
+
     table {
         .tarvike-input,
         .alennus-input {
