@@ -15,7 +15,7 @@ require_once('demo_data.php');
 <body>
     <h2>Luo tuntityölasku</h2>
     <h3>Hinta-arvio</h3>
-    <form method="post">
+    <form method="post" class="hinta-arvio">
         <div>
             <label for="tyokohde">Työkohde: </label>
             <select name="tyokohde" required>
@@ -30,51 +30,61 @@ require_once('demo_data.php');
             </select>
         </div>
 
+        <h4>Tuntityöt:</h4>
         <div>
-            <label for="suunnittelu">Suunnittelutunnit: </label>
-            <input 
-                class="hinta-arvio-tunti-input" 
-                type="number" 
-                name="suunnittelu" 
-                placeholder="0" 
-                min="0">
-        </div>
-
-        <div>
-            <label for="tyo">Työtunnit: </label>
-            <input 
-                class="hinta-arvio-tunti-input" 
-                type="number" 
-                name="tyo" 
-                placeholder="0"
-                min="0">
-        </div>
-
-        <div>
-            <label for="aputyo">Aputyötunnit: </label>
-            <input 
-                class="hinta-arvio-tunti-input" 
-                type="number" 
-                name="aputyo" 
-                placeholder="0"
-                min="0">
-        </div>
-
-        <div class="tarvikkeet-container">
-            <legend class="tarvikkeet-legend">Tarvikkeet:</legend>
-            <?php foreach($tarvikkeet as $id => $tarvike): ?>
-            <div>
-                <label for="<?= $tarvike['tarvike'] ?>"><?= $tarvike['tarvike'] ?></label>
-                <input
-                    class="hinta-arvio-tarvike-input" 
-                    type="number" 
-                    name="<?= $tarvike['tarvike'] ?>" 
-                    placeholder="0"
-                    min="0">
-                <?= $tarvike['yksikkö'] ?>
+            <?php foreach($tuntityohinnat as $id => $tyo): ?>
+            <div class="value-input-container">
+                <div>
+                    <label for="<?= $id ?>"><?= $id ?></label>
+                    <input
+                        class="tunti-input" 
+                        type="number" 
+                        name="<?= $id ?>" 
+                        placeholder="0"
+                        min="0">
+                    <span>h</span>
+                </div>
+                <div>
+                    <input 
+                        class="alennus-input" 
+                        type="number" 
+                        name="<?= $id ?>-alennus" 
+                        placeholder="0" 
+                        min="0"
+                        max="100">
+                    <span>%</span>
+                </div>
             </div>
             <?php endforeach; ?>
+        </div>
+
+        <h4>Tarvikkeet:</h4>
+        <div class="tarvikkeet-container">
+            <?php foreach($tarvikkeet as $id => $tarvike): ?>
+            <div class="value-input-container">
+                <div>
+                    <label for="<?= $tarvike['tarvike'] ?>"><?= $tarvike['tarvike'] ?></label>
+                    <input
+                        class="tarvike-input" 
+                        type="number" 
+                        name="<?= $tarvike['tarvike'] ?>" 
+                        placeholder="0"
+                        min="0">
+                    <span><?= $tarvike['yksikkö'] ?></span>
+                </div>
+                <div>
+                    <input 
+                        class="alennus-input" 
+                        type="number" 
+                        name="<?= $tarvike['tarvike'] ?>-alennus" 
+                        placeholder="0" 
+                        min="0"
+                        max="100">
+                    <span>%</span>
+                </div>
             </div>
+            <?php endforeach; ?>
+        </div>
 
         <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
     </form>
@@ -82,20 +92,20 @@ require_once('demo_data.php');
     <span>Arvio: <?= $summa ?></span>
     
     <h3>Luo lasku arviosta</h3>
-    <form method="post">
+    <form method="post" class="luo-lasku">
         <div class="flex-container">
             <div>
-                <span class="lasku-arvio-label">Asiakas:</span>
+                <span class="tieto-label">Asiakas:</span>
                 <span><?= $nykyinenAsiakas ?></span>
             </div>
     
             <div>
-                <span class="lasku-arvio-label">Kohde:</span>
+                <span class="tieto-label">Kohde:</span>
                 <span><?= $nykyinenKohde ?></span>
             </div>
     
             <div>
-                <span class="lasku-arvio-label">Valitut työt:</span>
+                <span class="tieto-label">Valitut työt:</span>
                 <div class="flex-container">
                     <?php foreach($valitutTyöt as $id => $työ): ?>
                     <span><?= $työ['kesto'] . 'h ' . $työ['tyyppi'] ?></span>
@@ -104,7 +114,7 @@ require_once('demo_data.php');
             </div>
     
             <div>
-                <span class="lasku-arvio-label">Valitut tarvikkeet:</span>
+                <span class="tieto-label">Valitut tarvikkeet:</span>
                 <div class="flex-container">
                     <?php foreach($valitutTarvikkeet as $id => $tarvike): ?>
                     <span><?= $tarvike['määrä'] . ' ' . $tarvike['tarvike']['yksikkö'] . ' ' . $tarvike['tarvike']['tarvike'] ?></span>
@@ -117,7 +127,7 @@ require_once('demo_data.php');
     </form>
 
     <h2>Laskut</h2>
-    <table border="1" cellpadding="8">
+    <table border="1" cellpadding="8" class="laskut">
         <tr>
             <th>Lasku</th>
             <th>Asiakas</th>
