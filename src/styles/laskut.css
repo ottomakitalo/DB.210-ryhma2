@@ -1,28 +1,55 @@
-th, td { 
-    text-align: center; 
+.hinta-arvio {
+    h4 {
+        margin-top: 32px;
+        margin-bottom: 16px
+    }
+
+    .tyotyyppi-container {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .urakkahinta-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .urakkahinta-input {
+            width: 93px;
+        }
+    }
+
+    table {
+        .tarvike-input,
+        .alennus-input {
+            width: 50px;
+        }
+        
+        .tunti-input {
+            width: 75px;
+        }
+    
+        td {
+            padding: 8px 4px;
+        }
+    }
 }
 
-.tarvikkeet-container {
-    padding-top: 10px;
+.luo-lasku {
+    .flex-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tieto-label {
+        font-weight: bold;
+    }
 }
 
-.tarvikkeet-legend {
-    font-weight: bold;
-}
+.laskut {
+    th, td { 
+        text-align: center; 
+    }
 
-.hinta-arvio-tarvike-input {
-    width: 50px;
-}
-
-.hinta-arvio-tunti-input {
-    width: 100px;
-}
-
-.flex-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.lasku-arvio-label {
-    font-weight: bold;
 }

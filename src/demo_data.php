@@ -10,16 +10,16 @@ if(!isset($_SESSION['asiakkaat'])) {
 
     $_SESSION['asiakkaat'] = [
         1 => [
-            "asiakas" => "Matti Meikäläinen",
-            "osoite" => "Matinkatu 5",
-            "tyokohteet" => [
-                ["osoite" => "Katu 1", "tyosuoritus" => "Keittiöremontti"]
+            'asiakas' => 'Matti Meikäläinen',
+            'osoite' => 'Matinkatu 5',
+            'tyokohteet' => [
+                ['osoite' => 'Katu 1', 'tyosuoritus' => 'Keittiöremontti']
             ]
         ],
         2 => [
-            "asiakas" => "Teppo Testaaja",
-            "osoite" => "Teponkatu 2",
-            "tyokohteet" => []
+            'asiakas' => 'Teppo Testaaja',
+            'osoite' => 'Teponkatu 2',
+            'tyokohteet' => []
         ]
     ];
 }
@@ -27,20 +27,20 @@ if(!isset($_SESSION['asiakkaat'])) {
 if(!isset($_SESSION['laskut'])) {
     $_SESSION['laskut'] = [
         1 => [
-            "asiakas" => "Matti Meikäläinen",
-            "kohde" => "Katu 1",
-            "tyyppi" => "Tuntityö",
-            "pvm" => "1.1.2026",
-            "erapvm" => "12.1.2026",
-            "yhteensä" => 850,
+            'asiakas' => 'Matti Meikäläinen',
+            'kohde' => 'Katu 1',
+            'tyyppi' => 'Tuntityö',
+            'pvm' => '1.1.2026',
+            'erapvm' => '12.1.2026',
+            'yhteensä' => 850,
         ],
         2 => [
-            "asiakas" => "Testi 2",
-            "kohde" => "Kesämökki",
-            "tyyppi" => "Urakka",
-            "pvm" => "5.1.2026",
-            "erapvm" => "1.2.2026",
-            "yhteensä" => 2400,
+            'asiakas' => 'Testi 2',
+            'kohde' => 'Kesämökki',
+            'tyyppi' => 'Urakka',
+            'pvm' => '5.1.2026',
+            'erapvm' => '1.2.2026',
+            'yhteensä' => 2400,
         ]
     ];
 }
@@ -50,53 +50,53 @@ if(isset($_POST['lisaa_tyokohde'])) {
     $id = $_POST['asiakas_id'];
 
     $_SESSION['asiakkaat'][$id]['tyokohteet'][] = [
-        "osoite" => $_POST['osoite'],
-        "tyosuoritus" => $_POST['tyosuoritus']
+        'osoite' => $_POST['osoite'],
+        'tyosuoritus' => $_POST['tyosuoritus']
     ];
 }
 
 $tuntityohinnat = [
-    "suunnittelu" => 55,
-    "tyo" => 45,
-    "aputyo" => 35,
+    'suunnittelu' => 55,
+    'tyo' => 45,
+    'aputyo' => 35,
 ];
 
 $tarvikkeet = [
     1 => [
-        "tarvike" => "usb-kaapeli",
-        "yksikkö" => "kpl",
-        "hinta" => 5,
-        "alv" => 24,
+        'tarvike' => 'usb-kaapeli',
+        'yksikkö' => 'kpl',
+        'hinta' => 5,
+        'alv' => 24,
     ],
     2 => [
-        "tarvike" => "sähköjohto",
-        "yksikkö" => "m",
-        "hinta" => 1.25,
-        "alv" => 24,
+        'tarvike' => 'sähköjohto',
+        'yksikkö' => 'm',
+        'hinta' => 1.25,
+        'alv' => 24,
     ],
     3 => [
-        "tarvike" => "pistorasia",
-        "yksikkö" => "kpl",
-        "hinta" => 12.5,
-        "alv" => 24,
+        'tarvike' => 'pistorasia',
+        'yksikkö' => 'kpl',
+        'hinta' => 12.5,
+        'alv' => 24,
     ],
     4 => [
-        "tarvike" => "maakaapeli",
-        "yksikkö" => "m",
-        "hinta" => 5,
-        "alv" => 24,
+        'tarvike' => 'maakaapeli',
+        'yksikkö' => 'm',
+        'hinta' => 5,
+        'alv' => 24,
     ],
     5 => [
-        "tarvike" => "sähkökeskus",
-        "yksikkö" => "kpl",
-        "hinta" => 375,
-        "alv" => 24,
+        'tarvike' => 'sähkökeskus',
+        'yksikkö' => 'kpl',
+        'hinta' => 375,
+        'alv' => 24,
     ],
     6 => [
-        "tarvike" => "opaskirja",
-        "yksikkö" => "kpl",
-        "hinta" => 10,
-        "alv" => 10,
+        'tarvike' => 'opaskirja',
+        'yksikkö' => 'kpl',
+        'hinta' => 10,
+        'alv' => 10,
     ],
 ];
 
@@ -109,35 +109,46 @@ $laskut = $_SESSION['laskut'];
 if(isset($_POST['luo_hinta-arvio'])) {
     $summa = 0;
 
-
     $valitutTyöt = [];
     foreach($tuntityohinnat as $tuntityö => $tuntityohinta) {
-        $kesto = (floatval($_POST[$tuntityö]) ?? 0);
+        $kesto = intval($_POST[$tuntityö]);
+        $alennusprosentti = intval($_POST[$tuntityö . '-alennus']);
 
         if($kesto > 0) {
-            $summa += $kesto * $tuntityohinta;
+            $summa += (($kesto * $tuntityohinta) * (1 - ($alennusprosentti / 100)));
 
             $valitutTyöt[] = [
                 'tyyppi' => $tuntityö,
                 'kesto' => $kesto,
+                'alennus' => $alennusprosentti
             ];
         }
     }
 
     $valitutTarvikkeet = [];
     foreach($tarvikkeet as $id => $tarvike) {
-        $määrä = floatval($_POST[$tarvike['tarvike']]) ?? 0;
+        $määrä = intval($_POST[$tarvike['tarvike']]);
+        $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
         if($määrä > 0) {
-            $summa += $määrä * $tarvike['hinta'];
+            $summa += ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
             $valitutTarvikkeet[] = [
                 'tarvike' => $tarvike,
-                'määrä' => $määrä
+                'määrä' => $määrä,
+                'alennus' => $alennusprosentti,
             ];
         }
     }
 
     list($asiakasId, $työkohdeId) = explode(':', $_POST['tyokohde']);
+
+    $tyotyyppi = $_POST['tyotyyppi'];
+    if($tyotyyppi === 'urakka') {
+        $urakkahinta = intval($_POST['urakkahinta']);
+        $urakkaAlennus = intval($_POST['urakka-alennus']);
+
+        $summa = $urakkahinta * (1 - $urakkaAlennus / 100);
+    }
     
     $nykyinenAsiakas = $asiakkaat[$asiakasId]['asiakas'];
     $nykyinenKohde = $asiakkaat[$asiakasId]['tyokohteet'][$työkohdeId]['osoite'];
@@ -146,6 +157,8 @@ if(isset($_POST['luo_hinta-arvio'])) {
     $_SESSION['laskutiedotArviosta'] = [
         'asiakas' => $nykyinenAsiakas,
         'kohde' => $nykyinenKohde,
+        'työtyyppi' => $tyotyyppi,
+        'urakka-alennus' => $urakkaAlennus,
         'tuntityöt' => $valitutTyöt,
         'tarvikkeet' => $valitutTarvikkeet,
         'yhteensä' => $summa,
@@ -154,12 +167,13 @@ if(isset($_POST['luo_hinta-arvio'])) {
 
 if(isset($_POST['luo_lasku'])) {
     $_SESSION['laskut'][] = [
-        "asiakas" => $_SESSION['laskutiedotArviosta']['asiakas'],
-        "kohde" => $_SESSION['laskutiedotArviosta']['kohde'],
-        "tyyppi" => "Tuntityö",
-        "pvm" => date('d.m.Y'),
-        "erapvm" => date('d.m.Y', strtotime('+1 month')),
-        "yhteensä" => $_SESSION['laskutiedotArviosta']['yhteensä'],       
+        'asiakas' => $_SESSION['laskutiedotArviosta']['asiakas'],
+        'kohde' => $_SESSION['laskutiedotArviosta']['kohde'],
+        'tyyppi' => $_SESSION['laskutiedotArviosta']['työtyyppi'],
+        'urakka-alennus' => $_SESSION['laskutiedotArviosta']['urakka-alennus'],
+        'pvm' => date('d.m.Y'),
+        'erapvm' => date('d.m.Y', strtotime('+1 month')),
+        'yhteensä' => $_SESSION['laskutiedotArviosta']['yhteensä'],       
     ];
 }
 ?>
