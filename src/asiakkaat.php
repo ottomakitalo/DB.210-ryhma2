@@ -1,4 +1,5 @@
 <?php 
+require 'db.php';
 require_once('navigation.php');
 require_once('demo_data.php');
 ?>
