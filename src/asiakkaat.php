@@ -1,7 +1,6 @@
 <?php 
 require 'db.php';
 require_once('navigation.php');
-require_once('demo_data.php');
 ?>
 
 <!DOCTYPE html>
@@ -22,27 +21,35 @@ require_once('demo_data.php');
     <th>Työkohteet</th>
 </tr>
 
-<?php foreach($asiakkaat as $id => $asiakas): ?>
 
-<tr>
-    <td><?= $asiakas['asiakas'] ?></td>
-    <td><?= $asiakas['osoite'] ?></td>
+<?php
+// 1) Hakee asiakkaat tietokannasta
+$asiakkaat_tulos = pg_query($yhteys, "SELECT id, nimi, osoite FROM asiakas ORDER BY nimi;");
 
-    <td>
-        <div class="tyokohde-container">
-            <?php foreach($asiakas['tyokohteet'] as $t): ?>
-                <span>📍 <?= $t['osoite'] ?><?= $t['tyosuoritus'] ? ' - ' . $t['tyosuoritus'] : ' ' ?></span>
-            <?php endforeach; ?>
-        </div>
-        <form method="post">
-            <input type="hidden" name="asiakas_id" value="<?= $id ?>">
-            <input type="text" name="osoite" placeholder="Osoite" required>
-            <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
-        </form>
-    </td>
-</tr>
+while ($asiakas = pg_fetch_assoc($asiakkaat_tulos)) {
 
-<?php endforeach; ?>
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($asiakas['nimi']) . "</td>";
+    echo "<td>" . htmlspecialchars($asiakas['osoite']) . "</td>";
+
+    echo "<td>";
+
+    // Asiakkaan työmaat
+    $kohteet_tulos = pg_query_params(
+        $yhteys,
+        "SELECT osoite FROM tyokohde WHERE asiakas_id = $1 ORDER BY osoite",
+        array($asiakas['id'])
+    );
+
+    while ($kohde = pg_fetch_assoc($kohteet_tulos)) {
+        echo htmlspecialchars($kohde['osoite']) . "<br>";
+    }
+
+    echo "</td>";
+    echo "</tr>";
+}
+?>
+
 </table>
 
 </body>
