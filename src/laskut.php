@@ -1,7 +1,86 @@
 <?php
 require 'db.php';
 require_once('navigation.php');
-require_once('demo_data.php');
+
+
+$asiakkaat = [];
+
+// The following code for parsing the data from the database was created with guidance from copilot 
+
+// Getting all the customers and their work sites.
+$q = pg_query($yhteys,
+    "SELECT id, nimi, osoite FROM asiakas ORDER BY id");
+
+while ($row = pg_fetch_assoc($q)) {
+    $asiakkaat[$row['id']] = [
+        'asiakas' => $row['nimi'],
+        'osoite' => $row['osoite'],
+        'tyokohteet' => []
+    ];
+}
+
+$q2 = pg_query($yhteys,
+    "SELECT id, osoite, asiakas_id FROM tyokohde ORDER BY id");
+
+while ($row = pg_fetch_assoc($q2)) {
+    $asiakkaat[$row['asiakas_id']]['tyokohteet'][$row['id']] = [
+        'osoite' => $row['osoite']
+    ];
+}
+
+
+$tuntityohinnat = [];
+$q = pg_query($yhteys,
+    "SELECT nimi, tuntihinta FROM tyotehtava ORDER BY id");
+
+while ($row = pg_fetch_assoc($q)) {
+    $tuntityohinnat[$row['nimi']] = (float)$row['tuntihinta'];
+}
+
+
+$tarvikkeet = [];
+$q = pg_query($yhteys,
+    "SELECT tv.id, tv.nimi, tv.yksikko, tv.sis_hinta, ty.alv_prosentti
+     FROM tarvike tv
+     JOIN tyyppi ty ON ty.nimi = tv.tyyppi_nimi
+     ORDER BY tv.id");
+
+while ($row = pg_fetch_assoc($q)) {
+    $tarvikkeet[$row['id']] = [
+        'tarvike' => $row['nimi'],
+        'yksikkö' => $row['yksikko'],
+        'hinta'   => (float)$row['sis_hinta'],
+        'alv'     => (float)$row['alv_prosentti'] * 100
+    ];
+}
+
+
+$laskut = [];
+
+$q = pg_query($yhteys,
+"SELECT l.id, l.annettu_pvm, l.era_pvm, l.maksettu_status,
+        a.nimi AS asiakas, k.osoite AS kohde,
+        ts.tyotyyppi
+ FROM lasku l
+ JOIN asiakas a ON a.id = l.asiakas_id
+ JOIN tyosuoritus ts ON ts.id = l.tyosuoritus_id
+ JOIN tyokohde k ON k.id = ts.tyokohde_id
+ ORDER BY l.annettu_pvm DESC"
+);
+
+
+while ($row = pg_fetch_assoc($q)) {
+    $laskut[] = [
+        'asiakas' => $row['asiakas'],
+        'kohde'   => $row['kohde'],
+        'tyyppi'  => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
+        'pvm'     => date('d.m.Y', strtotime($row['annettu_pvm'])),
+        'erapvm'  => date('d.m.Y', strtotime($row['era_pvm'])),
+        'yhteensä' => '---'
+    ];
+}
+
+
 ?>
 
 <!DOCTYPE html>
