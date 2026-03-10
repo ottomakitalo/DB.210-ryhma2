@@ -159,6 +159,19 @@ CREATE TABLE lisalasku (
 INSERT INTO lisalasku VALUES (1, '2025-10-25', '2025-11-10', null, null, 1);
 INSERT INTO lisalasku VALUES (2, '2025-11-27', '2025-12-13', '2025-12-01', 1, 1);
 INSERT INTO lisalasku VALUES (3, '2026-02-15', '2026-03-01', null, null, 3);
-
 INSERT INTO lisalasku VALUES (4, '2026-03-05', '2026-03-20', null, 3, 3);
 
+
+CREATE TABLE tarvike_historia ( 
+  id INT PRIMARY KEY, 
+  nimi VARCHAR(128) NOT NULL, 
+  merkki VARCHAR(128) NOT NULL, 
+  toimittaja VARCHAR(128) NOT NULL, 
+  sis_hinta DECIMAL(10,2) NOT NULL, 
+  yksikko VARCHAR(128) NOT NULL, 
+  poistettu_pvm DATE NOT NULL,
+  korvaus_id INT,
+  tyyppi_nimi VARCHAR(128) NOT NULL, 
+  FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi),
+  FOREIGN KEY (korvaus_id) REFERENCES tarvike(id)
+);
