@@ -2,6 +2,8 @@
 require 'db.php';
 require_once('navigation.php');
 
+// Hae laskut
+$laskut = [];
 $q = pg_query($yhteys,
 "SELECT l.id, l.annettu_pvm, l.era_pvm, l.maksettu_status,
         a.nimi AS asiakas, k.osoite AS kohde,
@@ -12,8 +14,6 @@ $q = pg_query($yhteys,
  JOIN tyokohde k ON k.id = ts.tyokohde_id
  ORDER BY l.annettu_pvm DESC"
 );
-
-$laskut = [];
 
 while ($row = pg_fetch_assoc($q)) {
     $laskut[$row['id']] = [
@@ -26,8 +26,6 @@ while ($row = pg_fetch_assoc($q)) {
         'yhteensä' => '---'
     ];
 }
-
-
 ?>
 
 <!DOCTYPE html>

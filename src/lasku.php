@@ -3,6 +3,7 @@ require 'db.php';
 require_once('navigation.php');
 require_once('laskuluettelo.php');
 
+// id saadaan parametrina URL:stä, esim. lasku.php?id=1
 $id = $_GET['id'] ?? null;
 
 if ($id === null || !array_key_exists($id, $laskut)) {
@@ -12,6 +13,7 @@ if ($id === null || !array_key_exists($id, $laskut)) {
 
 $lasku = $laskut[$id];
 
+// Hae tarvikkeet laskulle
 $tarvikkeet = [];
 $q = pg_query($yhteys,
     "SELECT tv.id, tv.nimi, tvt.maara, tv.yksikko, tvt.alennus
@@ -29,6 +31,7 @@ while ($row = pg_fetch_assoc($q)) {
     ];
 }
 
+// Hae työtehtävät laskulle
 $tyotehtavat = [];
 $q = pg_query($yhteys,
     "SELECT te.id, te.nimi, tet.tunnit, tet.alennus
