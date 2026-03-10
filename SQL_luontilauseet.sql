@@ -117,6 +117,7 @@ CREATE TABLE tehtavat (
 ); 
 
 INSERT INTO tehtavat VALUES (2, 1, 3, 10);
+INSERT INTO tehtavat VALUES (2, 2, 12, 0);
 INSERT INTO tehtavat VALUES (3, 1, 25, 20);
 INSERT INTO tehtavat VALUES (3, 2, 7, 10);
 INSERT INTO tehtavat VALUES (3, 3, 3, 0);
@@ -175,3 +176,4 @@ CREATE TABLE tarvike_historia (
   FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi),
   FOREIGN KEY (korvaus_id) REFERENCES tarvike(id)
 );
+
