@@ -2,22 +2,22 @@ body {
     font-family: Arial; 
 }
 
-ul { 
+.navigation-list { 
     list-style: none;
     padding: 0; 
-}
-        
-li { 
-    display: inline; 
-    margin-right: 15px; 
-}
 
-a { 
-    text-decoration: none; 
-    color: black;
-}
+    li { 
+        display: inline; 
+        margin-right: 15px; 
 
-.active { 
-    font-weight: bold; 
-    color: green; 
+        a { 
+            text-decoration: none; 
+            color: black;
+        }
+
+        .active { 
+            font-weight: bold; 
+            color: green; 
+        }
+    }
 }
