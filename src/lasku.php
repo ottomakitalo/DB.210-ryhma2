@@ -15,12 +15,17 @@ $lasku = $laskut[$id];
 
 // Hae tarvikkeet laskulle
 $tarvikkeet = [];
-$q = pg_query($yhteys,
+$q = pg_query_params(
+    $yhteys,
     "SELECT tv.id, tv.nimi, tvt.maara, tv.yksikko, tvt.alennus
-    FROM tarvike tv
-    JOIN tarvikkeet tvt ON tvt.tarvike_id = tv.id
-    JOIN tyosuoritus ts ON ts.id = tvt.tyosuoritus_id
-    WHERE ts.id = (SELECT tyosuoritus_id FROM lasku WHERE id = $id)");
+     FROM tarvike tv
+     JOIN tarvikkeet tvt ON tvt.tarvike_id = tv.id
+     JOIN tyosuoritus ts ON ts.id = tvt.tyosuoritus_id
+     WHERE ts.id = (
+        SELECT tyosuoritus_id FROM lasku WHERE id = $1
+     )",
+    [$id]
+);
 
 while ($row = pg_fetch_assoc($q)) {
     $tarvikkeet[$row['id']] = [
@@ -33,12 +38,17 @@ while ($row = pg_fetch_assoc($q)) {
 
 // Hae työtehtävät laskulle
 $tyotehtavat = [];
-$q = pg_query($yhteys,
+$q = pg_query_params(
+    $yhteys,
     "SELECT te.id, te.nimi, tet.tunnit, tet.alennus
     FROM tyotehtava te
     JOIN tehtavat tet ON tet.tyotehtava_id = te.id
     JOIN tyosuoritus ts ON ts.id = tet.tyosuoritus_id
-    WHERE ts.id = (SELECT tyosuoritus_id FROM lasku WHERE id = $id)");
+    WHERE ts.id = (
+        SELECT tyosuoritus_id FROM lasku WHERE id = $1
+    )",
+    [$id]
+);
 
 while ($row = pg_fetch_assoc($q)) {
     $tyotehtavat[$row['id']] = [
