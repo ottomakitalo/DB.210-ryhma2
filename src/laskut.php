@@ -80,6 +80,13 @@ while ($row = pg_fetch_assoc($q)) {
     ];
 }
 
+$summa = '';
+$nykyinenAsiakas = '';
+$nykyinenKohde = '';
+$tyotyyppi = '';
+$valitutTyöt = [];
+$valitutTarvikkeet = [];
+
 // T1
 if (isset($_POST['lisaa_tyokohde'])) {
 
@@ -283,6 +290,7 @@ if (isset($_POST['lisaa_tyokohde'])) {
 
     <span>Arvio: <?= $summa ?></span>
     
+    <?php if($summa != ''): ?>
     <h3>Luo lasku arviosta</h3>
     <form method="post" class="luo-lasku">
         <div class="flex-container">
@@ -322,6 +330,7 @@ if (isset($_POST['lisaa_tyokohde'])) {
         
         <button type="submit" name="luo_lasku">Luo lasku</button>
     </form>
+    <?php endif; ?>
 
     <h2>Laskut</h2>
     <table border="1" cellpadding="8" class="laskut">
