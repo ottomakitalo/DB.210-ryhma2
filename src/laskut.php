@@ -80,6 +80,38 @@ while ($row = pg_fetch_assoc($q)) {
     ];
 }
 
+// T1
+if (isset($_POST['lisaa_tyokohde'])) {
+
+    $asiakasId = intval($_POST['asiakas_id']);
+    $osoite    = trim($_POST['osoite']);
+
+    // Generate new id for työkohde, takes the current biggest id and adds 1
+    $result = pg_query($yhteys,
+        "SELECT COALESCE(MAX(id),0)+1 AS id FROM tyokohde"
+    );
+    $row = pg_fetch_assoc($result);
+    $nextId = $row['id'];
+
+    // Insert into the database
+    
+    $update = pg_query_params(
+        $yhteys,
+        "INSERT INTO tyokohde (id, osoite, asiakas_id)
+         VALUES ($1, $2, $3)",
+        [$nextId, $osoite, $asiakasId]
+    );
+
+    //Checking if the insert succeeded
+    if ($update && (pg_affected_rows($update)>0))
+        $msg = "Työkohde lisätty.";
+    else
+        die("Työkohteen lisäys epäonnistui: " . pg_last_error($yhteys));
+
+    // Reload page
+    header("Location: ".$_SERVER['PHP_SELF']."?t1ok=1");
+    exit;
+}
 
 ?>
 
@@ -93,6 +125,29 @@ while ($row = pg_fetch_assoc($q)) {
 </head>
 
 <body>
+    
+    <h2>Lisää uusi työkohde (T1)</h2>
+    <form method="post" class="lisaa-tyokohde">
+
+        <h4>Asiakas</h4>
+        <div>
+            <select name="asiakas_id" required>
+                <option value="">Valitse asiakas</option>
+                <?php foreach($asiakkaat as $asiakasid => $asiakas): ?>
+                    <option value="<?= $asiakasid ?>">
+                        <?= htmlspecialchars($asiakas['asiakas']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <h4>Työkohteen osoite</h4>
+        <input type="text" name="osoite" required>
+
+        <br><br>
+        <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
+    </form>
+
     <h2>Luo tuntityölasku</h2>
     <h3>Hinta-arvio</h3>
     <form method="post" class="hinta-arvio">
