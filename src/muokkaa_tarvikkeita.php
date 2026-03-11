@@ -2,7 +2,7 @@
 require 'db.php';
 require_once('navigation.php');
 require_once('laskuluettelo.php');
-require_once('lasku.php');
+require_once('lasku_data.php');
 
 // Hae kaikki tarvikkeet
 $kaikki_tarvikkeet = [];
@@ -48,6 +48,8 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
             die("Tuotteen lisäys epäonnistui: " . pg_last_error($yhteys));
         }
     }
+
+    header("Location: lasku.php?id=" . $id);
     exit;
 }
 
@@ -60,7 +62,7 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
     <title>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></title>
 </head>
 <body>
-
+<?php require 'lasku.php'; ?>
 <h2>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tarvikkeita">
     <h4>Tarvikkeet</h4>

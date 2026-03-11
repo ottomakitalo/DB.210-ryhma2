@@ -2,7 +2,7 @@
 require 'db.php';
 require_once('navigation.php');
 require_once('laskuluettelo.php');
-require_once('lasku.php');
+require_once('lasku_data.php');
 
 // Hae kaikki tehtävät
 $kaikki_tehtavat = [];
@@ -45,6 +45,8 @@ if (isset($_POST['muokkaa_tehtavia'])) {
             die("Tehtävän lisäys epäonnistui: " . pg_last_error($yhteys));
         }
     }
+
+    header("Location: lasku.php?id=" . $id);
     exit;
 }
 
@@ -57,7 +59,7 @@ if (isset($_POST['muokkaa_tehtavia'])) {
     <title>Muokkaa tehtäviä laskulle <?= htmlspecialchars($id) ?></title>
 </head>
 <body>
-
+<?php require 'lasku.php'; ?>
 <h2>Muokkaa tehtäviä laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tehtavia">
     <h4>Tehtävät</h4>
