@@ -7,5 +7,6 @@ $page = basename($_SERVER['PHP_SELF']);
         <li><a href="index.php" class="<?= $page == 'index.php' ? "active" : ""?>">Etusivu</a></li>
         <li><a href="laskut.php" class="<?= $page == 'laskut.php' ? "active" : ""?>">Laskut</a></li>
         <li><a href="asiakkaat.php" class="<?= $page == 'asiakkaat.php' ? "active" : ""?>">Asiakkaat</a></li>
+        <li><a href="laskuluettelo.php" class="<?= $page == 'laskuluettelo.php' ? "active" : ""?>">Laskuluettelo</a></li>
     </ul>
 </div>
