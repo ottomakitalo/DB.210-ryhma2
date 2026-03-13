@@ -169,7 +169,7 @@ if (isset($_POST['lisaa_tyokohde'])) {
         </div>
 
         <h4>Työtyyppi</h4>
-        <div class="tyotyyppi-container">
+        <div class="tyotyyppi-container" id="tyotyyppi-container">
             <div>
                 <input type="radio" name="tyotyyppi" value="tunti" id="tunti" required>
                 <label for="tunti">Tuntityö</label>
@@ -180,30 +180,32 @@ if (isset($_POST['lisaa_tyokohde'])) {
             </div>
         </div>
 
-        <h5>Urakka</h5>
-        <div class="urakkahinta-container">
-            <div>
-                <span>Urakkahinta:</span>
-                <input
-                    class="urakkahinta-input" 
-                    type="number" 
-                    name="urakkahinta" 
-                    placeholder="0"
-                    min="0">
-                <span>€</span>
+        <div class="urakkahinta-selection" id="urakkahinta-selection" style="display:none">
+            <h5>Urakka</h5>
+            <div class="urakkahinta-container">
+                <div>
+                    <span>Urakkahinta:</span>
+                    <input
+                        class="urakkahinta-input" 
+                        type="number" 
+                        name="urakkahinta" 
+                        placeholder="0"
+                        min="0">
+                    <span>€</span>
+                </div>
+                <div>
+                    <span>Alennusprosentti:</span>
+                    <input 
+                        class="alennus-input" 
+                        type="number" 
+                        name="urakka-alennus" 
+                        placeholder="0" 
+                        min="0"
+                        max="100">
+                    <span>%</span>
+                </div>   
             </div>
-            <div>
-                <span>Alennusprosentti:</span>
-                <input 
-                    class="alennus-input" 
-                    type="number" 
-                    name="urakka-alennus" 
-                    placeholder="0" 
-                    min="0"
-                    max="100">
-                <span>%</span>
-            </div>   
-        </div>     
+        </div>
 
         <h4>Tuntityöt</h4>
         <table>
@@ -327,5 +329,18 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <button type="submit" name="luo_lasku">Luo lasku</button>
     </form>
     <?php endif; ?>
+    <script>
+        const urakkaSelection = document.getElementById('urakkahinta-selection');
+        const tyotyyppiContainer = document.getElementById('tyotyyppi-container');
+
+        tyotyyppiContainer.addEventListener('change', (e) => {
+            if(e.target.value === 'urakka') {
+                urakkaSelection.style.display = 'block';
+            }
+            else if(e.target.value === 'tunti') {
+                urakkaSelection.style.display = 'none';
+            }
+        })
+    </script>
 </body>
 </html>
