@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-$summa = '';
+$summa = 0;
+$kt_vahennys = 0;
 $nykyinenAsiakas = '';
 $nykyinenKohde = '';
 $tyotyyppi = '';
@@ -10,6 +11,7 @@ $valitutTarvikkeet = [];
 
 if(isset($_POST['luo_hinta-arvio'])) {
     $summa = 0;
+    $kt_vahennys = 0;
 
     $valitutTyöt = [];
     foreach($tuntityohinnat as $tuntityö => $tuntityohinta) {
@@ -17,7 +19,10 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $alennusprosentti = intval($_POST[$tuntityö . '-alennus']);
 
         if($kesto > 0) {
-            $summa += (($kesto * $tuntityohinta) * (1 - ($alennusprosentti / 100)));
+            $tuntityon_arvo = ($kesto * $tuntityohinta) * (1 - ($alennusprosentti / 100));
+            $kt_vahennys += $tuntityon_arvo + ($tuntityon_arvo * 0.24);
+            
+            $summa += $tuntityon_arvo;
 
             $valitutTyöt[] = [
                 'tyyppi' => $tuntityö,
@@ -49,7 +54,10 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $urakkahinta = intval($_POST['urakkahinta']);
         $urakkaAlennus = intval($_POST['urakka-alennus']);
 
-        $summa = $urakkahinta * (1 - $urakkaAlennus / 100);
+        $urakan_loppuhinta = $urakkahinta * (1 - $urakkaAlennus / 100);
+        $kt_vahennys = $urakan_loppuhinta + ($urakan_loppuhinta * 0.24);
+
+        $summa = $urakan_loppuhinta;
     }
     
     $nykyinenAsiakas = $asiakkaat[$asiakasId]['asiakas'];
@@ -64,6 +72,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
         'tuntityöt' => $valitutTyöt,
         'tarvikkeet' => $valitutTarvikkeet,
         'yhteensä' => $summa,
+        'kt-vähennys' => $kt_vahennys
     ];
 }
 

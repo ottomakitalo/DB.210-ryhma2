@@ -286,7 +286,8 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
     </form>
 
-    <span>Arvio: <?= $summa ?></span>
+    <span>Hinta-arvio: <?= $summa ?></span>
+    <span>Kotitalousvähennys: <?= $kt_vahennys ?></span>
     
     <?php if($summa != ''): ?>
     <h3>Luo lasku arviosta</h3>
