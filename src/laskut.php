@@ -175,8 +175,8 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <h4>Työtyyppi</h4>
         <div class="tyotyyppi-container">
             <div>
-                <input type="radio" name="tyotyyppi" value="tuntityo" id="tuntityo" required>
-                <label for="tuntityo">Tuntityö</label>
+                <input type="radio" name="tyotyyppi" value="tunti" id="tunti" required>
+                <label for="tunti">Tuntityö</label>
             </div>
             <div>
                 <input type="radio" name="tyotyyppi" value="urakka" id="urakka" required>
