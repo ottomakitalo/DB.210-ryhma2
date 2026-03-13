@@ -1,6 +1,5 @@
 <?php
 require_once('navigation.php');
-require_once('demo_data.php');
 ?>
 
 <!DOCTYPE html>
@@ -12,8 +11,6 @@ require_once('demo_data.php');
 </head>
 
 <body>
-    <form method="post">
-        <button name="reset">Reset data</button>
-    </form>
+    <p>Tmi Sähkötärsky</p>
 </body>
 </html>
