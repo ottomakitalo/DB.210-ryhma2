@@ -327,30 +327,5 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <button type="submit" name="luo_lasku">Luo lasku</button>
     </form>
     <?php endif; ?>
-
-    <h2>Laskut</h2>
-    <table border="1" cellpadding="8" class="laskut">
-        <tr>
-            <th>Lasku</th>
-            <th>Asiakas</th>
-            <th>Työkohde</th>
-            <th>Tyyppi</th>
-            <th>Päiväys</th>
-            <th>Eräpäivä</th>
-            <th>Summa</th>
-        </tr>
-
-        <?php foreach($laskut as $id => $lasku): ?>
-        <tr>
-            <td><?= $id ?></td>
-            <td><?= $lasku['asiakas'] ?></td>
-            <td><?= $lasku['kohde'] ?></td>
-            <td><?= $lasku['tyyppi'] ?></td>
-            <td><?= $lasku['pvm'] ?></td>
-            <td><?= $lasku['erapvm'] ?></td>
-            <td><?= $lasku['yhteensä'] ?></td>
-        </tr>
-        <?php endforeach; ?>    
-    </table>
 </body>
 </html>
