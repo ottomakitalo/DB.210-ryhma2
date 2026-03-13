@@ -91,6 +91,8 @@ if(isset($_POST['luo_lasku'])) {
         $msg = "Työsuoritus lisätty.";
     else
         die("Työsuorituksen lisäys epäonnistui: " . pg_last_error($yhteys));
+        header("Location: ".$_SERVER['PHP_SELF']);
+        exit;
 
     // Create a new lasku
     $result = pg_query($yhteys,
