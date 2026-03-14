@@ -2,7 +2,7 @@
 require 'db.php';
 require_once('navigation.php');
 require_once('laskuluettelo.php');
-require_once('lasku_data.php');
+require_once('data/lasku_data.php');
 ?>
 
 
