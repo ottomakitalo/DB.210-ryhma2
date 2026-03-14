@@ -69,9 +69,9 @@ CREATE TABLE tyotehtava (
   tuntihinta DECIMAL(10,2) 
 );
 
-INSERT INTO tyotehtava VALUES (1, 'suunnittelu', 55);
-INSERT INTO tyotehtava VALUES (2, 'työ', 45);
-INSERT INTO tyotehtava VALUES (3, 'aputyö', 35);
+INSERT INTO tyotehtava VALUES (1, 'suunnittelu', 44.35);
+INSERT INTO tyotehtava VALUES (2, 'työ', 36.29);
+INSERT INTO tyotehtava VALUES (3, 'aputyö', 28.24);
 
 
 CREATE TABLE tyyppi ( 
