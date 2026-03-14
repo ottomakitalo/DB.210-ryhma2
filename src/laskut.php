@@ -60,7 +60,7 @@ $laskut = [];
 $q = pg_query($yhteys,
 "SELECT l.id, l.annettu_pvm, l.era_pvm, l.maksettu_status,
         a.nimi AS asiakas, k.osoite AS kohde,
-        ts.tyotyyppi
+        ts.tyotyyppi, urakkahinta
  FROM lasku l
  JOIN asiakas a ON a.id = l.asiakas_id
  JOIN tyosuoritus ts ON ts.id = l.tyosuoritus_id
@@ -70,22 +70,18 @@ $q = pg_query($yhteys,
 
 
 while ($row = pg_fetch_assoc($q)) {
+    $yhteensa = $row['tyotyyppi'] === 'urakka' ? $row['urakkahinta'] : '---';
     $laskut[] = [
         'asiakas' => $row['asiakas'],
         'kohde'   => $row['kohde'],
         'tyyppi'  => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
         'pvm'     => date('d.m.Y', strtotime($row['annettu_pvm'])),
         'erapvm'  => date('d.m.Y', strtotime($row['era_pvm'])),
-        'yhteensä' => '---'
+        'yhteensä' => $yhteensa
     ];
 }
 
-$summa = '';
-$nykyinenAsiakas = '';
-$nykyinenKohde = '';
-$tyotyyppi = '';
-$valitutTyöt = [];
-$valitutTarvikkeet = [];
+require_once('luo_lasku.php');
 
 // T1
 if (isset($_POST['lisaa_tyokohde'])) {
@@ -173,10 +169,10 @@ if (isset($_POST['lisaa_tyokohde'])) {
         </div>
 
         <h4>Työtyyppi</h4>
-        <div class="tyotyyppi-container">
+        <div class="tyotyyppi-container" id="tyotyyppi-container">
             <div>
-                <input type="radio" name="tyotyyppi" value="tuntityo" id="tuntityo" required>
-                <label for="tuntityo">Tuntityö</label>
+                <input type="radio" name="tyotyyppi" value="tunti" id="tunti" required>
+                <label for="tunti">Tuntityö</label>
             </div>
             <div>
                 <input type="radio" name="tyotyyppi" value="urakka" id="urakka" required>
@@ -184,30 +180,32 @@ if (isset($_POST['lisaa_tyokohde'])) {
             </div>
         </div>
 
-        <h5>Urakka</h5>
-        <div class="urakkahinta-container">
-            <div>
-                <span>Urakkahinta:</span>
-                <input
-                    class="urakkahinta-input" 
-                    type="number" 
-                    name="urakkahinta" 
-                    placeholder="0"
-                    min="0">
-                <span>€</span>
+        <div class="urakkahinta-selection" id="urakkahinta-selection" style="display:none">
+            <h5>Urakka</h5>
+            <div class="urakkahinta-container">
+                <div>
+                    <span>Urakkahinta:</span>
+                    <input
+                        class="urakkahinta-input" 
+                        type="number" 
+                        name="urakkahinta" 
+                        placeholder="0"
+                        min="0">
+                    <span>€</span>
+                </div>
+                <div>
+                    <span>Alennusprosentti:</span>
+                    <input 
+                        class="alennus-input" 
+                        type="number" 
+                        name="urakka-alennus" 
+                        placeholder="0" 
+                        min="0"
+                        max="100">
+                    <span>%</span>
+                </div>   
             </div>
-            <div>
-                <span>Alennusprosentti:</span>
-                <input 
-                    class="alennus-input" 
-                    type="number" 
-                    name="urakka-alennus" 
-                    placeholder="0" 
-                    min="0"
-                    max="100">
-                <span>%</span>
-            </div>   
-        </div>     
+        </div>
 
         <h4>Tuntityöt</h4>
         <table>
@@ -288,7 +286,8 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
     </form>
 
-    <span>Arvio: <?= $summa ?></span>
+    <span>Hinta-arvio: <?= $summa ?></span>
+    <span>Kotitalousvähennys: <?= $kt_vahennys ?></span>
     
     <?php if($summa != ''): ?>
     <h3>Luo lasku arviosta</h3>
@@ -331,30 +330,18 @@ if (isset($_POST['lisaa_tyokohde'])) {
         <button type="submit" name="luo_lasku">Luo lasku</button>
     </form>
     <?php endif; ?>
+    <script>
+        const urakkaSelection = document.getElementById('urakkahinta-selection');
+        const tyotyyppiContainer = document.getElementById('tyotyyppi-container');
 
-    <h2>Laskut</h2>
-    <table border="1" cellpadding="8" class="laskut">
-        <tr>
-            <th>Lasku</th>
-            <th>Asiakas</th>
-            <th>Työkohde</th>
-            <th>Tyyppi</th>
-            <th>Päiväys</th>
-            <th>Eräpäivä</th>
-            <th>Summa</th>
-        </tr>
-
-        <?php foreach($laskut as $id => $lasku): ?>
-        <tr>
-            <td><?= $id ?></td>
-            <td><?= $lasku['asiakas'] ?></td>
-            <td><?= $lasku['kohde'] ?></td>
-            <td><?= $lasku['tyyppi'] ?></td>
-            <td><?= $lasku['pvm'] ?></td>
-            <td><?= $lasku['erapvm'] ?></td>
-            <td><?= $lasku['yhteensä'] ?></td>
-        </tr>
-        <?php endforeach; ?>    
-    </table>
+        tyotyyppiContainer.addEventListener('change', (e) => {
+            if(e.target.value === 'urakka') {
+                urakkaSelection.style.display = 'block';
+            }
+            else if(e.target.value === 'tunti') {
+                urakkaSelection.style.display = 'none';
+            }
+        })
+    </script>
 </body>
 </html>

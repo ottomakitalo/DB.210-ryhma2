@@ -7,7 +7,7 @@ $laskut = [];
 $q = pg_query($yhteys,
 "SELECT l.id, l.annettu_pvm, l.era_pvm, l.maksettu_status,
         a.nimi AS asiakas, k.osoite AS kohde,
-        ts.tyotyyppi
+        ts.tyotyyppi, urakkahinta
  FROM lasku l
  JOIN asiakas a ON a.id = l.asiakas_id
  JOIN tyosuoritus ts ON ts.id = l.tyosuoritus_id
@@ -16,6 +16,7 @@ $q = pg_query($yhteys,
 );
 
 while ($row = pg_fetch_assoc($q)) {
+    $yhteensa = $row['tyotyyppi'] === 'urakka' ? $row['urakkahinta'] : '---';
     $laskut[$row['id']] = [
         'id' => $row['id'],
         'asiakas' => $row['asiakas'],
@@ -23,7 +24,7 @@ while ($row = pg_fetch_assoc($q)) {
         'tyyppi'  => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
         'pvm'     => date('d.m.Y', strtotime($row['annettu_pvm'])),
         'erapvm'  => date('d.m.Y', strtotime($row['era_pvm'])),
-        'yhteensä' => '---'
+        'yhteensä' => $yhteensa
     ];
 }
 ?>
