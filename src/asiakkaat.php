@@ -1,5 +1,6 @@
 <?php 
 require 'db.php';
+require 'data/asiakkaat_data.php';
 require_once('navigation.php');
 ?>
 
@@ -22,34 +23,35 @@ require_once('navigation.php');
 </tr>
 
 
-<?php
-// 1) Hakee asiakkaat tietokannasta
-$asiakkaat_tulos = pg_query($yhteys, "SELECT id, nimi, osoite FROM asiakas ORDER BY nimi;");
+<?php foreach($asiakkaat as $id => $asiakas): ?>
 
-while ($asiakas = pg_fetch_assoc($asiakkaat_tulos)) {
+<tr>
+    <td><?= $asiakas['nimi'] ?></td>
+    <td><?= $asiakas['osoite'] ?></td>
 
-    echo "<tr>";
-    echo "<td>" . htmlspecialchars($asiakas['nimi']) . "</td>";
-    echo "<td>" . htmlspecialchars($asiakas['osoite']) . "</td>";
+    <td>
+        <div class="tyokohde-container">
+            <?php foreach($asiakas['tyokohteet'] as $t): ?>  
+                <span>
+                    📍 <?= $t['osoite'] ?>
+                    <?php if (!empty($t['tyotyyppi'])): ?>
+                        – <?= $t['tyotyyppi'] ?>
+                        <?php if (!empty($t['urakkahinta'])): ?>
+                            (<?= $t['urakkahinta'] ?> €)
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </span>
+            <?php endforeach; ?>
+        </div>
+        <form method="post">
+            <input type="hidden" name="asiakas_id" value="<?= $id ?>">
+            <input type="text" name="osoite" placeholder="Osoite" required>
+            <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
+        </form>
+    </td>
+</tr>
 
-    echo "<td>";
-
-    // Asiakkaan työmaat
-    $kohteet_tulos = pg_query_params(
-        $yhteys,
-        "SELECT osoite FROM tyokohde WHERE asiakas_id = $1 ORDER BY osoite",
-        array($asiakas['id'])
-    );
-
-    while ($kohde = pg_fetch_assoc($kohteet_tulos)) {
-        echo htmlspecialchars($kohde['osoite']) . "<br>";
-    }
-
-    echo "</td>";
-    echo "</tr>";
-}
-?>
-
+<?php endforeach; ?>
 </table>
 
 </body>
