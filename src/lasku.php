@@ -72,10 +72,7 @@ require_once('data/lasku_data.php');
 <?php endif; ?>
 
 <p><a href="muokkaa_tarvikkeita.php?id=<?= $id ?>">Muokkaa tarvikkeita</a></p>
-
-<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
 <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
-<?php endif; ?>
 
 </body>
 </html>
