@@ -12,7 +12,7 @@ if (isset($_POST['rooli'])) {
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-    <title>Rooli</title>
+    <title>Tmi Sähkötärsky</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/kayttajarooli.css">
 </head>
