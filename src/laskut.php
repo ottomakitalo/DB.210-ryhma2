@@ -2,6 +2,11 @@
 require 'db.php';
 require_once('navigation.php');
 
+if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
+    header("Location: index.php");
+    exit();
+}
+
 
 $asiakkaat = [];
 
