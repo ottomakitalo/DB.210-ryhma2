@@ -1,4 +1,9 @@
 <?php
+if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
+    header("Location: index.php");
+    exit();
+}
+
 require 'db.php';
 
 //Hae asiakkaat

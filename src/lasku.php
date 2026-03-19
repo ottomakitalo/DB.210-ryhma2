@@ -1,6 +1,12 @@
 <?php
 require 'db.php';
 require_once('navigation.php');
+
+if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
+    header("Location: index.php");
+    exit();
+}
+
 require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 ?>

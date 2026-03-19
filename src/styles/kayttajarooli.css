@@ -1,0 +1,10 @@
+.rooli-valikko {
+    position: fixed;
+    top: 5px;
+    right: 10px;
+}
+.rooli {
+    position: fixed;
+    top: 12px;
+    right: 10px;
+}

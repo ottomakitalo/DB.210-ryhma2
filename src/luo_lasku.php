@@ -1,5 +1,8 @@
 <?php
-session_start();
+if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
+    header("Location: index.php");
+    exit();
+}
 
 $summa = 0;
 $kt_vahennys = 0;

@@ -1,5 +1,6 @@
 <?php
 $page = basename($_SERVER['PHP_SELF']);
+require_once('kayttajarooli.php');
 ?>
 
 <div>
