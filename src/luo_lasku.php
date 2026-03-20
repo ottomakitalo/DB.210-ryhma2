@@ -56,7 +56,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
         if($määrä > 0) {
-            $tarvikeNetto = ($määrä * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - $alennusprosentti / 100);
+            $tarvikeNetto = ($määrä * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($alennusprosentti / 100));
             $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
 
             $tarvikeYhteensä = $tarvikeNetto + $tarvikeAlv;
@@ -117,7 +117,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
 
 if(isset($_POST['luo_lasku'])) {
     $tyotyyppi = $_SESSION['laskutiedotArviosta']['työtyyppi'];
-    $lasku_valmis = !empty($_POST['valmis']);
+    $lasku_valmis = (int)!empty($_POST['valmis']);
     $tuplalasku = !empty($_POST['tuplalasku']) && $työtyyppi == 'urakka' && $lasku_valmis;
     
     $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedotArviosta']['yhteensä'] : NULL;
@@ -141,6 +141,7 @@ if(isset($_POST['luo_lasku'])) {
     }
     
     header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 function createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id) {
@@ -156,15 +157,11 @@ function createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id) 
         VALUES ($1, $2, $3, $4)",
         [$tyosuoritusId, $tyotyyppi, $urakkahinta, $tyokohde_id]
     );
-
-    if ($updateTyosuoritus && (pg_affected_rows($updateTyosuoritus)>0)) {
-        $msg = "Työsuoritus lisätty.";
+        
+    if(!$updateTyosuoritus) {
+        die("Työsuorituksen lisäys epäonnistui: " . pg_last_error($yhteys));
     }
-
-    else {
-        die("Työsuorituksen lisäys epäonnistui: " . pg_last_error($yhteys));        
-    }
-
+            
     return $tyosuoritusId;
 }
 
@@ -185,9 +182,11 @@ function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas
         [$laskuId, $lasku_valmis, $luotu_pvm, $annettu_pvm, $era_pvm, $maksettu_status, $asiakas_id, $tyosuoritusId]
     );
 
-    if ($updateLasku && (pg_affected_rows($updateLasku)>0))
-        $msg = "Työkohde lisätty.";
-    else
-        die("Laskun lisäys epäonnistui: " . pg_last_error($yhteys));        
+        
+    if(!$updateLasku) {
+        die("Laskun lisäys epäonnistui: " . pg_last_error($yhteys));
+    }
+
+    return $laskuId;
 }
 ?>
