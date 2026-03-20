@@ -145,17 +145,18 @@ if(isset($_POST['luo_lasku'])) {
     $row = pg_fetch_assoc($result);
     $laskuId = $row['id'];
 
-    $valmis = $_POST['valmis'];;
-    $annettu_pvm = date('Y-m-d');
-    $era_pvm = date('Y-m-d', strtotime('+1 month'));
+    $lasku_valmis = $_POST['valmis'];
+    $luotu_pvm = date('Y-m-d');
+    $annettu_pvm = $lasku_valmis ? $luotu_pvm : NULL;
+    $era_pvm = $lasku_valmis ? date('Y-m-d', strtotime('+2 weeks')) : NULL;
     $maksettu_status = 0;
     $asiakas_id = $_SESSION['laskutiedotArviosta']['asiakas'];
     
     $updateLasku = pg_query_params(
         $yhteys,
-        "INSERT INTO lasku (id, valmis, annettu_pvm, era_pvm, maksettu_status, asiakas_id, tyosuoritus_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)",
-        [$laskuId, $valmis, $annettu_pvm, $era_pvm, $maksettu_status, $asiakas_id, $tyosuoritusId]
+        "INSERT INTO lasku (id, valmis, luotu_pvm, annettu_pvm, era_pvm, maksettu_status, asiakas_id, tyosuoritus_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+        [$laskuId, $lasku_valmis, $luotu_pvm, $annettu_pvm, $era_pvm, $maksettu_status, $asiakas_id, $tyosuoritusId]
     );
 
     if ($updateLasku && (pg_affected_rows($updateLasku)>0))
