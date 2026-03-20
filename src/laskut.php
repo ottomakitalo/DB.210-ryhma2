@@ -283,7 +283,7 @@ require_once('luo_lasku.php');
                             </td>
                             <td>
                                 <div>
-                                    <span> 10 % </span>
+                                    <span> 24 % </span>
                                 </div>
                             </td>
                             <td>
