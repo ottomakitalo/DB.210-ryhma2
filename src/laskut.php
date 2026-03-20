@@ -415,6 +415,12 @@ require_once('luo_lasku.php');
                 <input type="checkbox" name="valmis" value="valmis" id="valmis">
                 <label for="valmis">Valmis laskutettavaksi</label>
             </div>
+            <?php if($tyotyyppi == 'urakka'): ?>
+            <div>
+                <input type="checkbox" name="tuplalasku" value="tuplalasku" id="tuplalasku" disabled>
+                <label for="tuplalasku">Puolita lasku kahteen osaan</label>
+            </div>
+            <?php endif; ?>
         <div>
     </form>
     <?php endif; ?>
@@ -422,6 +428,9 @@ require_once('luo_lasku.php');
         const urakkaSelection = document.getElementById('urakkahinta-container');
         const tyotyyppiContainer = document.getElementById('tyotyyppi-container');
         const alennusInputs = document.querySelectorAll('.työ-alennus-column');
+
+        const valmisCheckbox = document.getElementById('valmis');
+        const tuplalaskuCheckbox = document.getElementById('tuplalasku');
 
         tyotyyppiContainer.addEventListener('change', (e) => {
             if(e.target.value === 'urakka') {
@@ -438,7 +447,14 @@ require_once('luo_lasku.php');
                     el.style.display =''
                 });
             }
-        })
+        });
+
+        valmisCheckbox.addEventListener('change', () => {
+            tuplalaskuCheckbox.disabled = !valmisCheckbox.checked
+            if(!valmisCheckbox.checked) {
+                tuplalaskuCheckbox.checked = false;
+            }
+        });
     </script>
 </body>
 </html>

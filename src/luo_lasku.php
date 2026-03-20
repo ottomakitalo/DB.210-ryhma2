@@ -114,56 +114,78 @@ if(isset($_POST['luo_hinta-arvio'])) {
 }
 
 if(isset($_POST['luo_lasku'])) {
+    $tyotyyppi = $_SESSION['laskutiedotArviosta']['työtyyppi'];
+    $lasku_valmis = !empty($_POST['valmis']);
+    $tuplalasku = !empty($_POST['tuplalasku']) && $työtyyppi == 'urakka' && $lasku_valmis;
+    
+    $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedotArviosta']['yhteensä'] : NULL;
+    $tyokohde_id = $_SESSION['laskutiedotArviosta']['kohde'];
 
-    // Create a new työsuoritus
+    $tyosuoritusId = createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id);
+
+    $annettu_pvm = $lasku_valmis ? date('Y-m-d') : NULL;
+    $era_pvm = $lasku_valmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm))) : NULL;
+    $asiakas_id = $_SESSION['laskutiedotArviosta']['asiakas'];
+
+    createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId);
+
+    if($tuplalasku) {
+        $tyosuoritusId = createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id);
+
+        $annettu_pvm = date('Y-m-d', strtotime('first day of january next year'));
+        $era_pvm = date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm)));
+
+        createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId);
+    }
+    
+    header("Location: ".$_SERVER['PHP_SELF']);
+}
+
+function createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM tyosuoritus"
     );
     $row = pg_fetch_assoc($result);
     $tyosuoritusId = $row['id'];    
-
-    $tyotyyppi = $_SESSION['laskutiedotArviosta']['työtyyppi'];
-    $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedotArviosta']['yhteensä'] : NULL;
-    $tyokohde_id = $_SESSION['laskutiedotArviosta']['kohde'];
     
     $updateTyosuoritus = pg_query_params(
         $yhteys,
         "INSERT INTO tyosuoritus (id, tyotyyppi, urakkahinta, tyokohde_id)
-         VALUES ($1, $2, $3, $4)",
+        VALUES ($1, $2, $3, $4)",
         [$tyosuoritusId, $tyotyyppi, $urakkahinta, $tyokohde_id]
     );
 
-    if ($updateTyosuoritus && (pg_affected_rows($updateTyosuoritus)>0))
+    if ($updateTyosuoritus && (pg_affected_rows($updateTyosuoritus)>0)) {
         $msg = "Työsuoritus lisätty.";
-    else
-        die("Työsuorituksen lisäys epäonnistui: " . pg_last_error($yhteys));
+    }
 
-    // Create a new lasku
+    else {
+        die("Työsuorituksen lisäys epäonnistui: " . pg_last_error($yhteys));        
+    }
+
+    return $tyosuoritusId;
+}
+
+function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM lasku"
     );
     $row = pg_fetch_assoc($result);
     $laskuId = $row['id'];
 
-    $lasku_valmis = $_POST['valmis'];
     $luotu_pvm = date('Y-m-d');
-    $annettu_pvm = $lasku_valmis ? $luotu_pvm : NULL;
-    $era_pvm = $lasku_valmis ? date('Y-m-d', strtotime('+2 weeks')) : NULL;
     $maksettu_status = 0;
-    $asiakas_id = $_SESSION['laskutiedotArviosta']['asiakas'];
     
     $updateLasku = pg_query_params(
         $yhteys,
         "INSERT INTO lasku (id, valmis, luotu_pvm, annettu_pvm, era_pvm, maksettu_status, asiakas_id, tyosuoritus_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
         [$laskuId, $lasku_valmis, $luotu_pvm, $annettu_pvm, $era_pvm, $maksettu_status, $asiakas_id, $tyosuoritusId]
     );
 
     if ($updateLasku && (pg_affected_rows($updateLasku)>0))
         $msg = "Työkohde lisätty.";
     else
-        die("Laskun lisäys epäonnistui: " . pg_last_error($yhteys));
-
-    header("Location: ".$_SERVER['PHP_SELF']);
+        die("Laskun lisäys epäonnistui: " . pg_last_error($yhteys));        
 }
 ?>
