@@ -40,6 +40,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
             $tuntityötAlv += $tuntityöAlv;
 
             $valitutTyöt[] = [
+                'id'       => $id,
                 'tyyppi'   => $tuntityö['nimi'],
                 'kesto'    => $kesto,
                 'alennus'  => $alennusprosentti,
@@ -65,12 +66,12 @@ if(isset($_POST['luo_hinta-arvio'])) {
             $tarvikkeetAlv += $tarvikeAlv;
 
             $valitutTarvikkeet[] = [
-                'id' => $id,
-                'tarvike' => $tarvike['tarvike'],
-                'määrä' => $määrä,
-                'yksikkö' => $tarvike['yksikkö'],
-                'alennus' => $alennusprosentti,
-                'alv' => $tarvike['alv'],
+                'id'       => $id,
+                'tarvike'  => $tarvike['tarvike'],
+                'määrä'    => $määrä,
+                'yksikkö'  => $tarvike['yksikkö'],
+                'alennus'  => $alennusprosentti,
+                'alv'      => $tarvike['alv'],
                 'yhteensä' => $tarvikeYhteensä,
             ];
         }
@@ -104,14 +105,14 @@ if(isset($_POST['luo_hinta-arvio'])) {
 
     unset($_SESSION['laskutiedotArviosta']);
     $_SESSION['laskutiedotArviosta'] = [
-        'asiakas' => $asiakasId,
-        'kohde' => $työkohdeId,
-        'työtyyppi' => $tyotyyppi,
+        'asiakas'        => $asiakasId,
+        'kohde'          => $työkohdeId,
+        'työtyyppi'      => $tyotyyppi,
         'urakka-alennus' => $urakkaAlennus,
-        'tuntityöt' => $valitutTyöt,
-        'tarvikkeet' => $valitutTarvikkeet,
-        'yhteensä' => $nettosumma,
-        'kt-vähennys' => $kt_vahennys
+        'tuntityöt'      => $valitutTyöt,
+        'tarvikkeet'     => $valitutTarvikkeet,
+        'yhteensä'       => $nettosumma,
+        'kt-vähennys'    => $kt_vahennys
     ];
 }
 
@@ -125,6 +126,11 @@ if(isset($_POST['luo_lasku'])) {
 
     $tyosuoritusId = createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id);
 
+    $tuntityöt = $_SESSION['laskutiedotArviosta']['tuntityöt'];
+    $tarvikkeet = $_SESSION['laskutiedotArviosta']['tarvikkeet'];
+    fillTyösuoritus($yhteys, $tyosuoritusId, $tuntityöt, $tarvikkeet);
+
+
     $annettu_pvm = $lasku_valmis ? date('Y-m-d') : NULL;
     $era_pvm = $lasku_valmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm))) : NULL;
     $asiakas_id = $_SESSION['laskutiedotArviosta']['asiakas'];
@@ -133,6 +139,8 @@ if(isset($_POST['luo_lasku'])) {
 
     if($tuplalasku) {
         $tyosuoritusId = createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id);
+
+        fillTyösuoritus($yhteys, $tyosuoritusId, $tuntityöt, $tarvikkeet);
 
         $annettu_pvm = date('Y-m-d', strtotime('first day of january next year'));
         $era_pvm = date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm)));
@@ -165,6 +173,49 @@ function createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id) 
     return $tyosuoritusId;
 }
 
+function fillTyösuoritus($yhteys, $tyosuoritusId, $tuntiutyöt, $tarvikkeet) {
+    foreach($tuntityöt as $id => $tuntityö) {
+        $tyotehtava_id = $tuntityö['id'];
+        $tunnit = $tuntityö['kesto'];
+        $alennus = $tuntityö['alennus'];
+        createNewTehtävä($yhteys, $tyosuoritusId, $tyotehtava_id, $tunnit, $alennus);
+    }
+
+    foreach($tarvikkeet as $id => $tarvike) {
+        $tarvike_id = $tarvike['id'];
+        $maara = $tarvike['määrä'];
+        $alennus = $tarvike['alennus'];
+
+        createNewTarvikkeet($yhteys, $tyosuoritusId, $tarvike_id, $maara, $alennus);
+    }    
+}
+
+function createNewTehtävä($yhteys, $tyosuoritus_id, $tyotehtava_id, $tunnit, $alennus) {    
+    $updateTehtävä = pg_query_params(
+        $yhteys,
+        "INSERT INTO tehtavat (tyosuoritus_id, tyotehtava_id, tunnit, alennus)
+        VALUES ($1, $2, $3, $4)",
+        [$tyosuoritus_id, $tyotehtava_id, $tunnit, $alennus]
+    );
+        
+    if(!$updateTehtävä) {
+        die("Tehtävän lisäys epäonnistui: " . pg_last_error($yhteys));
+    }
+}
+
+function createNewTarvikkeet($yhteys, $työsuoritus_id, $tarvike_id, $määrä, $alennus) {    
+    $updateTehtävä = pg_query_params(
+        $yhteys,
+        "INSERT INTO tarvikkeet (tyosuoritus_id, tarvike_id, maara, alennus)
+        VALUES ($1, $2, $3, $4)",
+        [$työsuoritus_id, $tarvike_id, $määrä, $alennus]
+    );
+        
+    if(!$updateTehtävä) {
+        die("Tarvikkeen lisäys epäonnistui: " . pg_last_error($yhteys));
+    }
+}
+
 function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM lasku"
@@ -189,4 +240,5 @@ function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas
 
     return $laskuId;
 }
+
 ?>
