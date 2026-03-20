@@ -4,8 +4,11 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-$summa = 0;
-$kt_vahennys = 0;
+$summa = '';
+$kt_vahennys = '';
+$urakkahinta = '';
+$urakkaAlennus = '';
+$tarvikeYhteensä = '';
 $nykyinenAsiakas = '';
 $nykyinenKohde = '';
 $tyotyyppi = '';
@@ -17,20 +20,21 @@ if(isset($_POST['luo_hinta-arvio'])) {
     $kt_vahennys = 0;
 
     $valitutTyöt = [];
-    foreach($tuntityohinnat as $tuntityö => $tuntityohinta) {
-        $kesto = intval($_POST[$tuntityö]);
-        $alennusprosentti = intval($_POST[$tuntityö . '-alennus']);
+    foreach($tuntityohinnat as $id => $tuntityö) {
+        $kesto = intval($_POST[$tuntityö['nimi']]);
+        $alennusprosentti = intval($_POST[$tuntityö['nimi'] . '-alennus']);
 
         if($kesto > 0) {
-            $tuntityon_arvo = ($kesto * $tuntityohinta) * (1 - ($alennusprosentti / 100));
+            $tuntityon_arvo = ($kesto * $tuntityö['hinta']) * (1 - ($alennusprosentti / 100));
             $kt_vahennys += $tuntityon_arvo + ($tuntityon_arvo * 0.24);
             
             $summa += $tuntityon_arvo;
 
             $valitutTyöt[] = [
-                'tyyppi' => $tuntityö,
-                'kesto' => $kesto,
-                'alennus' => $alennusprosentti
+                'tyyppi'   => $tuntityö['nimi'],
+                'kesto'    => $kesto,
+                'alennus'  => $alennusprosentti,
+                'yhteensä' => $tuntityon_arvo,
             ];
         }
     }
@@ -41,11 +45,16 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
         if($määrä > 0) {
-            $summa += ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
+            $tarvikeYhteensä = ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
+            $summa += $tarvikeYhteensä;
             $valitutTarvikkeet[] = [
-                'tarvike' => $tarvike,
+                'id' => $id,
+                'tarvike' => $tarvike['tarvike'],
                 'määrä' => $määrä,
+                'yksikkö' => $tarvike['yksikkö'],
                 'alennus' => $alennusprosentti,
+                'alv' => $tarvike['alv'],
+                'yhteensä' => $tarvikeYhteensä,
             ];
         }
     }

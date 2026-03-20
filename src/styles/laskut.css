@@ -42,6 +42,15 @@
     font-weight: bold;
 }
 
+.luo-lasku .yhteenveto-container {
+    gap: 8px;
+}
+
+.luo-lasku .laskuarvio-container {
+    gap: 8px;
+}
+
+
 .laskut th,
 .laskut td {
     text-align: center;

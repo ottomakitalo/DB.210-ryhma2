@@ -36,10 +36,13 @@ while ($row = pg_fetch_assoc($q2)) {
 
 $tuntityohinnat = [];
 $q = pg_query($yhteys,
-    "SELECT nimi, tuntihinta FROM tyotehtava ORDER BY id");
+    "SELECT id, nimi, tuntihinta FROM tyotehtava ORDER BY id");
 
 while ($row = pg_fetch_assoc($q)) {
-    $tuntityohinnat[$row['nimi']] = (float)$row['tuntihinta'];
+    $tuntityohinnat[$row['id']] = [
+    'nimi'   => $row['nimi'],    
+    'hinta'  => (float)$row['tuntihinta'],
+    ];
 }
 
 
@@ -166,13 +169,13 @@ require_once('luo_lasku.php');
 
             <?php foreach($tuntityohinnat as $id => $tyo): ?>
             <tr>
-                <td><?= $id ?></td>
+                <td><?= $tyo['nimi'] ?></td>
                 <td>
                     <div>
                         <input
                             class="tunti-input" 
                             type="number" 
-                            name="<?= $id ?>" 
+                            name="<?= $tyo['nimi'] ?>" 
                             placeholder="0"
                             min="0">
                         <span>h</span>
@@ -183,7 +186,7 @@ require_once('luo_lasku.php');
                         <input 
                             class="alennus-input" 
                             type="number" 
-                            name="<?= $id ?>-alennus" 
+                            name="<?= $tyo['nimi'] ?>-alennus" 
                             placeholder="0" 
                             min="0"
                             max="100">
@@ -234,14 +237,11 @@ require_once('luo_lasku.php');
 
         <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
     </form>
-
-    <span>Hinta-arvio: <?= $summa ?></span>
-    <span>Kotitalousvähennys: <?= $kt_vahennys ?></span>
     
     <?php if($summa != ''): ?>
-    <h3>Luo lasku arviosta</h3>
+    <h3>Lasku</h3>
     <form method="post" class="luo-lasku">
-        <div class="flex-container">
+        <div class="laskuarvio-container flex-container">
             <div>
                 <span class="tieto-label">Asiakas:</span>
                 <span><?= $nykyinenAsiakas ?></span>
@@ -257,22 +257,105 @@ require_once('luo_lasku.php');
                 <span><?= $tyotyyppi ?></span>
             </div>
     
-            <div>
+            <div class="yhteenveto-container flex-container">
                 <span class="tieto-label">Valitut työt:</span>
-                <div class="flex-container">
-                    <?php foreach($valitutTyöt as $id => $työ): ?>
-                    <span><?= $työ['kesto'] . 'h ' . $työ['tyyppi'] ?></span>
-                    <?php endforeach ?>
+                <div>
+                    <table>
+                        <tr>
+                            <th>Tuntityötyyppi</th>
+                            <th>Tunnit</th>
+                            <th>Alv-prosentti</th>
+                            <th>Alennusprosentti</th>
+                            <th>Summa</th>
+                        </tr>
+
+                        <?php foreach($valitutTyöt as $id => $työ): ?>
+                        <tr>
+                            <td>
+                                <div>
+                                    <span><?= $työ['tyyppi'] ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $työ['kesto'] . ' h' ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span> 10 % </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $työ['alennus'] . ' %' ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $työ['yhteensä'] . ' €' ?></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
             </div>
-    
-            <div>
+        
+            <div class="yhteenveto-container flex-container">
                 <span class="tieto-label">Valitut tarvikkeet:</span>
-                <div class="flex-container">
-                    <?php foreach($valitutTarvikkeet as $id => $tarvike): ?>
-                    <span><?= $tarvike['määrä'] . ' ' . $tarvike['tarvike']['yksikkö'] . ' ' . $tarvike['tarvike']['tarvike'] ?></span>
-                    <?php endforeach ?>
+                <div>
+                    <table>
+                        <tr>
+                            <th>Tarvike</th>
+                            <th>Määrä</th>
+                            <th>Alv-prosentti</th>
+                            <th>Alennusprosentti</th>
+                            <th>Summa</th>
+                        </tr>
+    
+                        <?php foreach($valitutTarvikkeet as $id => $tarvike): ?>
+                        <tr>
+                            <td>
+                                <div>
+                                    <span><?= $tarvike['tarvike'] ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $tarvike['määrä'] . ' ' . $tarvike['yksikkö'] ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $tarvike['alv'] . ' %' ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $tarvike['alennus'] . ' %' ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= $tarvike['yhteensä'] . ' €' ?></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
+            </div>
+
+            <div>
+                <span class="tieto-label">Hinta-arvio:</span>
+                <span><?= $summa ?></span>
+            </div>
+
+            <div>
+                <span class="tieto-label">Kotitalousvähennys:</span>
+                <span><?= $kt_vahennys ?></span>
+            </div>
             </div>        
         </div>
         
