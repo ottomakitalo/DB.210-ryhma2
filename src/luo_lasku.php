@@ -4,7 +4,8 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-$summa = '';
+$nettosumma = '';
+$alv_summa = '';
 $kt_vahennys = '';
 $urakkahinta = '';
 $urakkaAlennus = '';
@@ -16,37 +17,51 @@ $valitutTyöt = [];
 $valitutTarvikkeet = [];
 
 if(isset($_POST['luo_hinta-arvio'])) {
-    $summa = 0;
+    $nettosumma = 0;
     $kt_vahennys = 0;
+    $alv_summa = 0;
 
+    $tuntityötNetto = 0;
+    $tuntityötAlv = 0;
     $valitutTyöt = [];
     foreach($tuntityohinnat as $id => $tuntityö) {
         $kesto = intval($_POST[$tuntityö['nimi']]);
         $alennusprosentti = intval($_POST[$tuntityö['nimi'] . '-alennus']);
 
         if($kesto > 0) {
-            $tuntityon_arvo = ($kesto * $tuntityö['hinta']) * (1 - ($alennusprosentti / 100));
-            $kt_vahennys += $tuntityon_arvo + ($tuntityon_arvo * 0.24);
+            $tuntityöNetto = ($kesto * $tuntityö['hinta']) * (1 - ($alennusprosentti / 100));
+            $tuntityöAlv = $tuntityöNetto * 0.24;
             
-            $summa += $tuntityon_arvo;
+            $tuntityöYhteensä = $tuntityöNetto + $tuntityöAlv;
+            
+            $tuntityötNetto += $tuntityöNetto;
+            $tuntityötAlv += $tuntityöAlv;
 
             $valitutTyöt[] = [
                 'tyyppi'   => $tuntityö['nimi'],
                 'kesto'    => $kesto,
                 'alennus'  => $alennusprosentti,
-                'yhteensä' => $tuntityon_arvo,
+                'yhteensä' => $tuntityöYhteensä,
             ];
         }
     }
 
+    $tarvikkeetNetto = 0;
+    $tarvikkeetAlv = 0;
     $valitutTarvikkeet = [];
     foreach($tarvikkeet as $id => $tarvike) {
         $määrä = intval($_POST[$tarvike['tarvike']]);
         $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
         if($määrä > 0) {
-            $tarvikeYhteensä = ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
-            $summa += $tarvikeYhteensä;
+            $tarvikeNetto = ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
+            $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
+
+            $tarvikeYhteensä = $tarvikeNetto + $tarvikeAlv;
+
+            $tarvikkeetNetto += $tarvikeNetto;
+            $tarvikkeetAlv += $tarvikeAlv;
+
             $valitutTarvikkeet[] = [
                 'id' => $id,
                 'tarvike' => $tarvike['tarvike'],
@@ -66,10 +81,20 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $urakkahinta = intval($_POST['urakkahinta']);
         $urakkaAlennus = intval($_POST['urakka-alennus']);
 
-        $urakan_loppuhinta = $urakkahinta * (1 - $urakkaAlennus / 100);
-        $kt_vahennys = $urakan_loppuhinta + ($urakan_loppuhinta * 0.24);
+        $urakkaNetto = $urakkahinta * (1 - $urakkaAlennus / 100);
+        $urakkaAlv = $urakkaNetto * 0.24;
 
-        $summa = $urakan_loppuhinta;
+        $urakkaYhteensä = $urakkaNetto + $urakkaAlv;
+
+        $nettosumma = $urakkaNetto + $tarvikkeetNetto;
+        $alv_summa = $tarvikkeetAlv + $urakkaAlv;
+        $kt_vahennys = $urakkaYhteensä;
+    }
+
+    else {
+        $nettosumma = $tuntityötNetto + $tarvikkeetNetto;
+        $alv_summa = $tuntityötAlv + $tarvikkeetAlv;
+        $kt_vahennys = $tuntityötNetto + $tuntityötAlv;
     }
     
     $nykyinenAsiakas = $asiakkaat[$asiakasId]['asiakas'];
@@ -83,7 +108,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
         'urakka-alennus' => $urakkaAlennus,
         'tuntityöt' => $valitutTyöt,
         'tarvikkeet' => $valitutTarvikkeet,
-        'yhteensä' => $summa,
+        'yhteensä' => $nettosumma,
         'kt-vähennys' => $kt_vahennys
     ];
 }

@@ -240,7 +240,7 @@ require_once('luo_lasku.php');
         </div>
     </form>
     
-    <?php if($summa != ''): ?>
+    <?php if($nettosumma != ''): ?>
     <h3>Lasku</h3>
     <form method="post" class="luo-lasku">
         <div class="laskuarvio-container flex-container">
@@ -388,13 +388,23 @@ require_once('luo_lasku.php');
             <?php endif; ?>
 
             <div>
-                <span class="tieto-label">Hinta-arvio:</span>
-                <span><?= $summa ?></span>
+                <span class="tieto-label">Nettosumma:</span>
+                <span><?= $nettosumma . ' €' ?></span>
+            </div>
+
+            <div>
+                <span class="tieto-label">Alv:</span>
+                <span><?= $alv_summa . ' €' ?></span>
+            </div>
+
+            <div>
+                <span class="tieto-label">Yhteensä:</span>
+                <span><?= $nettosumma + $alv_summa . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Kotitalousvähennys:</span>
-                <span><?= $kt_vahennys ?></span>
+                <span><?= $kt_vahennys . ' €' ?></span>
             </div>
             </div>        
         </div>
