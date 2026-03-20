@@ -97,9 +97,9 @@ CREATE TABLE tarvike (
 ); 
 
 INSERT INTO tarvike VALUES (1, 'USB-kaapeli', 'Asus', 'How-data', 4, 'kpl', 500, 'Yleinen');
-INSERT INTO tarvike VALUES (2, 'sähköjohto', 'Asus', 'Moponet', 1, 'metri', 200, 'Yleinen');
+INSERT INTO tarvike VALUES (2, 'sähköjohto', 'Asus', 'Moponet', 1, 'm', 200, 'Yleinen');
 INSERT INTO tarvike VALUES (3, 'opaskirja', 'Otava', 'Tärsky Pub', 8, 'kpl', 100, 'Kirjallisuus');
-INSERT INTO tarvike VALUES (4, 'maakaapeli', 'Maara', 'Moponet', 4, 'metri', 500, 'Yleinen');
+INSERT INTO tarvike VALUES (4, 'maakaapeli', 'Maara', 'Moponet', 4, 'm', 500, 'Yleinen');
 INSERT INTO tarvike VALUES (5, 'sähkökeskus', 'Vare', 'Junk Co', 300, 'kpl', 50, 'Yleinen');
 INSERT INTO tarvike VALUES (6, 'palohälytin', 'Vare', 'Junk Co', 4, 'kpl', 500, 'Yleinen');
 INSERT INTO tarvike VALUES (7, 'pistorasia', 'Vare', 'Moponet', 10, 'kpl', 400, 'Yleinen');
