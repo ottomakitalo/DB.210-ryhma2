@@ -16,6 +16,8 @@ $tyotyyppi = '';
 $valitutTyöt = [];
 $valitutTarvikkeet = [];
 
+$myyntihintakerroin = 1.25;
+
 if(isset($_POST['luo_hinta-arvio'])) {
     $nettosumma = 0;
     $kt_vahennys = 0;
@@ -54,7 +56,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
         if($määrä > 0) {
-            $tarvikeNetto = ($määrä * $tarvike['hinta']) * (1 - $alennusprosentti / 100);
+            $tarvikeNetto = ($määrä * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - $alennusprosentti / 100);
             $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
 
             $tarvikeYhteensä = $tarvikeNetto + $tarvikeAlv;
