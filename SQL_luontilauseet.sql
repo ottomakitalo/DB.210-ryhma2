@@ -42,7 +42,6 @@ INSERT INTO tyosuoritus VALUES (4, 'urakka', 50, 5);
 INSERT INTO tyosuoritus VALUES (5, 'tunti', null, 4);
 
 
-
 CREATE TABLE lasku ( 
   id INT PRIMARY KEY, 
   valmis BOOLEAN NOT NULL, 
@@ -90,21 +89,22 @@ CREATE TABLE tarvike (
   merkki VARCHAR(128) NOT NULL, 
   toimittaja VARCHAR(128) NOT NULL, 
   sis_hinta DECIMAL(10,2) NOT NULL, 
+  ulos_hinta DECIMAL(10,2) NOT NULL,
   yksikko VARCHAR(128) NOT NULL, 
   varasto INT NOT NULL, 
   tyyppi_nimi VARCHAR(128) NOT NULL, 
   FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi) 
 ); 
 
-INSERT INTO tarvike VALUES (1, 'USB-kaapeli', 'Asus', 'How-data', 4, 'kpl', 500, 'Yleinen');
-INSERT INTO tarvike VALUES (2, 'sähköjohto', 'Asus', 'Moponet', 1, 'metri', 200, 'Yleinen');
-INSERT INTO tarvike VALUES (3, 'opaskirja', 'Otava', 'Tärsky Pub', 8, 'kpl', 100, 'Kirjallisuus');
-INSERT INTO tarvike VALUES (4, 'maakaapeli', 'Maara', 'Moponet', 4, 'metri', 500, 'Yleinen');
-INSERT INTO tarvike VALUES (5, 'sähkökeskus', 'Vare', 'Junk Co', 300, 'kpl', 50, 'Yleinen');
-INSERT INTO tarvike VALUES (6, 'palohälytin', 'Vare', 'Junk Co', 4, 'kpl', 500, 'Yleinen');
-INSERT INTO tarvike VALUES (7, 'pistorasia', 'Vare', 'Moponet', 10, 'kpl', 400, 'Yleinen');
-INSERT INTO tarvike VALUES (8, 'termostaatti', 'Baden', 'Moponet', 20, 'kpl', 50, 'Yleinen');
-INSERT INTO tarvike VALUES (9, 'valaisin', 'Airam', 'Moponet', 5, 'kpl', 100, 'Yleinen');
+INSERT INTO tarvike VALUES (1, 'USB-kaapeli', 'Asus', 'How-data', 4, 5, 'kpl', 500, 'Yleinen');
+INSERT INTO tarvike VALUES (2, 'sähköjohto', 'Asus', 'Moponet', 1, 1.25, 'm', 200, 'Yleinen');
+INSERT INTO tarvike VALUES (3, 'opaskirja', 'Otava', 'Tärsky Pub', 8, 10, 'kpl', 100, 'Kirjallisuus');
+INSERT INTO tarvike VALUES (4, 'maakaapeli', 'Maara', 'Moponet', 4, 5, 'm', 500, 'Yleinen');
+INSERT INTO tarvike VALUES (5, 'sähkökeskus', 'Vare', 'Junk Co', 300, 375, 'kpl', 50, 'Yleinen');
+INSERT INTO tarvike VALUES (6, 'palohälytin', 'Vare', 'Junk Co', 4, 5, 'kpl', 500, 'Yleinen');
+INSERT INTO tarvike VALUES (7, 'pistorasia', 'Vare', 'Moponet', 10, 12.5, 'kpl', 400, 'Yleinen');
+INSERT INTO tarvike VALUES (8, 'termostaatti', 'Baden', 'Moponet', 20, 24, 'kpl', 50, 'Yleinen');
+INSERT INTO tarvike VALUES (9, 'valaisin', 'Airam', 'Moponet', 5, 6, 'kpl', 100, 'Yleinen');
 
 
 CREATE TABLE tehtavat ( 
