@@ -4,20 +4,20 @@ body {
 
 .navigation-list { 
     list-style: none;
-    padding: 0; 
+    padding: 0;
+}
 
-    li { 
-        display: inline; 
-        margin-right: 15px; 
+.navigation-list li {
+    display: inline;
+    margin-right: 15px;
+}
 
-        a { 
-            text-decoration: none; 
-            color: black;
-        }
+.navigation-list li a {
+    text-decoration: none;
+    color: black;
+}
 
-        .active { 
-            font-weight: bold; 
-            color: green; 
-        }
-    }
+.navigation-list li .active {
+    font-weight: bold;
+    color: green;
 }

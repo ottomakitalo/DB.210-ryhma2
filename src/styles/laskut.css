@@ -1,54 +1,48 @@
-.hinta-arvio {
-    h4 {
-        margin-top: 32px;
-        margin-bottom: 16px
-    }
-
-    .tyotyyppi-container {
-        display: flex;
-        flex-direction: row;
-        gap: 12px;
-    }
-
-    .urakkahinta-container {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-
-        .urakkahinta-input {
-            width: 93px;
-        }
-    }
-
-    table {
-        .tarvike-input,
-        .alennus-input {
-            width: 50px;
-        }
-        
-        .tunti-input {
-            width: 75px;
-        }
-    
-        td {
-            padding: 8px 4px;
-        }
-    }
+.hinta-arvio h4 {
+    margin-top: 32px;
+    margin-bottom: 16px  
 }
 
-.luo-lasku {
-    .flex-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tieto-label {
-        font-weight: bold;
-    }
+.hinta-arvio .tyotyyppi-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
 }
 
-.laskut {
-    th, td { 
-        text-align: center; 
-    }
+.hinta-arvio .urakkahinta-container {
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hinta-arvio .urakkahinta-container .urakkahinta-input {
+    width: 93px;
+}
+
+.hinta-arvio table .tarvike-input,
+.hinta-arvio table .alennus-input {
+    width: 42px;
+}
+
+.hinta-arvio table .tunti-input {
+    width: 67px;
+}
+
+.hinta-arvio table td {
+    padding: 8px 4px;
+}
+
+.luo-lasku .flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.luo-lasku .tieto-label {
+    font-weight: bold;
+}
+
+.laskut th,
+.laskut td {
+    text-align: center;
 }
