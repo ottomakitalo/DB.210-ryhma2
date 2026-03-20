@@ -120,7 +120,7 @@ if(isset($_POST['luo_lasku'])) {
     $row = pg_fetch_assoc($result);
     $laskuId = $row['id'];
 
-    $valmis = 0;
+    $valmis = $_POST['valmis'];;
     $annettu_pvm = date('Y-m-d');
     $era_pvm = date('Y-m-d', strtotime('+1 month'));
     $maksettu_status = 0;

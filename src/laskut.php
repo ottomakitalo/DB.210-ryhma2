@@ -164,7 +164,7 @@ require_once('luo_lasku.php');
             <tr>
                 <th>Tuntityötyyppi</th>
                 <th>Tunnit</th>
-                <th class="alennus-column">Alennusprosentti</th>
+                <th class="työ-alennus-column">Alennusprosentti</th>
             </tr>
 
             <?php foreach($tuntityohinnat as $id => $tyo): ?>
@@ -181,7 +181,7 @@ require_once('luo_lasku.php');
                         <span>h</span>
                     </div>
                 </td>
-                <td class="alennus-column">
+                <td class="työ-alennus-column">
                     <div>
                         <input 
                             class="alennus-input" 
@@ -202,7 +202,7 @@ require_once('luo_lasku.php');
             <tr>
                 <th>Tarvike</th>
                 <th>Määrä</th>
-                <th class="alennus-column">Alennusprosentti</th>
+                <th>Alennusprosentti</th>
             </tr>
 
             <?php foreach($tarvikkeet as $id => $tarvike): ?>
@@ -219,7 +219,7 @@ require_once('luo_lasku.php');
                         <span><?= $tarvike['yksikkö'] ?></span>
                     </div>
                 </td>
-                <td class="alennus-column">
+                <td>
                     <div>
                         <input 
                             class="alennus-input"
@@ -235,7 +235,9 @@ require_once('luo_lasku.php');
             <?php endforeach; ?>
         </table>
 
-        <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
+        <div class="submit-button-container">
+            <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
+        </div>
     </form>
     
     <?php if($summa != ''): ?>
@@ -256,54 +258,91 @@ require_once('luo_lasku.php');
                 <span class="tieto-label">Työtyyppi:</span>
                 <span><?= $tyotyyppi ?></span>
             </div>
-    
+
+            <?php if(!empty($valitutTyöt) || $tyotyyppi == 'urakka'): ?>
             <div class="yhteenveto-container flex-container">
-                <span class="tieto-label">Valitut työt:</span>
+                <span class="tieto-label">Työerittely:</span>
                 <div>
                     <table>
-                        <tr>
-                            <th>Tuntityötyyppi</th>
-                            <th>Tunnit</th>
-                            <th>Alv-prosentti</th>
-                            <th>Alennusprosentti</th>
-                            <th>Summa</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Työtyyppi</th>
+                                <th>Tunnit</th>
+                                <th>Alv-prosentti</th>
+                                <th>Alennusprosentti</th>
+                                <th>Summa</th>
+                            </tr>
+                        </thead>
 
-                        <?php foreach($valitutTyöt as $id => $työ): ?>
-                        <tr>
-                            <td>
-                                <div>
-                                    <span><?= $työ['tyyppi'] ?></span>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <span><?= $työ['kesto'] . ' h' ?></span>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <span> 24 % </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <span><?= $työ['alennus'] . ' %' ?></span>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <span><?= $työ['yhteensä'] . ' €' ?></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                        <tbody>
+                            <?php foreach($valitutTyöt as $id => $työ): ?>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <span><?= $työ['tyyppi'] ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= $työ['kesto'] . ' h' ?></span>
+                                    </div>
+                                </td>
+                                <?php if($tyotyyppi == 'tunti'): ?>
+                                <td>
+                                    <div>
+                                        <span> 24 % </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= $työ['alennus'] . ' %' ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= $työ['yhteensä'] . ' €' ?></span>
+                                    </div>
+                                </td>
+                                <?php endif ?>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+
+                        <?php if($tyotyyppi == 'urakka'): ?>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <span>urakka</span>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>24 %</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= $urakkaAlennus . ' %' ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= $urakkahinta . ' €' ?></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        <?php endif; ?>
                     </table>
                 </div>
             </div>
+            <?php endif; ?>
         
+            <?php if(!empty($valitutTarvikkeet)): ?>
             <div class="yhteenveto-container flex-container">
-                <span class="tieto-label">Valitut tarvikkeet:</span>
+                <span class="tieto-label">Tarvikkeet:</span>
                 <div>
                     <table>
                         <tr>
@@ -346,6 +385,7 @@ require_once('luo_lasku.php');
                     </table>
                 </div>
             </div>
+            <?php endif; ?>
 
             <div>
                 <span class="tieto-label">Hinta-arvio:</span>
@@ -358,14 +398,20 @@ require_once('luo_lasku.php');
             </div>
             </div>        
         </div>
-        
-        <button type="submit" name="luo_lasku">Luo lasku</button>
+
+        <div class="submit-button-container">
+            <button type="submit" name="luo_lasku">Luo lasku</button>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis">
+                <label for="valmis">Valmis laskutettavaksi</label>
+            </div>
+        <div>
     </form>
     <?php endif; ?>
     <script>
         const urakkaSelection = document.getElementById('urakkahinta-container');
         const tyotyyppiContainer = document.getElementById('tyotyyppi-container');
-        const alennusInputs = document.querySelectorAll('.alennus-column');
+        const alennusInputs = document.querySelectorAll('.työ-alennus-column');
 
         tyotyyppiContainer.addEventListener('change', (e) => {
             if(e.target.value === 'urakka') {

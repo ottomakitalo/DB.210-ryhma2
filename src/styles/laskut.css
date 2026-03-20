@@ -50,8 +50,29 @@
     gap: 8px;
 }
 
+.submit-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding-top: 20px;
+}
 
 .laskut th,
 .laskut td {
     text-align: center;
+}
+
+.yhteenveto-container table {
+    border-collapse: collapse;
+}
+
+.yhteenveto-container table td,
+.yhteenveto-container table th {
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.yhteenveto-container table tfoot tr {
+    font-weight: bold;
+    border-top: 2px solid #333;
 }
