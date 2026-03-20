@@ -103,7 +103,7 @@ require_once('luo_lasku.php');
 
 <body>
 
-    <h2>Luo tuntityölasku</h2>
+    <h2>Luo lasku</h2>
     <h3>Hinta-arvio</h3>
     <form method="post" class="hinta-arvio">
         <h4>Työkohde</h4>
@@ -132,31 +132,28 @@ require_once('luo_lasku.php');
             </div>
         </div>
 
-        <div class="urakkahinta-selection" id="urakkahinta-selection" style="display:none">
-            <h5>Urakka</h5>
-            <div class="urakkahinta-container">
-                <div>
-                    <span>Urakkahinta:</span>
-                    <input
-                        class="urakkahinta-input" 
-                        type="number" 
-                        name="urakkahinta" 
-                        placeholder="0"
-                        min="0">
-                    <span>€</span>
-                </div>
-                <div>
-                    <span>Alennusprosentti:</span>
-                    <input 
-                        class="alennus-input" 
-                        type="number" 
-                        name="urakka-alennus" 
-                        placeholder="0" 
-                        min="0"
-                        max="100">
-                    <span>%</span>
-                </div>   
+        <div class="urakkahinta-container" id="urakkahinta-container" style="display:none">
+            <div>
+                <span>Urakkahinta:</span>
+                <input
+                    class="urakkahinta-input" 
+                    type="number" 
+                    name="urakkahinta" 
+                    placeholder="0"
+                    min="0">
+                <span>€</span>
             </div>
+            <div>
+                <span>Alennusprosentti:</span>
+                <input 
+                    class="alennus-input" 
+                    type="number" 
+                    name="urakka-alennus" 
+                    placeholder="0" 
+                    min="0"
+                    max="100">
+                <span>%</span>
+            </div>   
         </div>
 
         <h4>Tuntityöt</h4>
@@ -164,7 +161,7 @@ require_once('luo_lasku.php');
             <tr>
                 <th>Tuntityötyyppi</th>
                 <th>Tunnit</th>
-                <th>Alennusprosentti</th>
+                <th class="alennus-column">Alennusprosentti</th>
             </tr>
 
             <?php foreach($tuntityohinnat as $id => $tyo): ?>
@@ -181,7 +178,7 @@ require_once('luo_lasku.php');
                         <span>h</span>
                     </div>
                 </td>
-                <td>
+                <td class="alennus-column">
                     <div>
                         <input 
                             class="alennus-input" 
@@ -202,7 +199,7 @@ require_once('luo_lasku.php');
             <tr>
                 <th>Tarvike</th>
                 <th>Määrä</th>
-                <th>Alennusprosentti</th>
+                <th class="alennus-column">Alennusprosentti</th>
             </tr>
 
             <?php foreach($tarvikkeet as $id => $tarvike): ?>
@@ -219,10 +216,10 @@ require_once('luo_lasku.php');
                         <span><?= $tarvike['yksikkö'] ?></span>
                     </div>
                 </td>
-                <td>
+                <td class="alennus-column">
                     <div>
                         <input 
-                            class="alennus-input" 
+                            class="alennus-input"
                             type="number" 
                             name="<?= $tarvike['tarvike'] ?>-alennus" 
                             placeholder="0" 
@@ -283,15 +280,24 @@ require_once('luo_lasku.php');
     </form>
     <?php endif; ?>
     <script>
-        const urakkaSelection = document.getElementById('urakkahinta-selection');
+        const urakkaSelection = document.getElementById('urakkahinta-container');
         const tyotyyppiContainer = document.getElementById('tyotyyppi-container');
+        const alennusInputs = document.querySelectorAll('.alennus-column');
 
         tyotyyppiContainer.addEventListener('change', (e) => {
             if(e.target.value === 'urakka') {
-                urakkaSelection.style.display = 'block';
+                urakkaSelection.style.display = '';
+
+                alennusInputs.forEach(el => {
+                    el.style.display ='none'
+                });
             }
             else if(e.target.value === 'tunti') {
                 urakkaSelection.style.display = 'none';
+
+                alennusInputs.forEach(el => {
+                    el.style.display =''
+                });
             }
         })
     </script>
