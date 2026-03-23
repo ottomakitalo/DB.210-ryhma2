@@ -173,7 +173,7 @@ function createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id) 
     return $tyosuoritusId;
 }
 
-function fillTyösuoritus($yhteys, $tyosuoritusId, $tuntiutyöt, $tarvikkeet) {
+function fillTyösuoritus($yhteys, $tyosuoritusId, $tuntityöt, $tarvikkeet) {
     foreach($tuntityöt as $id => $tuntityö) {
         $tyotehtava_id = $tuntityö['id'];
         $tunnit = $tuntityö['kesto'];
