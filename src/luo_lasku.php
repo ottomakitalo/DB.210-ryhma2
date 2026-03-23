@@ -119,7 +119,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
 if(isset($_POST['luo_lasku'])) {
     $tyotyyppi = $_SESSION['laskutiedotArviosta']['työtyyppi'];
     $lasku_valmis = (int)!empty($_POST['valmis']);
-    $tuplalasku = !empty($_POST['tuplalasku']) && $työtyyppi == 'urakka' && $lasku_valmis;
+    $tuplalasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $lasku_valmis;
     
     $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedotArviosta']['yhteensä'] : NULL;
     $tyokohde_id = $_SESSION['laskutiedotArviosta']['kohde'];
