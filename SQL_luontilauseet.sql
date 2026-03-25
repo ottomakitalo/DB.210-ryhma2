@@ -41,8 +41,6 @@ INSERT INTO tyosuoritus VALUES (3, 'tunti', null, 3);
 INSERT INTO tyosuoritus VALUES (4, 'urakka', 50, 5);
 INSERT INTO tyosuoritus VALUES (5, 'tunti', null, 4);
 
-
-
 CREATE TABLE lasku ( 
   id INT PRIMARY KEY, 
   valmis BOOLEAN NOT NULL, 
@@ -51,18 +49,18 @@ CREATE TABLE lasku (
   era_pvm DATE, 
   maksettu_pvm DATE, 
   maksettu_status BOOLEAN NOT NULL, 
+  yhteensa DECIMAL(10,2),
   asiakas_id INT NOT NULL, 
   tyosuoritus_id INT NOT NULL, 
   FOREIGN KEY (asiakas_id) REFERENCES asiakas(id), 
   FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id) 
 );
 
-INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, 1, 1);
-INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 2, 2);
-INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 3, 3);
-INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 2, 5);
-INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 3, 4);
-
+INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, null, 1, 1);
+INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', null, true, 2, 2);
+INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, null, 3, 3);
+INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, null, 2, 5);
+INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, null, 3, 4);
 
 CREATE TABLE tyotehtava ( 
   id INT PRIMARY KEY, 
