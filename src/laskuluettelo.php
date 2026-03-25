@@ -37,8 +37,8 @@ require_once('data/laskut_data.php');
             <td><?= $lasku['asiakas'] ?></td>
             <td><?= $lasku['kohde'] ?></td>
             <td><?= $lasku['tyyppi'] ?></td>
-            <td><?= $lasku['pvm'] ?></td>
-            <td><?= $lasku['erapvm'] ?></td>
+            <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
+            <td><?= $lasku['erapvm'] ?: '' ?></td>
             <td><?= $lasku['yhteensä'] ?></td>
         </tr>
         <?php endforeach; ?>    
