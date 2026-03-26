@@ -72,12 +72,6 @@ require 'data/asiakkaat_data.php';
             <?php foreach($asiakas['tyokohteet'] as $t): ?>  
                 <span>
                     📍 <?= $t['osoite'] ?>
-                    <?php if (!empty($t['tyotyyppi'])): ?>
-                        – <?= $t['tyotyyppi'] ?>
-                        <?php if (!empty($t['urakkahinta'])): ?>
-                            (<?= $t['urakkahinta'] ?> €)
-                        <?php endif; ?>
-                    <?php endif; ?>
                 </span>
             <?php endforeach; ?>
         </div>

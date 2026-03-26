@@ -6,41 +6,67 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
 
 require 'db.php';
 
-//Hae asiakkaat
+//Fetch customers
 $asiakkaat = [];
-$q = pg_query($yhteys, "SELECT id, nimi, osoite FROM asiakas ORDER BY nimi;");
+$q = pg_query($yhteys, 
+    "SELECT id, nimi, osoite 
+    FROM asiakas 
+    ORDER BY nimi;"
+    );
 
-while ($row = pg_fetch_array($q)) {
-    $id = $row["id"];
 
-    //Kyseisen asiakkaan työkohteet
+//Go through each asiakas one by one
+while ($row = pg_fetch_assoc($q)) {
 
-    $kohde_haku = pg_query_params($yhteys, 
-    "SELECT 
-        t.osoite AS osoite,
-        s.tyotyyppi AS tyotyyppi,
-        s.urakkahinta AS urakkahinta
-    FROM tyokohde t
-    LEFT JOIN tyosuoritus s ON s.tyokohde_id = t.id
-    WHERE t.asiakas_id = $1
-    ORDER BY t.osoite;",
-    [$id]);
+    $asiakasId = $row['id'];
+
+    //Customers work sites
+    $kohde_haku = pg_query_params(
+        $yhteys,
+        "SELECT id, osoite
+         FROM tyokohde
+         WHERE asiakas_id = $1
+         ORDER BY osoite;",
+        [$asiakasId]
+    );
 
     $tyokohteet = [];
-    while ($kohde = pg_fetch_array($kohde_haku)) {
+
+    while ($kohde = pg_fetch_assoc($kohde_haku)) {
+
+        $tyokohdeId = $kohde['id'];
+
+        // Curent work site's tasks
+        $suoritus_haku = pg_query_params(
+            $yhteys,
+            "SELECT tyotyyppi, urakkahinta
+             FROM tyosuoritus
+             WHERE tyokohde_id = $1;",
+            [$tyokohdeId]
+        );
+
+        $suoritukset = [];
+        while ($s = pg_fetch_assoc($suoritus_haku)) {
+            $suoritukset[] = [
+                'tyotyyppi'   => $s['tyotyyppi'],
+                'urakkahinta' => $s['urakkahinta'],
+            ];
+        }
+
+        // Save work site into a list
         $tyokohteet[] = [
-            'osoite' => $kohde['osoite'],
-            'tyotyyppi' => $kohde['tyotyyppi'],
-            'urakkahinta' => $kohde['urakkahinta']
+            'id'          => $tyokohdeId,
+            'osoite'      => $kohde['osoite'],
+            'suoritukset' => $suoritukset
         ];
     }
 
-
-    //Asiakkaan tallennus
+    // Save asiakas and their work sites
     $asiakkaat[] = [
-        'id' => $row['id'],
-        'nimi' => $row['nimi'],
-        'osoite'=> $row['osoite'],
-        'tyokohteet'=> $tyokohteet
+        'id'         => $asiakasId,
+        'nimi'       => $row['nimi'],
+        'osoite'     => $row['osoite'],
+        'tyokohteet' => $tyokohteet
     ];
+
 }
