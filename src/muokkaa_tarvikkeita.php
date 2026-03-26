@@ -20,12 +20,15 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
 <?php require 'lasku.php'; ?>
 <h2>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tarvikkeita">
+    <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
     <h4>Tarvikkeet</h4>
     <table border="1" cellpadding="8" class="tarvikkeet">
         <tr>
             <th>Tarvike</th>
             <th>Määrä</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <th>Alennusprosentti</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($kaikki_tarvikkeet as $tid => $tarvike): ?>
@@ -43,6 +46,7 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
                     <span><?= htmlspecialchars($tarvike['yksikkö']) ?></span>
                 </div>
             </td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <td>
                 <div>
                     <input
@@ -56,6 +60,7 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
                     <span>%</span>
                 </div>
             </td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>

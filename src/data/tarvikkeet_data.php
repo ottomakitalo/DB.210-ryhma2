@@ -28,6 +28,7 @@ while ($row = pg_fetch_assoc($q)) {
 if (isset($_POST['muokkaa_tarvikkeita'])) {
     $maarat = $_POST['maara'] ?? [];
     $alennukset = $_POST['alennus'] ?? [];
+    $tyyppi = $_POST['tyyppi'] ?? [];
 
     // Poista vanhat tarvikkeet laskulta
     $del = pg_query_params($yhteys, "DELETE FROM tarvikkeet WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)", [$id]);
@@ -51,7 +52,12 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
             die("Tuotteen lisäys epäonnistui: " . pg_last_error($yhteys));
         }
     }
-    paivitaSumma($yhteys, $id);
+
+    // Urakkatyössä summa ei muutu, muuten päivitetään summa uusilla tiedoilla
+    if ($tyyppi !== 'Urakka') {
+        paivitaSumma($yhteys, $id);
+    }
+
 
     header("Location: lasku.php?id=" . $id);
     exit;

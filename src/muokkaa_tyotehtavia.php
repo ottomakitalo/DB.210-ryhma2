@@ -5,6 +5,7 @@ require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 require_once('data/tyotehtavat_data.php');
 
+// Vain keskeneräisiä laskuja voi muokata
 if ($lasku === null || $lasku['erapvm'] !== '') {
     exit();
 }
@@ -20,13 +21,16 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
 <?php require 'lasku.php'; ?>
 <h2>Muokkaa tehtäviä laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tehtavia">
+    <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
     <h4>Tehtävät</h4>
     <table border="1" cellpadding="8" class="tehtavat">
         <tr>
             <th>Tehtävä</th>
             <th>Tunnit</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <th>Tuntihinta (sis. alv)</th>
             <th>Alennusprosentti</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($kaikki_tehtavat as $tid => $tehtava): ?>
@@ -44,6 +48,7 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
                     >
                 </div>
             </td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <td>
                 <?= number_format($tehtava['tuntihinta'] * 1.24, 2) ?> €
             </td>
@@ -60,6 +65,7 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
                     <span>%</span>
                 </div>
             </td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>

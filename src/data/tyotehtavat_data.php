@@ -23,8 +23,9 @@ while ($row = pg_fetch_assoc($q)) {
 
 // Functio tehty Copilotin avustuksella
 if (isset($_POST['muokkaa_tehtavia'])) {
-    $post_tunnit = $_POST['tunnit'] ?? [];
-    $post_alennukset = $_POST['alennus'] ?? [];
+    $tunnit = $_POST['tunnit'] ?? [];
+    $alennukset = $_POST['alennus'] ?? [];
+    $tyyppi = $_POST['tyyppi'] ?? [];
 
     // Poista vanhat tehtävät laskulta
     $del = pg_query_params($yhteys, "DELETE FROM tehtavat WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)", [$id]);
@@ -34,9 +35,9 @@ if (isset($_POST['muokkaa_tehtavia'])) {
 
     // Lisää uudet tehtävät (vain kun tunnit > 0)
     foreach ($kaikki_tehtavat as $tehtava_id => $tehtava) {
-        $tunnit_arvo = isset($post_tunnit[$tehtava_id]) ? (int)$post_tunnit[$tehtava_id] : 0;
+        $tunnit_arvo = isset($tunnit[$tehtava_id]) ? (int)$tunnit[$tehtava_id] : 0;
         if ($tunnit_arvo <= 0) continue;
-        $alennus = isset($post_alennukset[$tehtava_id]) ? (float)$post_alennukset[$tehtava_id] : 0.0;
+        $alennus = isset($alennukset[$tehtava_id]) ? (float)$alennukset[$tehtava_id] : 0.0;
 
         $insert = pg_query_params(
             $yhteys,
@@ -48,7 +49,11 @@ if (isset($_POST['muokkaa_tehtavia'])) {
             die("Tehtävän lisäys epäonnistui: " . pg_last_error($yhteys));
         }
     }
-    paivitaSumma($yhteys, $id);
+    
+    // Urakkatyössä summa ei muutu, muuten päivitetään summa uusilla tiedoilla
+    if ($tyyppi !== 'Urakka') {
+        paivitaSumma($yhteys, $id);
+    }
 
     header("Location: lasku.php?id=" . $id);
     exit;

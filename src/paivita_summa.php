@@ -7,6 +7,31 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
 require 'db.php';
 
 function paivitaSumma($yhteys, $id) {
+    $urakkahinta_query = pg_query_params($yhteys,
+        "SELECT urakkahinta FROM tyosuoritus WHERE id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)",
+        [$id]
+    );
+
+    if ($urakkahinta_query === false) {
+        die('Urakkahinnan haku epäonnistui: ' . pg_last_error($yhteys));
+    }
+
+    $urakkahinta_row = pg_fetch_assoc($urakkahinta_query);
+    $urakkahinta = (float)($urakkahinta_row['urakkahinta'] ?? 0);
+
+    // Urakkahinta pysyy samana
+    if ($urakkahinta > 0) {
+        $update = pg_query_params($yhteys,
+            "UPDATE lasku SET yhteensa = $1 WHERE id = $2",
+            [$urakkahinta, $id]
+        );
+
+        if ($update === false) {
+            die('Laskun päivitys epäonnistui: ' . pg_last_error($yhteys));
+        }
+        return;
+    }
+
     // Laske tehtävien summa (24% alv)
     $tehtavat_query = pg_query_params($yhteys,
         "SELECT SUM(t.tunnit * tt.tuntihinta * (1 - t.alennus/100) * 1.24) AS summa
@@ -40,20 +65,8 @@ function paivitaSumma($yhteys, $id) {
     $tarvikkeet_row = pg_fetch_assoc($tarvikkeet_query);
     $tarvikkeet_summa = (float)($tarvikkeet_row['summa'] ?? 0);
 
-    $urakkahinta_query = pg_query_params($yhteys,
-        "SELECT urakkahinta FROM tyosuoritus WHERE id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)",
-        [$id]
-    );
-
-    if ($urakkahinta_query === false) {
-        die('Urakkahinnan haku epäonnistui: ' . pg_last_error($yhteys));
-    }
-
-    $urakkahinta_row = pg_fetch_assoc($urakkahinta_query);
-    $urakkahinta = (float)($urakkahinta_row['urakkahinta'] ?? 0);
-
     // Laske kokonaisumma ja päivitä lasku
-    $kokonais_summa = $tehtavat_summa + $tarvikkeet_summa + $urakkahinta;
+    $kokonais_summa = $tehtavat_summa + $tarvikkeet_summa;
 
     $update = pg_query_params($yhteys,
         "UPDATE lasku SET yhteensa = $1 WHERE id = $2",

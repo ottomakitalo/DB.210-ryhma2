@@ -54,9 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
 <p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
-<?php if($lasku['urakkahinta'] > 0): ?>
-<p><strong>Urakkahinta:</strong> <?= $lasku['urakkahinta'] ?></p>
-<?php endif; ?>
 
 <?php if($tarvikkeet !== []): ?>
     <h3>Tarvikkeet</h3>
@@ -65,7 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
             <th>Tarvike</th>
             <th>Määrä</th>
             <th>Yksikkö</th>
-            <th>Alennus</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <th>Alennus</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($tarvikkeet as $tarvike): ?>
@@ -73,7 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
             <td><?= $tarvike['tarvike'] ?></td>
             <td><?= $tarvike['maara'] ?></td>
             <td><?= $tarvike['yksikko'] ?></td>
-            <td><?= $tarvike['alennus'] ?>%</td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <td><?= $tarvike['alennus'] ?>%</td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -87,14 +88,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
         <tr>
             <th>Työtehtävä</th>
             <th>Tunnit</th>
-            <th>Alennus</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <th>Alennus</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($tyotehtavat as $tyotehtava): ?>
         <tr>
             <td><?= $tyotehtava['tehtava'] ?></td>
             <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] ?>%</td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <td><?= $tyotehtava['alennus'] ?>%</td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>
