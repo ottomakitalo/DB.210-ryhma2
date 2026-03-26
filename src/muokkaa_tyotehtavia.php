@@ -4,6 +4,10 @@ require_once('navigation.php');
 require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 require_once('data/tyotehtavat_data.php');
+
+if ($lasku === null || $lasku['erapvm'] !== '') {
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +25,7 @@ require_once('data/tyotehtavat_data.php');
         <tr>
             <th>Tehtävä</th>
             <th>Tunnit</th>
-            <th>Tuntihinta</th>
+            <th>Tuntihinta (sis. alv)</th>
             <th>Alennusprosentti</th>
         </tr>
 
@@ -36,11 +40,12 @@ require_once('data/tyotehtavat_data.php');
                         name="tunnit[<?= $tid ?>]"
                         placeholder="0"
                         min="0"
-                        value="<?= isset($_POST['tunnit'][$tid]) ? (int)$_POST['tunnit'][$tid] : 0 ?>">
+                        value="<?= isset($_POST['tunnit'][$tid]) ? (int)$_POST['tunnit'][$tid] : 0 ?>"
+                    >
                 </div>
             </td>
             <td>
-                <?= number_format($tehtava['tuntihinta'], 2) ?> €
+                <?= number_format($tehtava['tuntihinta'] * 1.24, 2) ?> €
             </td>
             <td>
                 <div>

@@ -5,6 +5,7 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
 }
 
 require 'db.php';
+require_once('paivita_summa.php');
 
 // Hae kaikki tarvikkeet
 $kaikki_tarvikkeet = [];
@@ -50,6 +51,7 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
             die("Tuotteen lisäys epäonnistui: " . pg_last_error($yhteys));
         }
     }
+    paivitaSumma($yhteys, $id);
 
     header("Location: lasku.php?id=" . $id);
     exit;

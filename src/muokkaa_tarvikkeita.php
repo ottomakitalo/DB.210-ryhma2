@@ -4,6 +4,10 @@ require_once('navigation.php');
 require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 require_once('data/tarvikkeet_data.php');
+
+if ($lasku === null || $lasku['erapvm'] !== '') {
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
