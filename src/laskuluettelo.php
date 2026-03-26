@@ -28,6 +28,7 @@ require_once('data/laskut_data.php');
             <th>Tyyppi</th>
             <th>Päiväys</th>
             <th>Eräpäivä</th>
+            <th>Status</th>
             <th>Summa</th>
         </tr>
 
@@ -39,6 +40,7 @@ require_once('data/laskut_data.php');
             <td><?= $lasku['tyyppi'] ?></td>
             <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
             <td><?= $lasku['erapvm'] ?: '' ?></td>
+            <td><?= $lasku['status'] ?></td>
             <td><?= $lasku['yhteensä'] ?></td>
         </tr>
         <?php endforeach; ?>    

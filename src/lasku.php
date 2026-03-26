@@ -33,7 +33,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
         exit();
     }
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
+    if ($id === null) {
+        echo "Laskua ei löytynyt.";
+        exit;
+    }
 
+    $maksettu_pvm = date('Y-m-d');
+
+    $res = pg_query_params(
+        $yhteys,
+        'UPDATE lasku SET maksettu_pvm = $1, maksettu_status = $2 WHERE id = $3',
+        [$maksettu_pvm, 1, $id]
+    );
+
+    if ($res) {
+        header("Location: lasku.php?id=" . urlencode($id));
+        exit();
+    } else {
+        echo "Päivitys epäonnistui.";
+        exit();
+    }
+}
 ?>
 
 
@@ -54,6 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
 <p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
+<p><strong>Status:</strong> <?= $lasku['status'] ?></p>
+<?php if($lasku['maksettu_pvm'] !== ''): ?>
+    <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
+<?php endif; ?>
 
 <?php if($tyotehtavat !== []): ?>
     <h3>Työtehtävät</h3>
@@ -99,6 +124,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
     </table>
 <?php else: ?>
     <p>Ei tarvikkeita.</p>
+<?php endif; ?>
+
+<?php if($lasku['maksettu_pvm'] === ''): ?>
+    <form method="post" action="lasku.php?id=<?= $id ?>">
+        <div class="submit-button-container">
+            <button type="submit" name="maksa_lasku">Merkitse maksetuksi</button>
+            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+            <label for="valmis">Lasku maksettu</label>
+        </div>
+    </form>
 <?php endif; ?>
 
 <?php if($lasku['erapvm'] === ''): ?>

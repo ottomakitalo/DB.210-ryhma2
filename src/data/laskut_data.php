@@ -9,7 +9,8 @@ require 'db.php';
 // Hae laskut
 $laskut = [];
 $q = pg_query($yhteys,
-"SELECT l.id, l.luotu_pvm, l.annettu_pvm, l.era_pvm, l.maksettu_status, yhteensa,
+"SELECT l.id, l.luotu_pvm, l.annettu_pvm, l.era_pvm, 
+l.maksettu_pvm,l.maksettu_status, yhteensa,
         a.nimi AS asiakas, k.osoite AS kohde,
         ts.tyotyyppi, urakkahinta
  FROM lasku l
@@ -25,7 +26,8 @@ while ($row = pg_fetch_assoc($q)) {
         'asiakas' => $row['asiakas'],
         'kohde'   => $row['kohde'],
         'tyyppi'  => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
-        'status'  => $row['maksettu_status'] ? 'Maksettu' : 'Avoinna',
+        'maksettu_pvm' => !empty($row['maksettu_pvm']) ? date('d.m.Y', strtotime($row['maksettu_pvm'])) : '',
+        'status'  => ($row['maksettu_status'] == 't') ? 'Maksettu' : 'Avoinna',
         'luotu'   => date('d.m.Y', strtotime($row['luotu_pvm'])),
         'pvm'     => !empty($row['annettu_pvm']) ? date('d.m.Y', strtotime($row['annettu_pvm'])) : '',
         'erapvm'  => !empty($row['era_pvm']) ? date('d.m.Y', strtotime($row['era_pvm'])) : '',
