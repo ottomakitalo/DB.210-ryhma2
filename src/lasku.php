@@ -88,18 +88,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
         <tr>
             <th>Työtehtävä</th>
             <th>Tunnit</th>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <th>Alennus</th>
-            <?php endif; ?>
+            <th>Alennus</th>
         </tr>
 
         <?php foreach($tyotehtavat as $tyotehtava): ?>
         <tr>
             <td><?= $tyotehtava['tehtava'] ?></td>
             <td><?= $tyotehtava['tunnit'] ?></td>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <td><?= $tyotehtava['alennus'] ?>%</td>
-            <?php endif; ?>
+            <td><?= $tyotehtava['alennus'] ?>%</td>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -115,9 +111,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
             </div>
         </div>
     </form>
-
+<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
     <p><a href="muokkaa_tarvikkeita.php?id=<?= $id ?>">Muokkaa tarvikkeita</a></p>
     <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
+<?php endif; ?>
 <?php endif; ?>
 </body>
 </html>
