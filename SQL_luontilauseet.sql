@@ -30,16 +30,17 @@ INSERT INTO tyokohde VALUES (7, 'Koivukatu', 2);
 CREATE TABLE tyosuoritus ( 
   id INT PRIMARY KEY, 
   tyotyyppi VARCHAR(128) NOT NULL, 
-  urakkahinta DECIMAL(10,2), 
+  urakkahinta DECIMAL(10,2),
+  urakka_alennus DECIMAL(5,2),
   tyokohde_id INT NOT NULL, 
   FOREIGN KEY (tyokohde_id) REFERENCES tyokohde(id) 
 ); 
 
-INSERT INTO tyosuoritus VALUES (1, 'urakka', 100, 1);
-INSERT INTO tyosuoritus VALUES (2, 'tunti', null, 2);
-INSERT INTO tyosuoritus VALUES (3, 'tunti', null, 3);
-INSERT INTO tyosuoritus VALUES (4, 'urakka', 50, 5);
-INSERT INTO tyosuoritus VALUES (5, 'tunti', null, 4);
+INSERT INTO tyosuoritus VALUES (1, 'urakka', 0, 100, 1);
+INSERT INTO tyosuoritus VALUES (2, 'tunti', null, null, 2);
+INSERT INTO tyosuoritus VALUES (3, 'tunti', null, null, 3);
+INSERT INTO tyosuoritus VALUES (4, 'urakka', 0, 50, 5);
+INSERT INTO tyosuoritus VALUES (5, 'tunti', null, null, 4);
 
 CREATE TABLE lasku ( 
   id INT PRIMARY KEY, 
@@ -56,7 +57,7 @@ CREATE TABLE lasku (
   FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id) 
 );
 
-INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, false, 142.65, 1, 1);
+INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, 142.65, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
 INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2517.81, 3, 3);
 INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 5);
