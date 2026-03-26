@@ -9,7 +9,7 @@ require 'db.php';
 function paivitaSumma($yhteys, $id) {
     // Laske tehtävien summa (24% alv)
     $tehtavat_query = pg_query_params($yhteys,
-        "SELECT SUM((t.tunnit * tt.tuntihinta - t.alennus) * 1.24) AS summa
+        "SELECT SUM(t.tunnit * tt.tuntihinta * (1 - t.alennus/100) * 1.24) AS summa
             FROM tehtavat t
             JOIN tyotehtava tt ON tt.id = t.tyotehtava_id
             WHERE t.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)",
@@ -25,7 +25,7 @@ function paivitaSumma($yhteys, $id) {
 
     // Laske tarvikkeiden summa (25% voittoprosentti + alv)
     $tarvikkeet_query = pg_query_params($yhteys,
-        "SELECT SUM(((t.maara * (tt.sis_hinta * 1.25)) - (t.alennus)) * ty.alv_prosentti) AS summa
+        "SELECT SUM(t.maara * (tt.sis_hinta * 1.25) * (1 - (t.alennus/100)) * ty.alv_prosentti) AS summa
             FROM tarvikkeet t
             JOIN tarvike tt ON tt.id = t.tarvike_id
             JOIN tyyppi ty ON ty.nimi = tt.tyyppi_nimi
