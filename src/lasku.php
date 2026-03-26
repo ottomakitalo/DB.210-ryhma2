@@ -54,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
 <p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
+<?php if($lasku['urakkahinta'] > 0): ?>
+<p><strong>Urakkahinta:</strong> <?= $lasku['urakkahinta'] ?></p>
+<?php endif; ?>
 
 <?php if($tarvikkeet !== []): ?>
     <h3>Tarvikkeet</h3>

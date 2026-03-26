@@ -40,8 +40,20 @@ function paivitaSumma($yhteys, $id) {
     $tarvikkeet_row = pg_fetch_assoc($tarvikkeet_query);
     $tarvikkeet_summa = (float)($tarvikkeet_row['summa'] ?? 0);
 
+    $urakkahinta_query = pg_query_params($yhteys,
+        "SELECT urakkahinta FROM tyosuoritus WHERE id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)",
+        [$id]
+    );
+
+    if ($urakkahinta_query === false) {
+        die('Urakkahinnan haku epäonnistui: ' . pg_last_error($yhteys));
+    }
+
+    $urakkahinta_row = pg_fetch_assoc($urakkahinta_query);
+    $urakkahinta = (float)($urakkahinta_row['urakkahinta'] ?? 0);
+
     // Laske kokonaisumma ja päivitä lasku
-    $kokonais_summa = $tehtavat_summa + $tarvikkeet_summa;
+    $kokonais_summa = $tehtavat_summa + $tarvikkeet_summa + $urakkahinta;
 
     $update = pg_query_params($yhteys,
         "UPDATE lasku SET yhteensa = $1 WHERE id = $2",

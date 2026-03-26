@@ -29,6 +29,7 @@ while ($row = pg_fetch_assoc($q)) {
         'luotu'   => date('d.m.Y', strtotime($row['luotu_pvm'])),
         'pvm'     => !empty($row['annettu_pvm']) ? date('d.m.Y', strtotime($row['annettu_pvm'])) : '',
         'erapvm'  => !empty($row['era_pvm']) ? date('d.m.Y', strtotime($row['era_pvm'])) : '',
+        'urakkahinta' => $row['urakkahinta'],
         'yhteensä' => $row['yhteensa']
     ];
 }
