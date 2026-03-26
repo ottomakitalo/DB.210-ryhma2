@@ -7,7 +7,6 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
@@ -43,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 <head>
     <meta charset="UTF-8">
     <title>Lasku <?= $id ?></title>
+    <link rel="stylesheet" href="styles/global.css">
 </head>
 <body>
 
@@ -54,6 +54,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
 <p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
+
+<?php if($tyotehtavat !== []): ?>
+    <h3>Työtehtävät</h3>
+    <table border="1" cellpadding="8" class="tarvikkeet">
+        <tr>
+            <th>Työtehtävä</th>
+            <th>Tunnit</th>
+            <th>Alennus</th>
+        </tr>
+
+        <?php foreach($tyotehtavat as $tyotehtava): ?>
+        <tr>
+            <td><?= $tyotehtava['tehtava'] ?></td>
+            <td><?= $tyotehtava['tunnit'] ?></td>
+            <td><?= $tyotehtava['alennus'] ?>%</td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>
 
 <?php if($tarvikkeet !== []): ?>
     <h3>Tarvikkeet</h3>
@@ -82,33 +101,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
 
-<?php if($tyotehtavat !== []): ?>
-    <h3>Työtehtävät</h3>
-    <table border="1" cellpadding="8" class="tarvikkeet">
-        <tr>
-            <th>Työtehtävä</th>
-            <th>Tunnit</th>
-            <th>Alennus</th>
-        </tr>
-
-        <?php foreach($tyotehtavat as $tyotehtava): ?>
-        <tr>
-            <td><?= $tyotehtava['tehtava'] ?></td>
-            <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] ?>%</td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-<?php endif; ?>
-
 <?php if($lasku['erapvm'] === ''): ?>
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="laskuta">Laskuta lasku</button>
-            <div>
-                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-                <label for="valmis">Valmis laskutettavaksi</label>
-            </div>
+            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+            <label for="valmis">Valmis laskutettavaksi</label>
         </div>
     </form>
 <?php if($lasku['tyyppi'] !== 'Urakka'): ?>

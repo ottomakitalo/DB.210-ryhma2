@@ -1,6 +1,6 @@
 <?php
 require 'db.php';
-require_once('laskuluettelo.php');
+require_once('laskut_data.php');
 
 // id saadaan parametrina URL:stä, esim. lasku.php?id=1
 $id = $_GET['id'] ?? null;
