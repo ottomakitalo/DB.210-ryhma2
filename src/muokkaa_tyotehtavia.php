@@ -4,6 +4,11 @@ require_once('navigation.php');
 require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
 require_once('data/tyotehtavat_data.php');
+
+// Vain keskeneräisiä laskuja voi muokata
+if ($lasku === null || $lasku['erapvm'] !== '') {
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -16,13 +21,16 @@ require_once('data/tyotehtavat_data.php');
 <?php require 'lasku.php'; ?>
 <h2>Muokkaa tehtäviä laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tehtavia">
+    <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
     <h4>Tehtävät</h4>
     <table border="1" cellpadding="8" class="tehtavat">
         <tr>
             <th>Tehtävä</th>
             <th>Tunnit</th>
-            <th>Tuntihinta</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+            <th>Tuntihinta (sis. alv)</th>
             <th>Alennusprosentti</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($kaikki_tehtavat as $tid => $tehtava): ?>
@@ -36,11 +44,13 @@ require_once('data/tyotehtavat_data.php');
                         name="tunnit[<?= $tid ?>]"
                         placeholder="0"
                         min="0"
-                        value="<?= isset($_POST['tunnit'][$tid]) ? (int)$_POST['tunnit'][$tid] : 0 ?>">
+                        value="<?= isset($_POST['tunnit'][$tid]) ? (int)$_POST['tunnit'][$tid] : 0 ?>"
+                    >
                 </div>
             </td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <td>
-                <?= number_format($tehtava['tuntihinta'], 2) ?> €
+                <?= number_format($tehtava['tuntihinta'] * 1.24, 2) ?> €
             </td>
             <td>
                 <div>
@@ -55,6 +65,7 @@ require_once('data/tyotehtavat_data.php');
                     <span>%</span>
                 </div>
             </td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>

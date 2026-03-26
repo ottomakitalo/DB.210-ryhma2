@@ -134,8 +134,9 @@ if(isset($_POST['luo_lasku'])) {
     $annettu_pvm = $lasku_valmis ? date('Y-m-d') : NULL;
     $era_pvm = $lasku_valmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm))) : NULL;
     $asiakas_id = $_SESSION['laskutiedotArviosta']['asiakas'];
+    $yhteensa = $_SESSION['laskutiedotArviosta']['yhteensä'];
 
-    createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId);
+    createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $yhteensa, $asiakas_id, $tyosuoritusId);
 
     if($tuplalasku) {
         $tyosuoritusId = createNewTyösuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohde_id);
@@ -145,7 +146,7 @@ if(isset($_POST['luo_lasku'])) {
         $annettu_pvm = date('Y-m-d', strtotime('first day of january next year'));
         $era_pvm = date('Y-m-d', strtotime('+2 weeks', strtotime($annettu_pvm)));
 
-        createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId);
+        createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $yhteensa, $asiakas_id, $tyosuoritusId);
     }
     
     header("Location: ".$_SERVER['PHP_SELF']);
@@ -216,7 +217,7 @@ function createNewTarvikkeet($yhteys, $työsuoritus_id, $tarvike_id, $määrä, 
     }
 }
 
-function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas_id, $tyosuoritusId) {
+function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $yhteensa, $asiakas_id, $tyosuoritusId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM lasku"
     );
@@ -228,9 +229,9 @@ function createNewLasku($yhteys, $annettu_pvm, $era_pvm, $lasku_valmis, $asiakas
     
     $updateLasku = pg_query_params(
         $yhteys,
-        "INSERT INTO lasku (id, valmis, luotu_pvm, annettu_pvm, era_pvm, maksettu_status, asiakas_id, tyosuoritus_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-        [$laskuId, $lasku_valmis, $luotu_pvm, $annettu_pvm, $era_pvm, $maksettu_status, $asiakas_id, $tyosuoritusId]
+        "INSERT INTO lasku (id, valmis, luotu_pvm, annettu_pvm, era_pvm, maksettu_status, yhteensa, asiakas_id, tyosuoritus_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        [$laskuId, $lasku_valmis, $luotu_pvm, $annettu_pvm, $era_pvm, $maksettu_status, $yhteensa, $asiakas_id, $tyosuoritusId]
     );
 
         

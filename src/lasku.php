@@ -9,6 +9,32 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
 
 require_once('laskuluettelo.php');
 require_once('data/lasku_data.php');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
+    if ($id === null) {
+        echo "Laskua ei löytynyt.";
+        exit;
+    }
+
+    $annettu = date('Y-m-d');
+    // Eräpäivä 14 päivää annettu-pvm:stä
+    $erapvm = date('Y-m-d', strtotime('+14 days'));
+
+    $res = pg_query_params(
+        $yhteys,
+        'UPDATE lasku SET annettu_pvm = $1, era_pvm = $2 WHERE id = $3',
+        [$annettu, $erapvm, $id]
+    );
+
+    if ($res) {
+        header("Location: lasku.php?id=" . urlencode($id));
+        exit();
+    } else {
+        echo "Päivitys epäonnistui.";
+        exit();
+    }
+}
+
 ?>
 
 
@@ -25,8 +51,8 @@ require_once('data/lasku_data.php');
 <p><strong>Asiakas:</strong> <?= $lasku['asiakas'] ?></p>
 <p><strong>Työkohde:</strong> <?= $lasku['kohde'] ?></p>
 <p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
-<p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?></p>
-<p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?></p>
+<p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
+<p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
 <p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
 
 <?php if($tarvikkeet !== []): ?>
@@ -36,7 +62,9 @@ require_once('data/lasku_data.php');
             <th>Tarvike</th>
             <th>Määrä</th>
             <th>Yksikkö</th>
-            <th>Alennus</th>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <th>Alennus</th>
+            <?php endif; ?>
         </tr>
 
         <?php foreach($tarvikkeet as $tarvike): ?>
@@ -44,7 +72,9 @@ require_once('data/lasku_data.php');
             <td><?= $tarvike['tarvike'] ?></td>
             <td><?= $tarvike['maara'] ?></td>
             <td><?= $tarvike['yksikko'] ?></td>
-            <td><?= $tarvike['alennus'] ?>%</td>
+            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                <td><?= $tarvike['alennus'] ?>%</td>
+            <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -71,8 +101,20 @@ require_once('data/lasku_data.php');
     </table>
 <?php endif; ?>
 
-<p><a href="muokkaa_tarvikkeita.php?id=<?= $id ?>">Muokkaa tarvikkeita</a></p>
-<p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
-
+<?php if($lasku['erapvm'] === ''): ?>
+    <form method="post" action="lasku.php?id=<?= $id ?>">
+        <div class="submit-button-container">
+            <button type="submit" name="laskuta">Laskuta lasku</button>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Valmis laskutettavaksi</label>
+            </div>
+        </div>
+    </form>
+<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
+    <p><a href="muokkaa_tarvikkeita.php?id=<?= $id ?>">Muokkaa tarvikkeita</a></p>
+    <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
+<?php endif; ?>
+<?php endif; ?>
 </body>
 </html>
