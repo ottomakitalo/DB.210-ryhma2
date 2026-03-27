@@ -14,12 +14,12 @@ if(isset($_POST['luo_hinta-arvio'])) {
     $tuntityotNetto = 0;
     $tuntityotAlv = 0;
     $valitutTyot = [];
-    foreach($tuntityohinnat as $id => $tuntityo) {
-        $kesto = intval($_POST[$tuntityo['nimi']]);
-        $alennusprosentti = intval($_POST[$tuntityo['nimi'] . '-alennus']);
+    foreach($kaikki_tehtavat as $id => $tuntityo) {
+        $kesto = intval($_POST[$tuntityo['tehtava']]);
+        $alennusprosentti = intval($_POST[$tuntityo['tehtava'] . '-alennus']);
 
         if($kesto > 0) {
-            $tuntityoNetto = ($kesto * $tuntityo['hinta']) * (1 - ($alennusprosentti / 100));
+            $tuntityoNetto = ($kesto * $tuntityo['tuntihinta']) * (1 - ($alennusprosentti / 100));
             $tuntityoAlv = $tuntityoNetto * 0.24;
             
             $tuntityoYhteensa = $tuntityoNetto + $tuntityoAlv;
@@ -29,7 +29,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
 
             $valitutTyot[] = [
                 'id'       => $id,
-                'tyyppi'   => $tuntityo['nimi'],
+                'tyyppi'   => $tuntityo['tehtava'],
                 'kesto'    => $kesto,
                 'alennus'  => $alennusprosentti,
                 'yhteensä' => $tuntityoYhteensa,
@@ -40,7 +40,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
     $tarvikkeetNetto = 0;
     $tarvikkeetAlv = 0;
     $valitutTarvikkeet = [];
-    foreach($tarvikkeet as $id => $tarvike) {
+    foreach($kaikki_tarvikkeet as $id => $tarvike) {
         $kappaleMaara = intval($_POST[$tarvike['tarvike']]);
         $alennusprosentti = intval($_POST[$tarvike['tarvike'] . '-alennus']);
 
@@ -110,7 +110,7 @@ if(isset($_POST['luo_lasku'])) {
 
     $laskuValmis = (int)!empty($_POST['valmis']);
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
+    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi === 'urakka' && $laskuValmis;
     
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
@@ -124,7 +124,8 @@ if(isset($_POST['luo_lasku'])) {
         createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
     }
     
-    header("Location: ".$_SERVER['PHP_SELF']);
+    unset($_SESSION['laskutiedot']);
+    header("Location: laskut.php");
     exit();
 }
 
@@ -133,7 +134,7 @@ if(isset($_POST['luo_lasku'])) {
  */
 function createLaskuWithTyosuoritus($yhteys, $laskutiedot, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa) { 
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $urakkahinta = $tyotyyppi == 'urakka' ? $laskutiedot['nettosumma'] : NULL;
+    $urakkahinta = $tyotyyppi === 'urakka' ? $laskutiedot['nettosumma'] : NULL;
     $urakkaAlennus = $laskutiedot['urakka-alennus'];
     $tyokohdeId = $laskutiedot['kohde'];
     $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
@@ -252,5 +253,4 @@ function createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, 
 
     return $laskuId;
 }
-
 ?>
