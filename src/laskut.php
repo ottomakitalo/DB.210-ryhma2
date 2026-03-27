@@ -7,7 +7,7 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-unset($_SESSION['laskutiedot']);
+// unset($_SESSION['laskutiedot']);
 
 $asiakkaat = [];
 

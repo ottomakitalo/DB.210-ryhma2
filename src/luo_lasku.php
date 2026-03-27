@@ -106,36 +106,21 @@ if(isset($_POST['luo_hinta-arvio'])) {
 }
 
 if(isset($_POST['luo_lasku'])) {
-    $tyotyyppi = $_SESSION['laskutiedot']['työtyyppi'];
+    $laskutiedot = $_SESSION['laskutiedot'];
+
     $laskuValmis = (int)!empty($_POST['valmis']);
-    
-    $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedot']['nettosumma'] : NULL;
-    $urakkaAlennus = $_SESSION['laskutiedot']['urakka-alennus'];
-    $tyokohdeId = $_SESSION['laskutiedot']['kohde'];
-    
-    $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
-    
-    $tuntityot = $_SESSION['laskutiedot']['tuntityöt'];
-    $tarvikkeet = $_SESSION['laskutiedot']['tarvikkeet'];
-    fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
-    
+    $tyotyyppi = $laskutiedot['työtyyppi'];
+    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
     
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
-    $asiakasId = $_SESSION['laskutiedot']['asiakas'];
-    $yhteensa = $_SESSION['laskutiedot']['yhteensä'];
-    
-    createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
-    
-    $tuplalasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
-    if($tuplalasku) {
-        $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
+    $yhteensa = $puolitettuLasku ? (float)$laskutiedot['yhteensä'] / 2 : (float)$laskutiedot['yhteensä'];
+    $tyosuoritusId = createLaskuWithTyosuoritus($yhteys, $laskutiedot, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa);
 
-        fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
-
+    if($puolitettuLasku) {
         $annettuPvm = date('Y-m-d', strtotime('first day of january next year'));
         $eraPvm = date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm)));
-
+        $asiakasId = $laskutiedot['asiakas'];
         createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
     }
     
@@ -143,6 +128,29 @@ if(isset($_POST['luo_lasku'])) {
     exit();
 }
 
+/**
+ * Luo uusi lasku tietokantaan yhdistettynä uuteen työsuoritukseen
+ */
+function createLaskuWithTyosuoritus($yhteys, $laskutiedot, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa) { 
+    $tyotyyppi = $laskutiedot['työtyyppi'];
+    $urakkahinta = $tyotyyppi == 'urakka' ? $laskutiedot['nettosumma'] : NULL;
+    $urakkaAlennus = $laskutiedot['urakka-alennus'];
+    $tyokohdeId = $laskutiedot['kohde'];
+    $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
+    
+    $tuntityot = $laskutiedot['tuntityöt'];
+    $tarvikkeet = $laskutiedot['tarvikkeet'];
+    fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
+    
+    $asiakasId = $laskutiedot['asiakas'];
+    createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
+
+    return $tyosuoritusId;
+}
+
+/**
+ * Luo uusi työsuoritus tietokantaan
+ */
 function createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM tyosuoritus"
@@ -164,6 +172,9 @@ function createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus,
     return $tyosuoritusId;
 }
 
+/**
+ * Täytä työsuoritus valituilla tuntitöillä ja tarvikkeilla
+ */
 function fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet) {
     foreach($tuntityot as $id => $tuntityo) {
         $tyotehtavaId = $tuntityo['id'];
@@ -182,6 +193,9 @@ function fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet) {
     }    
 }
 
+/**
+ * Luo uusi valittu tehtävä (tuntityö) tietokantaan
+ */
 function createNewTehtävä($yhteys, $tyosuoritusId, $tyotehtavaId, $tunnit, $alennus) {    
     $updateTehtava = pg_query_params(
         $yhteys,
@@ -195,6 +209,9 @@ function createNewTehtävä($yhteys, $tyosuoritusId, $tyotehtavaId, $tunnit, $al
     }
 }
 
+/**
+ * Luo uusi valittu tarvike tietokantaan
+ */
 function createNewTarvikkeet($yhteys, $tyosuoritusId, $tarvikeId, $maara, $alennus) {    
     $updateTarvike = pg_query_params(
         $yhteys,
@@ -208,6 +225,9 @@ function createNewTarvikkeet($yhteys, $tyosuoritusId, $tarvikeId, $maara, $alenn
     }
 }
 
+/**
+ * Luo uusi lasku tietokantaan
+ */
 function createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM lasku"
