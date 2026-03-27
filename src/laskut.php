@@ -7,6 +7,7 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
+unset($_SESSION['laskutiedot']);
 
 $asiakkaat = [];
 
@@ -18,8 +19,8 @@ $q = pg_query($yhteys,
 
 while ($row = pg_fetch_assoc($q)) {
     $asiakkaat[$row['id']] = [
-        'asiakas' => $row['nimi'],
-        'osoite' => $row['osoite'],
+        'asiakas'    => $row['nimi'],
+        'osoite'     => $row['osoite'],
         'tyokohteet' => []
     ];
 }
@@ -80,11 +81,11 @@ $q = pg_query($yhteys,
 while ($row = pg_fetch_assoc($q)) {
     $yhteensa = $row['tyotyyppi'] === 'urakka' ? $row['urakkahinta'] : '---';
     $laskut[] = [
-        'asiakas' => $row['asiakas'],
-        'kohde'   => $row['kohde'],
-        'tyyppi'  => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
-        'pvm'     => date('d.m.Y', strtotime($row['annettu_pvm'])),
-        'erapvm'  => date('d.m.Y', strtotime($row['era_pvm'])),
+        'asiakas'  => $row['asiakas'],
+        'kohde'    => $row['kohde'],
+        'tyyppi'   => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
+        'pvm'      => date('d.m.Y', strtotime($row['annettu_pvm'])),
+        'erapvm'   => date('d.m.Y', strtotime($row['era_pvm'])),
         'yhteensä' => $yhteensa
     ];
 }
@@ -240,26 +241,26 @@ require_once('luo_lasku.php');
         </div>
     </form>
     
-    <?php if($nettosumma != ''): ?>
+    <?php if(!empty($_SESSION['laskutiedot'])): ?>
     <h3>Lasku</h3>
     <form method="post" class="luo-lasku">
         <div class="laskuarvio-container flex-container">
             <div>
                 <span class="tieto-label">Asiakas:</span>
-                <span><?= $nykyinenAsiakas ?></span>
+                <span><?= $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['asiakas'] ?></span>
             </div>
     
             <div>
                 <span class="tieto-label">Kohde:</span>
-                <span><?= $nykyinenKohde ?></span>
+                <span><? $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['tyokohteet'][$_SESSION['laskutiedot']['kohde']]['osoite'] ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Työtyyppi:</span>
-                <span><?= $tyotyyppi ?></span>
+                <span><?= $_SESSION['laskutiedot']['työtyyppi'] ?></span>
             </div>
 
-            <?php if(!empty($valitutTyot) || $tyotyyppi == 'urakka'): ?>
+            <?php if(!empty($_SESSION['laskutiedot']['tuntityöt']) || $_SESSION['laskutiedot']['työtyyppi'] == 'urakka'): ?>
             <div class="yhteenveto-container flex-container">
                 <span class="tieto-label">Työerittely:</span>
                 <div>
@@ -275,7 +276,7 @@ require_once('luo_lasku.php');
                         </thead>
 
                         <tbody>
-                            <?php foreach($valitutTyot as $id => $tuntityo): ?>
+                            <?php foreach($_SESSION['laskutiedot']['tuntityöt'] as $id => $tuntityo): ?>
                             <tr>
                                 <td>
                                     <div>
@@ -287,7 +288,7 @@ require_once('luo_lasku.php');
                                         <span><?= $tuntityo['kesto'] . ' h' ?></span>
                                     </div>
                                 </td>
-                                <?php if($tyotyyppi == 'tunti'): ?>
+                                <?php if($_SESSION['laskutiedot']['tuntityöt'] == 'tunti'): ?>
                                 <td>
                                     <div>
                                         <span> 24 % </span>
@@ -308,7 +309,7 @@ require_once('luo_lasku.php');
                             <?php endforeach; ?>
                         </tbody>
 
-                        <?php if($tyotyyppi == 'urakka'): ?>
+                        <?php if($_SESSION['laskutiedot']['työtyyppi'] == 'urakka'): ?>
                         <tfoot>
                             <tr>
                                 <td>
@@ -324,12 +325,12 @@ require_once('luo_lasku.php');
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $urakkaAlennus . ' %' ?></span>
+                                        <span><?= $_SESSION['laskutiedot']['urakka-alennus'] . ' %' ?></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $urakkahinta . ' €' ?></span>
+                                        <span><?= $_SESSION['laskutiedot']['nettosumma'] . ' €' ?></span>
                                     </div>
                                 </td>
                             </tr>
@@ -340,7 +341,7 @@ require_once('luo_lasku.php');
             </div>
             <?php endif; ?>
         
-            <?php if(!empty($valitutTarvikkeet)): ?>
+            <?php if(!empty($_SESSION['laskutiedot']['tarvikkeet'])): ?>
             <div class="yhteenveto-container flex-container">
                 <span class="tieto-label">Tarvikkeet:</span>
                 <div>
@@ -353,7 +354,7 @@ require_once('luo_lasku.php');
                             <th>Summa</th>
                         </tr>
     
-                        <?php foreach($valitutTarvikkeet as $id => $tarvike): ?>
+                        <?php foreach($_SESSION['laskutiedot']['tarvikkeet'] as $id => $tarvike): ?>
                         <tr>
                             <td>
                                 <div>
@@ -389,22 +390,22 @@ require_once('luo_lasku.php');
 
             <div>
                 <span class="tieto-label">Nettosumma:</span>
-                <span><?= $nettosumma . ' €' ?></span>
+                <span><?= $_SESSION['laskutiedot']['nettosumma'] . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Alv:</span>
-                <span><?= $alvYhteensa . ' €' ?></span>
+                <span><?= $_SESSION['laskutiedot']['alvsumma'] . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Yhteensä:</span>
-                <span><?= $nettosumma + $alvYhteensa . ' €' ?></span>
+                <span><?= $_SESSION['laskutiedot']['nettosumma'] + $_SESSION['laskutiedot']['alvsumma'] . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Kotitalousvähennys:</span>
-                <span><?= $kotitalousVahennys . ' €' ?></span>
+                <span><?= $_SESSION['laskutiedot']['kt-vähennys'] . ' €' ?></span>
             </div>
             </div>        
         </div>
@@ -415,7 +416,7 @@ require_once('luo_lasku.php');
                 <input type="checkbox" name="valmis" value="valmis" id="valmis">
                 <label for="valmis">Valmis laskutettavaksi</label>
             </div>
-            <?php if($tyotyyppi == 'urakka'): ?>
+            <?php if($_SESSION['laskutiedot']['työtyyppi'] == 'urakka'): ?>
             <div>
                 <input type="checkbox" name="tuplalasku" value="tuplalasku" id="tuplalasku" disabled>
                 <label for="tuplalasku">Puolita lasku kahteen osaan</label>

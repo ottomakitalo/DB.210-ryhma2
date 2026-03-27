@@ -4,24 +4,12 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-$nettosumma = '';
-$alvYhteensa = '';
-$kotitalousVahennys = '';
-$urakkahinta = '';
-$urakkaAlennus = '';
-$tarvikeYhteensa = '';
-$nykyinenAsiakas = '';
-$nykyinenKohde = '';
-$tyotyyppi = '';
-$valitutTyot = [];
-$valitutTarvikkeet = [];
-
 $myyntihintakerroin = 1.25;
 
 if(isset($_POST['luo_hinta-arvio'])) {
     $nettosumma = 0;
+    $alvsumma = 0;
     $kotitalousVahennys = 0;
-    $alvYhteensa = 0;
 
     $tuntityotNetto = 0;
     $tuntityotAlv = 0;
@@ -80,6 +68,8 @@ if(isset($_POST['luo_hinta-arvio'])) {
     list($asiakasId, $tyokohdeId) = explode(':', $_POST['tyokohde']);
 
     $tyotyyppi = $_POST['tyotyyppi'];
+    $urakkahinta = NULL;
+    $urakkaAlennus = NULL;
     if($tyotyyppi === 'urakka') {
         $urakkahinta = intval($_POST['urakkahinta']);
         $urakkaAlennus = intval($_POST['urakka-alennus']);
@@ -90,51 +80,50 @@ if(isset($_POST['luo_hinta-arvio'])) {
         $urakkaYhteensa = $urakkaNetto + $urakkaAlv;
 
         $nettosumma = $urakkaNetto + $tarvikkeetNetto;
-        $alvYhteensa = $tarvikkeetAlv + $urakkaAlv;
+        $alvsumma = $tarvikkeetAlv + $urakkaAlv;
         $kotitalousVahennys = $urakkaYhteensa;
     }
 
     else {
         $nettosumma = $tuntityotNetto + $tarvikkeetNetto;
-        $alvYhteensa = $tuntityotAlv + $tarvikkeetAlv;
+        $alvsumma = $tuntityotAlv + $tarvikkeetAlv;
         $kotitalousVahennys = $tuntityotNetto + $tuntityotAlv;
     }
-    
-    $nykyinenAsiakas = $asiakkaat[$asiakasId]['asiakas'];
-    $nykyinenKohde = $asiakkaat[$asiakasId]['tyokohteet'][$tyokohdeId]['osoite'];
 
-    unset($_SESSION['laskutiedotArviosta']);
-    $_SESSION['laskutiedotArviosta'] = [
+    unset($_SESSION['laskutiedot']);
+    $_SESSION['laskutiedot'] = [
         'asiakas'        => $asiakasId,
         'kohde'          => $tyokohdeId,
         'työtyyppi'      => $tyotyyppi,
         'urakka-alennus' => $urakkaAlennus,
         'tuntityöt'      => $valitutTyot,
         'tarvikkeet'     => $valitutTarvikkeet,
-        'yhteensä'       => $nettosumma,
+        'nettosumma'     => $nettosumma,
+        'alvsumma'       => $alvsumma,
+        'yhteensä'       => $nettosumma + $alvsumma,
         'kt-vähennys'    => $kotitalousVahennys
     ];
 }
 
 if(isset($_POST['luo_lasku'])) {
-    $tyotyyppi = $_SESSION['laskutiedotArviosta']['työtyyppi'];
+    $tyotyyppi = $_SESSION['laskutiedot']['työtyyppi'];
     $laskuValmis = (int)!empty($_POST['valmis']);
     $tuplalasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
     
-    $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedotArviosta']['yhteensä'] : NULL;
-    $tyokohdeId = $_SESSION['laskutiedotArviosta']['kohde'];
+    $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedot']['nettosumma'] : NULL;
+    $tyokohdeId = $_SESSION['laskutiedot']['kohde'];
 
     $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohdeId);
 
-    $tuntityot = $_SESSION['laskutiedotArviosta']['tuntityöt'];
-    $tarvikkeet = $_SESSION['laskutiedotArviosta']['tarvikkeet'];
+    $tuntityot = $_SESSION['laskutiedot']['tuntityöt'];
+    $tarvikkeet = $_SESSION['laskutiedot']['tarvikkeet'];
     fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
 
 
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
-    $asiakasId = $_SESSION['laskutiedotArviosta']['asiakas'];
-    $yhteensa = $_SESSION['laskutiedotArviosta']['yhteensä'];
+    $asiakasId = $_SESSION['laskutiedot']['asiakas'];
+    $yhteensa = $_SESSION['laskutiedot']['yhteensä'];
 
     createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
 
