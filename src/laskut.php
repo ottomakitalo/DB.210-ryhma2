@@ -9,91 +9,11 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
 
 // unset($_SESSION['laskutiedot']);
 
-$asiakkaat = [];
-
-// The following code for parsing the data from the database was created with guidance from copilot 
-
-// Getting all the customers and their work sites.
-$q = pg_query($yhteys,
-    "SELECT id, nimi, osoite FROM asiakas ORDER BY id");
-
-while ($row = pg_fetch_assoc($q)) {
-    $asiakkaat[$row['id']] = [
-        'asiakas'    => $row['nimi'],
-        'osoite'     => $row['osoite'],
-        'tyokohteet' => []
-    ];
-}
-
-$q2 = pg_query($yhteys,
-    "SELECT id, osoite, asiakas_id FROM tyokohde ORDER BY id");
-
-while ($row = pg_fetch_assoc($q2)) {
-    $asiakkaat[$row['asiakas_id']]['tyokohteet'][$row['id']] = [
-        'osoite' => $row['osoite']
-    ];
-}
-
-
-$tuntityohinnat = [];
-$q = pg_query($yhteys,
-    "SELECT id, nimi, tuntihinta FROM tyotehtava ORDER BY id");
-
-while ($row = pg_fetch_assoc($q)) {
-    $tuntityohinnat[$row['id']] = [
-    'nimi'   => $row['nimi'],    
-    'hinta'  => (float)$row['tuntihinta'],
-    ];
-}
-
-
-$tarvikkeet = [];
-$q = pg_query($yhteys,
-    "SELECT tv.id, tv.nimi, tv.yksikko, tv.sis_hinta, ty.alv_prosentti
-     FROM tarvike tv
-     JOIN tyyppi ty ON ty.nimi = tv.tyyppi_nimi
-     ORDER BY tv.id");
-
-while ($row = pg_fetch_assoc($q)) {
-    $tarvikkeet[$row['id']] = [
-        'tarvike' => $row['nimi'],
-        'yksikkö' => $row['yksikko'],
-        'hinta'   => (float)$row['sis_hinta'],
-        'alv'     => (float)$row['alv_prosentti'] * 100
-    ];
-}
-
-
-$laskut = [];
-
-$q = pg_query($yhteys,
-"SELECT l.id, l.annettu_pvm, l.era_pvm, l.maksettu_status,
-        a.nimi AS asiakas, k.osoite AS kohde,
-        ts.tyotyyppi, urakkahinta
- FROM lasku l
- JOIN asiakas a ON a.id = l.asiakas_id
- JOIN tyosuoritus ts ON ts.id = l.tyosuoritus_id
- JOIN tyokohde k ON k.id = ts.tyokohde_id
- ORDER BY l.annettu_pvm DESC"
-);
-
-
-while ($row = pg_fetch_assoc($q)) {
-    $yhteensa = $row['tyotyyppi'] === 'urakka' ? $row['urakkahinta'] : '---';
-    $laskut[] = [
-        'asiakas'  => $row['asiakas'],
-        'kohde'    => $row['kohde'],
-        'tyyppi'   => ($row['tyotyyppi'] === 'tunti' ? 'Tuntityö' : 'Urakka'),
-        'pvm'      => date('d.m.Y', strtotime($row['annettu_pvm'])),
-        'erapvm'   => date('d.m.Y', strtotime($row['era_pvm'])),
-        'yhteensä' => $yhteensa
-    ];
-}
+require_once('data/asiakkaat_data.php');
+require_once('data/tyotehtavat_data.php');
+require_once('data/tarvikkeet_data.php');
 
 require_once('luo_lasku.php');
-
-// T1
-
 ?>
 
 <!DOCTYPE html>
@@ -114,10 +34,10 @@ require_once('luo_lasku.php');
         <div>
             <select name="tyokohde" required>
                 <option value="">Valitse työkohde</option>
-                <?php foreach($asiakkaat as $asiakasId => $asiakas) {
-                    foreach($asiakas['tyokohteet'] as $tyokohdeId => $tyokohde) {
-                        $value = $asiakasId . ':' . $tyokohdeId;
-                        $label = $asiakas['asiakas'] . ' - ' . $tyokohde['osoite'];
+                <?php foreach($asiakkaat as $id => $asiakas) {
+                    foreach($asiakas['tyokohteet'] as $id => $tyokohde) {
+                        $value = $asiakas['id'] . ':' . $tyokohde['id'];
+                        $label = $asiakas['nimi'] . ' - ' . $tyokohde['osoite'];
                         echo "<option value=\"$value\">$label</option>";
                     }
                 }?>
@@ -168,15 +88,15 @@ require_once('luo_lasku.php');
                 <th class="työ-alennus-column">Alennusprosentti</th>
             </tr>
 
-            <?php foreach($tuntityohinnat as $id => $tuntityo): ?>
+            <?php foreach($kaikki_tehtavat as $id => $tuntityo): ?>
             <tr>
-                <td><?= $tuntityo['nimi'] ?></td>
+                <td><?= $tuntityo['tehtava'] ?></td>
                 <td>
                     <div>
                         <input
                             class="tunti-input" 
                             type="number" 
-                            name="<?= $tuntityo['nimi'] ?>" 
+                            name="<?= $tuntityo['tehtava'] ?>" 
                             placeholder="0"
                             min="0">
                         <span>h</span>
@@ -187,7 +107,7 @@ require_once('luo_lasku.php');
                         <input 
                             class="alennus-input" 
                             type="number" 
-                            name="<?= $tuntityo['nimi'] ?>-alennus" 
+                            name="<?= $tuntityo['tehtava'] ?>-alennus" 
                             placeholder="0" 
                             min="0"
                             max="100">
@@ -206,7 +126,7 @@ require_once('luo_lasku.php');
                 <th>Alennusprosentti</th>
             </tr>
 
-            <?php foreach($tarvikkeet as $id => $tarvike): ?>
+            <?php foreach($kaikki_tarvikkeet as $id => $tarvike): ?>
             <tr>
                 <td><?= $tarvike['tarvike'] ?></td>
                 <td>
@@ -247,12 +167,12 @@ require_once('luo_lasku.php');
         <div class="laskuarvio-container flex-container">
             <div>
                 <span class="tieto-label">Asiakas:</span>
-                <span><?= $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['asiakas'] ?></span>
+                <span><?= $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['nimi'] ?></span>
             </div>
     
             <div>
                 <span class="tieto-label">Kohde:</span>
-                <span><? $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['tyokohteet'][$_SESSION['laskutiedot']['kohde']]['osoite'] ?></span>
+                <span><?= $asiakkaat[$_SESSION['laskutiedot']['asiakas']]['tyokohteet'][$_SESSION['laskutiedot']['kohde']]['osoite'] ?></span>
             </div>
 
             <div>
