@@ -54,7 +54,7 @@ while ($row = pg_fetch_assoc($q)) {
         }
 
         // Save work site into a list
-        $tyokohteet[] = [
+        $tyokohteet[$tyokohdeId] = [
             'id'          => $tyokohdeId,
             'osoite'      => $kohde['osoite'],
             'suoritukset' => $suoritukset
@@ -62,7 +62,7 @@ while ($row = pg_fetch_assoc($q)) {
     }
 
     // Save asiakas and their work sites
-    $asiakkaat[] = [
+    $asiakkaat[$asiakasId] = [
         'id'         => $asiakasId,
         'nimi'       => $row['nimi'],
         'osoite'     => $row['osoite'],
