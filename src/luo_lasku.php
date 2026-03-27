@@ -110,7 +110,7 @@ if(isset($_POST['luo_lasku'])) {
 
     $laskuValmis = (int)!empty($_POST['valmis']);
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
+    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi === 'urakka' && $laskuValmis;
     
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
@@ -133,7 +133,7 @@ if(isset($_POST['luo_lasku'])) {
  */
 function createLaskuWithTyosuoritus($yhteys, $laskutiedot, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa) { 
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $urakkahinta = $tyotyyppi == 'urakka' ? $laskutiedot['nettosumma'] : NULL;
+    $urakkahinta = $tyotyyppi === 'urakka' ? $laskutiedot['nettosumma'] : NULL;
     $urakkaAlennus = $laskutiedot['urakka-alennus'];
     $tyokohdeId = $laskutiedot['kohde'];
     $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
@@ -252,5 +252,4 @@ function createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, 
 
     return $laskuId;
 }
-
 ?>
