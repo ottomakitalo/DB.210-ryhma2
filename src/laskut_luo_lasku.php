@@ -26,8 +26,11 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 </head>
 
 <body>
+    <a href="laskut.php">Takaisin hinta-arvioon</a>
+    <?php if(empty($laskutiedot)): ?>
+    <p><strong>Hinta-arviota ei olemassa. Luo ensin hinta-arvio.</strong></p>
+    <?php else: ?>
     <h2>Luo lasku</h2>
-    <?php if(!empty($laskutiedot)): ?>
     <h3>Lasku</h3>
     <form method="post" class="luo-lasku">
         <div class="laskuarvio-container flex-container">
@@ -215,13 +218,15 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
     <script>
         const valmisCheckbox = document.getElementById('valmis');
         const tuplalaskuCheckbox = document.getElementById('tuplalasku');
-
-        valmisCheckbox.addEventListener('change', () => {
-            tuplalaskuCheckbox.disabled = !valmisCheckbox.checked
-            if(!valmisCheckbox.checked) {
-                tuplalaskuCheckbox.checked = false;
-            }
-        });
+        
+        if(valmisCheckbox !== null && tuplalaskuCheckbox !== null) {
+            valmisCheckbox.addEventListener('change', () => {
+                tuplalaskuCheckbox.disabled = !valmisCheckbox.checked
+                if(!valmisCheckbox.checked) {
+                    tuplalaskuCheckbox.checked = false;
+                }
+            });
+        }
     </script>
 </body>
 </html>

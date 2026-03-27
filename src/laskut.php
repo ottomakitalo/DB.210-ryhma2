@@ -7,8 +7,6 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-// unset($_SESSION['laskutiedot']);
-
 require_once('data/asiakkaat_data.php');
 require_once('data/tyotehtavat_data.php');
 require_once('data/tarvikkeet_data.php');

@@ -124,7 +124,8 @@ if(isset($_POST['luo_lasku'])) {
         createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
     }
     
-    header("Location: ".$_SERVER['PHP_SELF']);
+    unset($_SESSION['laskutiedot']);
+    header("Location: laskut.php");
     exit();
 }
 
