@@ -65,7 +65,12 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                         </thead>
 
                         <tbody>
-                            <?php foreach($laskutiedot['tuntityöt'] as $id => $tuntityo): ?>
+                            <?php
+                            $tunnitYhteensa = 0;
+                            $tuntityotYhteensa = 0;
+                            foreach($laskutiedot['tuntityöt'] as $id => $tuntityo): 
+                            $tunnitYhteensa += $tuntityo['kesto'];
+                            $tuntityotYhteensa += $tuntityo['yhteensä'];?>
                             <tr>
                                 <td>
                                     <div>
@@ -95,39 +100,48 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                         <span>€</span>
                                     </div>
                                 </td>
-                                <?php endif ?>
+                                <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
 
-                        <?php if($laskutiedot['työtyyppi'] === 'urakka'): ?>
                         <tfoot>
                             <tr>
                                 <td>
                                     <div>
-                                        <span>urakka</span>
+                                        <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'urakka' : 'Yhteensä:' ?></span>
                                     </div>
                                 </td>
-                                <td></td>
                                 <td>
+                                    <?php if($laskutiedot['työtyyppi'] === 'tunti'): ?>
                                     <div>
-                                        <span>24 %</span>
+                                        <span><?= $tunnitYhteensa ?></span>
+                                        <span>h</span>
                                     </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
+                                    <?php if($laskutiedot['työtyyppi'] === 'urakka'): ?>
+                                    <div>
+                                        <span><?= '24 %' ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($laskutiedot['työtyyppi'] === 'urakka'): ?>
                                     <div>
                                         <span><?= $laskutiedot['urakka-alennus'] . ' %' ?></span>
                                     </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $laskutiedot['nettosumma'] ?></span>
+                                        <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['nettosumma'] : $tuntityotYhteensa ?></span>
                                         <span>€</span>
                                     </div>
                                 </td>
                             </tr>
                         </tfoot>
-                        <?php endif; ?>
                     </table>
                 </div>
             </div>
@@ -146,7 +160,10 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             <th>Summa</th>
                         </tr>
     
-                        <?php foreach($laskutiedot['tarvikkeet'] as $id => $tarvike): ?>
+                        <?php 
+                        $tarvikkeetYhteensa = 0;
+                        foreach($laskutiedot['tarvikkeet'] as $id => $tarvike):
+                            $tarvikkeetYhteensa += $tarvike['yhteensä'] ?>
                         <tr>
                             <td><div><span><?= $tarvike['tarvike'] ?></span></div></td>
                             <td>
@@ -172,7 +189,26 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 </div>
                             </td>
                         </tr>
+                        <?php  ?>
                         <?php endforeach; ?>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <span>Yhteensä:</span>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span><?= $tarvikkeetYhteensa ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
