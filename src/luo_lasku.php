@@ -108,27 +108,28 @@ if(isset($_POST['luo_hinta-arvio'])) {
 if(isset($_POST['luo_lasku'])) {
     $tyotyyppi = $_SESSION['laskutiedot']['työtyyppi'];
     $laskuValmis = (int)!empty($_POST['valmis']);
-    $tuplalasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
     
     $urakkahinta = $tyotyyppi == 'urakka' ? $_SESSION['laskutiedot']['nettosumma'] : NULL;
+    $urakkaAlennus = $_SESSION['laskutiedot']['urakka-alennus'];
     $tyokohdeId = $_SESSION['laskutiedot']['kohde'];
-
-    $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohdeId);
-
+    
+    $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
+    
     $tuntityot = $_SESSION['laskutiedot']['tuntityöt'];
     $tarvikkeet = $_SESSION['laskutiedot']['tarvikkeet'];
     fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
-
-
+    
+    
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
     $asiakasId = $_SESSION['laskutiedot']['asiakas'];
     $yhteensa = $_SESSION['laskutiedot']['yhteensä'];
-
+    
     createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $asiakasId, $tyosuoritusId);
-
+    
+    $tuplalasku = !empty($_POST['tuplalasku']) && $tyotyyppi == 'urakka' && $laskuValmis;
     if($tuplalasku) {
-        $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohdeId);
+        $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
 
         fillTyosuoritus($yhteys, $tyosuoritusId, $tuntityot, $tarvikkeet);
 
@@ -142,7 +143,7 @@ if(isset($_POST['luo_lasku'])) {
     exit();
 }
 
-function createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohdeId) {
+function createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId) {
     $result = pg_query($yhteys,
         "SELECT COALESCE(MAX(id),0)+1 AS id FROM tyosuoritus"
     );
@@ -151,9 +152,9 @@ function createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $tyokohdeId) {
     
     $updateTyosuoritus = pg_query_params(
         $yhteys,
-        "INSERT INTO tyosuoritus (id, tyotyyppi, urakkahinta, tyokohde_id)
-        VALUES ($1, $2, $3, $4)",
-        [$tyosuoritusId, $tyotyyppi, $urakkahinta, $tyokohdeId]
+        "INSERT INTO tyosuoritus (id, tyotyyppi, urakkahinta, urakka_alennus, tyokohde_id)
+        VALUES ($1, $2, $3, $4, $5)",
+        [$tyosuoritusId, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId]
     );
         
     if(!$updateTyosuoritus) {
