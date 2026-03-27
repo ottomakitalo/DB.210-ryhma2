@@ -113,10 +113,10 @@ require_once('luo_lasku.php');
         <div>
             <select name="tyokohde" required>
                 <option value="">Valitse työkohde</option>
-                <?php foreach($asiakkaat as $asiakasid => $asiakas) {
-                    foreach($asiakas['tyokohteet'] as $työkohdeid => $työkohde) {
-                        $value = $asiakasid . ':' . $työkohdeid;
-                        $label = $asiakas['asiakas'] . ' - ' . $työkohde['osoite'];
+                <?php foreach($asiakkaat as $asiakasId => $asiakas) {
+                    foreach($asiakas['tyokohteet'] as $tyokohdeId => $tyokohde) {
+                        $value = $asiakasId . ':' . $tyokohdeId;
+                        $label = $asiakas['asiakas'] . ' - ' . $tyokohde['osoite'];
                         echo "<option value=\"$value\">$label</option>";
                     }
                 }?>
@@ -167,15 +167,15 @@ require_once('luo_lasku.php');
                 <th class="työ-alennus-column">Alennusprosentti</th>
             </tr>
 
-            <?php foreach($tuntityohinnat as $id => $tyo): ?>
+            <?php foreach($tuntityohinnat as $id => $tuntityo): ?>
             <tr>
-                <td><?= $tyo['nimi'] ?></td>
+                <td><?= $tuntityo['nimi'] ?></td>
                 <td>
                     <div>
                         <input
                             class="tunti-input" 
                             type="number" 
-                            name="<?= $tyo['nimi'] ?>" 
+                            name="<?= $tuntityo['nimi'] ?>" 
                             placeholder="0"
                             min="0">
                         <span>h</span>
@@ -186,7 +186,7 @@ require_once('luo_lasku.php');
                         <input 
                             class="alennus-input" 
                             type="number" 
-                            name="<?= $tyo['nimi'] ?>-alennus" 
+                            name="<?= $tuntityo['nimi'] ?>-alennus" 
                             placeholder="0" 
                             min="0"
                             max="100">
@@ -259,7 +259,7 @@ require_once('luo_lasku.php');
                 <span><?= $tyotyyppi ?></span>
             </div>
 
-            <?php if(!empty($valitutTyöt) || $tyotyyppi == 'urakka'): ?>
+            <?php if(!empty($valitutTyot) || $tyotyyppi == 'urakka'): ?>
             <div class="yhteenveto-container flex-container">
                 <span class="tieto-label">Työerittely:</span>
                 <div>
@@ -275,16 +275,16 @@ require_once('luo_lasku.php');
                         </thead>
 
                         <tbody>
-                            <?php foreach($valitutTyöt as $id => $työ): ?>
+                            <?php foreach($valitutTyot as $id => $tuntityo): ?>
                             <tr>
                                 <td>
                                     <div>
-                                        <span><?= $työ['tyyppi'] ?></span>
+                                        <span><?= $tuntityo['tyyppi'] ?></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $työ['kesto'] . ' h' ?></span>
+                                        <span><?= $tuntityo['kesto'] . ' h' ?></span>
                                     </div>
                                 </td>
                                 <?php if($tyotyyppi == 'tunti'): ?>
@@ -295,12 +295,12 @@ require_once('luo_lasku.php');
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $työ['alennus'] . ' %' ?></span>
+                                        <span><?= $tuntityo['alennus'] . ' %' ?></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $työ['yhteensä'] . ' €' ?></span>
+                                        <span><?= $tuntityo['yhteensä'] . ' €' ?></span>
                                     </div>
                                 </td>
                                 <?php endif ?>
@@ -394,17 +394,17 @@ require_once('luo_lasku.php');
 
             <div>
                 <span class="tieto-label">Alv:</span>
-                <span><?= $alv_summa . ' €' ?></span>
+                <span><?= $alvYhteensa . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Yhteensä:</span>
-                <span><?= $nettosumma + $alv_summa . ' €' ?></span>
+                <span><?= $nettosumma + $alvYhteensa . ' €' ?></span>
             </div>
 
             <div>
                 <span class="tieto-label">Kotitalousvähennys:</span>
-                <span><?= $kt_vahennys . ' €' ?></span>
+                <span><?= $kotitalousVahennys . ' €' ?></span>
             </div>
             </div>        
         </div>
