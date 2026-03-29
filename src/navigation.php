@@ -10,6 +10,7 @@ require_once('kayttajarooli.php');
         <li><a href="laskut.php" class="<?php $page === 'laskut.php' ? "active" : ""?>">Laskut</a></li>
         <li><a href="asiakkaat.php" class="<?php $page === 'asiakkaat.php' ? "active" : ""?>">Asiakkaat</a></li>
         <li><a href="laskuluettelo.php" class="<?php $page === 'laskuluettelo.php' ? "active" : ""?>">Laskuluettelo</a></li>
+        <li><a href="turvallisuusraportti.php" class="<?php $page === 'turvallisuusraportti.php' ? "active" : ""?>">Turvallisuusraportti</a></li>
         <?php endif; ?>
     </ul>
 </div>
