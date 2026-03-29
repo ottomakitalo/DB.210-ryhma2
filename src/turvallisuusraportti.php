@@ -35,7 +35,7 @@ uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['t
                 </tr>
 
                 <?php foreach($tarvikkeet as $id => $tarvike): ?>
-                <tr>
+                <tr class="tarvike-rivi">
                     <td>
                         <div>
                             <input 
@@ -67,5 +67,17 @@ uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['t
             <button type="submit" name="luo-turvallisuusraportti">Luo turvallisuusraportti</button>
         </div>
     </form>
+<script>
+    document.querySelectorAll('.tarvike-rivi').forEach(rivi => {
+        rivi.addEventListener('click', (e) => {
+            if(e.target.type === 'checkbox') return;
+
+            const checkbox = e.currentTarget.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            } 
+        });
+    });
+</script>
 </body>
 </html>
