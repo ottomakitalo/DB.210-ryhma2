@@ -21,3 +21,10 @@ body {
     font-weight: bold;
     color: green;
 }
+
+.submit-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding-top: 20px;
+}

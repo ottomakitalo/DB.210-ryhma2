@@ -50,13 +50,6 @@
     gap: 8px;
 }
 
-.submit-button-container {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    padding-top: 20px;
-}
-
 .laskut th,
 .laskut td {
     text-align: center;
