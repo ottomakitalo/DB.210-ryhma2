@@ -29,8 +29,8 @@ require_once('turvallisuusraportti_luonti.php');
             <th>Asiakas</th>
             <th>Työkohteen osoite</th>
             <th>Tarvike</th>
-            <th>Tarvikkeiden määrä</th>
             <th>Tarvikkeen merkki</th>
+            <th>Tarvikkeiden määrä</th>
             <th>Tarvikkeen toimittaja</th>
         </tr>
 
@@ -53,12 +53,12 @@ require_once('turvallisuusraportti_luonti.php');
             </td>
             <td>
                 <div>
-                    <span><?= $rivi['määrä'] ?></span>    
+                    <span><?= $rivi['merkki'] ?></span>    
                 </div>
             </td>
             <td>
                 <div>
-                    <span><?= $rivi['merkki'] ?></span>    
+                    <span><?= $rivi['määrä'] ?></span>    
                 </div>
             </td>
             <td>
