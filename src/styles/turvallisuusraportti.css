@@ -1,0 +1,9 @@
+.turvallisuusraportti td,
+.turvallisuusraportti th {
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.turvallisuusraportti {
+    border-collapse: collapse;
+}
