@@ -3,7 +3,7 @@
     margin-bottom: 16px  
 }
 
-.hinta-arvio .tyotyyppi-container {
+.hinta-arvio .tyotyyppi-inputs {
     display: flex;
     flex-direction: row;
     gap: 12px;

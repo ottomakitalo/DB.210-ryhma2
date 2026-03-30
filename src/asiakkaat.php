@@ -52,39 +52,36 @@ require 'data/asiakkaat_data.php';
 </head>
 
 <body>
+    <div class="content-container">
+        <table border="1" width="100%">
+            <tr>
+                <th>Asiakas</th>
+                <th>Osoite</th>
+                <th>Työkohteet</th>
+            </tr>
 
-<table border="1" width="100%">
-<tr>
-    <th>Asiakas</th>
-    <th>Osoite</th>
-    <th>Työkohteet</th>
-</tr>
+            <?php foreach($asiakkaat as $asiakas): ?>
+            <tr>
+                <td><?= $asiakas['nimi'] ?></td>
+                <td><?= $asiakas['osoite'] ?></td>
 
-
-<?php foreach($asiakkaat as $asiakas): ?>
-
-<tr>
-    <td><?= $asiakas['nimi'] ?></td>
-    <td><?= $asiakas['osoite'] ?></td>
-
-    <td>
-        <div class="tyokohde-container">
-            <?php foreach($asiakas['tyokohteet'] as $t): ?>  
-                <span>
-                    📍 <?= $t['osoite'] ?>
-                </span>
+                <td>
+                    <div class="tyokohde-container">
+                        <?php foreach($asiakas['tyokohteet'] as $t): ?>  
+                            <span>
+                                📍 <?= $t['osoite'] ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                    <form method="post">
+                        <input type="hidden" name="asiakas_id" value="<?= $asiakas['id'] ?>">
+                        <input type="text" name="osoite" placeholder="Osoite" required>
+                        <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
+                    </form>
+                </td>
+            </tr>
             <?php endforeach; ?>
-        </div>
-        <form method="post">
-            <input type="hidden" name="asiakas_id" value="<?= $asiakas['id'] ?>">
-            <input type="text" name="osoite" placeholder="Osoite" required>
-            <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
-        </form>
-    </td>
-</tr>
-
-<?php endforeach; ?>
-</table>
-
+        </table>
+</div>
 </body>
 </html>
