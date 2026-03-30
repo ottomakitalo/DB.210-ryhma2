@@ -3,7 +3,7 @@ $page = basename($_SERVER['PHP_SELF']);
 require_once('kayttajarooli.php');
 ?>
 
-<div>
+<div class="navigation-container content-container">
     <ul class="navigation-list">
         <li><a href="index.php" class="<?php $page === 'index.php' ? "active" : ""?>">Etusivu</a></li>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'käyttäjä')): ?>

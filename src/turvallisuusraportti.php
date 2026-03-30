@@ -21,52 +21,55 @@ uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['t
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/turvallisuusraportti.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
-    <h2>Luo turvallisuusraportti tarvikkeesta</h2>
-    <form method="post" action="turvallisuusraportti_tulos.php" class="luo-turvallisuusraportti">
-        <div>
-            <table>
-                <tr>
-                    <th></th>
-                    <th>Toimittaja</th>
-                    <th>Tarvike</th>
-                    <th>Merkki</th>
-                </tr>
+    <div class="content-container">
+        <h2>Luo turvallisuusraportti tarvikkeesta</h2>
+        <form method="post" action="turvallisuusraportti_tulos.php" class="luo-turvallisuusraportti">
+            <div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Toimittaja</th>
+                        <th>Tarvike</th>
+                        <th>Merkki</th>
+                    </tr>
 
-                <?php foreach($tarvikkeet as $id => $tarvike): ?>
-                <tr class="tarvike-rivi">
-                    <td>
-                        <div>
-                            <input 
-                                type="checkbox" 
-                                name="tarvikkeet[]" 
-                                value="<?= $id ?>">
-                    </div>
-                    </td>
-                    <td>
-                        <div>
-                            <span><?= $tarvike['toimittaja'] ?></span>
+                    <?php foreach($tarvikkeet as $id => $tarvike): ?>
+                    <tr class="tarvike-rivi">
+                        <td>
+                            <div>
+                                <input 
+                                    type="checkbox" 
+                                    name="tarvikkeet[]" 
+                                    value="<?= $id ?>">
                         </div>
-                    </td>
-                    <td>
-                        <div>
-                            <span><?= $tarvike['tarvike'] ?></span>
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            <span><?= $tarvike['merkki'] ?></span>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-        <div class="submit-button-container">
-            <button type="submit" name="luo-turvallisuusraportti">Luo turvallisuusraportti</button>
-        </div>
-    </form>
+                        </td>
+                        <td>
+                            <div>
+                                <span><?= $tarvike['toimittaja'] ?></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span><?= $tarvike['tarvike'] ?></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span><?= $tarvike['merkki'] ?></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+            <div class="submit-button-container">
+                <button type="submit" name="luo-turvallisuusraportti">Luo turvallisuusraportti</button>
+            </div>
+        </form>
+    </div>
 <script>
     document.querySelectorAll('.tarvike-rivi').forEach(rivi => {
         rivi.addEventListener('click', (e) => {

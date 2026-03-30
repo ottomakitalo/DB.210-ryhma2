@@ -2,14 +2,27 @@ body {
     font-family: Arial;
 }
 
-.navigation-list { 
-    list-style: none;
-    padding: 0;
+.content-container {
+    background-color: white;
+    border: 1px solid #dadada;
+    border-radius: 6px;
+    padding: 14px 14px 14px;
+    box-shadow: 0 4px 4px #05050540;
+    width: fit-content;
+    margin: auto;
 }
 
-.navigation-list li {
-    display: inline;
-    margin-right: 15px;
+.navigation-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.navigation-list { 
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 15px;
 }
 
 .navigation-list li a {
@@ -27,4 +40,8 @@ body {
     flex-direction: row;
     gap: 12px;
     padding-top: 20px;
+}
+
+body {
+    background-color: #77a5ff;
 }
