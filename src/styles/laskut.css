@@ -33,39 +33,21 @@
     padding: 8px 4px;
 }
 
-.luo-lasku .flex-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.luo-lasku .tieto-label {
-    font-weight: bold;
-}
-
-.luo-lasku .yhteenveto-container {
-    gap: 8px;
-}
-
-.luo-lasku .laskuarvio-container {
-    gap: 8px;
-}
-
-.laskut th,
-.laskut td {
-    text-align: center;
-}
-
-.yhteenveto-container table {
+table {
+    border-radius: 10px;
     border-collapse: collapse;
 }
 
-.yhteenveto-container table td,
-.yhteenveto-container table th {
-    padding: 12px 8px;
-    text-align: center;
+td, th {
+    padding: 8px 4px;
+    text-align: start;
 }
 
-.yhteenveto-container table tfoot tr {
-    font-weight: bold;
-    border-top: 2px solid #333;
+th {
+    background-color: #5e93fb;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
 }
