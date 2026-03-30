@@ -49,11 +49,12 @@ require 'data/asiakkaat_data.php';
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/asiakkaat.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
 
 <body>
     <div class="content-container">
-        <table border="1" width="100%">
+        <table>
             <tr>
                 <th>Asiakas</th>
                 <th>Osoite</th>
@@ -65,19 +66,19 @@ require 'data/asiakkaat_data.php';
                 <td><?= $asiakas['nimi'] ?></td>
                 <td><?= $asiakas['osoite'] ?></td>
 
-                <td>
+                <td class="tyokohde-cell">
                     <div class="tyokohde-container">
                         <?php foreach($asiakas['tyokohteet'] as $t): ?>  
                             <span>
                                 📍 <?= $t['osoite'] ?>
                             </span>
                         <?php endforeach; ?>
+                        <form method="post">
+                            <input type="hidden" name="asiakas_id" value="<?= $asiakas['id'] ?>">
+                            <input type="text" name="osoite" placeholder="Osoite" required>
+                            <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
+                        </form>
                     </div>
-                    <form method="post">
-                        <input type="hidden" name="asiakas_id" value="<?= $asiakas['id'] ?>">
-                        <input type="text" name="osoite" placeholder="Osoite" required>
-                        <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
-                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

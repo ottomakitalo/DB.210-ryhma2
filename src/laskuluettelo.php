@@ -16,12 +16,12 @@ require_once('data/laskut_data.php');
     <title>Laskut</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/laskut.css">
+    <link rel="stylesheet" href="styles/laskuluettelo.css">
 </head>
 <body>
     <div class="content-container">
         <h2>Laskut</h2>
-        <table border="1" cellpadding="8" class="laskut">
+        <table>
             <tr>
                 <th>Lasku</th>
                 <th>Asiakas</th>

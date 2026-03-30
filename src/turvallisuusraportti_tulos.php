@@ -17,6 +17,7 @@ require_once('turvallisuusraportti_luonti.php');
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/turvallisuusraportti.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
     <div class="content-container">

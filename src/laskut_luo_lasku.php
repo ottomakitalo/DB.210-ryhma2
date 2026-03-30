@@ -22,7 +22,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
     <title>Laskut</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/laskut.css">
+    <link rel="stylesheet" href="styles/laskut_luo_lasku.css">
 </head>
 
 <body>
