@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) 
         } else {
             $r = pg_query_params(
                 $yhteys,
-                'INSERT INTO tarvike (id, nimi, merkki, toimittaja, sis_hinta, yksikko, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-                [$id, $item['nimi'], $item['merkki'], $toimittaja, $item['sis_hinta'], $item['yksikko'], $item['tyyppi_nimi']]
+                'INSERT INTO tarvike (id, nimi, merkki, toimittaja, sis_hinta, yksikko, varasto, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+                [$id, $item['nimi'], $item['merkki'], $toimittaja, $item['sis_hinta'], $item['yksikko'], 0, $item['tyyppi_nimi']]
             );
             if ($r === false) { $ok = false; break; }
         }
@@ -91,14 +91,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) 
 
     // Poista ne tarvikkeet, joita ei enää XML:ssä ole, ja tallenna historiaan
     if ($ok) {
+        $result = pg_query($yhteys,
+            "SELECT COALESCE(MAX(id),0)+1 AS id FROM tarvike_historia"
+        );
+        $row = pg_fetch_assoc($result);
+        $historaId = $row['id'];
         $poistettuPvm = date('Y-m-d');
+
         foreach ($existing as $id => $row) {
             $h = pg_query_params(
                 $yhteys,
-                'INSERT INTO tarvike_historia (nimi, merkki, toimittaja, sis_hinta, yksikko, poistettu_pvm, korvaus_id, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                [$row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettuPvm, $id, $row['tyyppi_nimi']]
+                'INSERT INTO tarvike_historia (id, nimi, merkki, toimittaja, sis_hinta, yksikko, poistettu_pvm, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+                [$historaId, $row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettuPvm, $row['tyyppi_nimi']]
             );
             if ($h === false) { $ok = false; break; }
+            $historaId++;
 
             $d = pg_query_params($yhteys, 'DELETE FROM tarvike WHERE id=$1 AND toimittaja=$2', [$id, $toimittaja]);
             if ($d === false) { $ok = false; break; }
