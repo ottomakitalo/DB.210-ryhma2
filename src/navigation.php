@@ -13,6 +13,8 @@ require_once('kayttajarooli.php');
         <?php endif; ?>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'admin')): ?>
         <li><a href="turvallisuusraportti.php" class="<?php $page === 'turvallisuusraportti.php' ? "active" : ""?>">Turvallisuusraportti</a></li>
+        <li><a href="hinnasto.php" class="<?php $page === 'hinnasto.php' ? "active" : ""?>">Hinnasto</a></li>
+        <li><a href="historia.php" class="<?php $page === 'historia.php' ? "active" : ""?>">Historia</a></li>
         <?php endif; ?>
     </ul>
 </div>

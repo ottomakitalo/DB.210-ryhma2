@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tarvikkeet>
+    <toimittaja>
+        <toim_nimi>Moponet</toim_nimi>
+    </toimittaja>
+
+    <tarvike>
+        <ttiedot>
+            <id>2</id>
+            <nimi>sähköjohto</nimi>
+            <merkki>Asus</merkki>
+            <tyyppi>Yleinen</tyyppi>
+            <hinta>1</hinta>
+            <yksikko>m</yksikko>
+        </ttiedot>
+    </tarvike>
+
+    <tarvike>
+        <ttiedot>
+            <id>4</id>
+            <nimi>maakaapeli</nimi>
+            <merkki>Maara</merkki>
+            <tyyppi>Yleinen</tyyppi>
+            <hinta>4</hinta>
+            <yksikko>m</yksikko>
+        </ttiedot>
+    </tarvike>
+
+    <tarvike>
+        <ttiedot>
+            <id>7</id>
+            <nimi>pistorasia</nimi>
+            <merkki>Vare</merkki>
+            <tyyppi>Yleinen</tyyppi>
+            <hinta>10</hinta>
+            <yksikko>kpl</yksikko>
+        </ttiedot>
+    </tarvike>
+
+    <tarvike>
+        <ttiedot>
+            <id>8</id>
+            <nimi>termostaatti</nimi>
+            <merkki>Baden</merkki>
+            <tyyppi>Yleinen</tyyppi>
+            <hinta>20</hinta>
+            <yksikko>kpl</yksikko>
+        </ttiedot>
+    </tarvike>
+
+    <tarvike>
+        <ttiedot>
+            <id>9</id>
+            <nimi>valaisin</nimi>
+            <merkki>Airam</merkki>
+            <tyyppi>Yleinen</tyyppi>
+            <hinta>5</hinta>
+            <yksikko>kpl</yksikko>
+        </ttiedot>
+    </tarvike>
+
+</tarvikkeet>
