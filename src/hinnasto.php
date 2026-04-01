@@ -1,13 +1,13 @@
 <?php
 require 'db.php';
 require_once('navigation.php');
-if ($_SESSION['rooli'] !== 'admin') {
-    header("Location: index.php");
-    exit();
-}
 require_once('data/tarvikkeet_data.php');
+require_once('data/tyotehtavat_data.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) {
+// Funtio tehty Copilotin avustuksella
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto']) 
+    && ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'Tavarantoimittaja')) {
+
     if (!isset($_FILES['tiedosto']) || $_FILES['tiedosto']['error'] !== UPLOAD_ERR_OK) {
         echo "Tiedoston lataus epäonnistui.";
         exit;
@@ -135,7 +135,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) 
 
 <body>
     <div class="content-container">
-        <h2>Hinnasto</h2>
+        <h2>Työtehtävät</h2>
+        <table>
+            <tr>
+                <th>Tehtävä</th>
+                <th>Tuntihinta (ennen alv)</th>
+            </tr>
+            <?php foreach ($kaikki_tehtavat as $tehtava): ?>
+            <tr>
+                <td><?= htmlspecialchars($tehtava['tehtava']) ?></td>
+                <td><?= htmlspecialchars($tehtava['tuntihinta']) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <h2>Tarvikkeet</h2>
+        <h5>Sisäänottohintaan lisätään 25% voittoprosentti sekä alv.</h5>
+        <h5>Alennusprosentti vähennetään alvittomasta hinnasta.</h5>
         <table>
             <tr>
                 <th>Tarvike</th>
@@ -158,6 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) 
             </tr>
             <?php endforeach; ?>
         </table>
+
+        <?php if ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'Tavarantoimittaja'): ?>
         <h2>Päivitä Hinnasto XML-tiedostosta</h2>
         <form method="post" enctype="multipart/form-data">
             <input 
@@ -171,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])) 
                 Päivitä hinnasto
             </button>
         </form>
+        <?php endif; ?>
     </div>
 </body>
 </html>

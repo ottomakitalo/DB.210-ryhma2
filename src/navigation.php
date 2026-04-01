@@ -6,6 +6,7 @@ require_once('kayttajarooli.php');
 <div class="navigation-container content-container">
     <ul class="navigation-list">
         <li><a href="index.php" class="<?php $page === 'index.php' ? "active" : ""?>">Etusivu</a></li>
+        <li><a href="hinnasto.php" class="<?php $page === 'hinnasto.php' ? "active" : ""?>">Hinnasto</a></li>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'käyttäjä' || $_SESSION['rooli'] === 'admin')): ?>
         <li><a href="laskut.php" class="<?php $page === 'laskut.php' ? "active" : ""?>">Laskut</a></li>
         <li><a href="asiakkaat.php" class="<?php $page === 'asiakkaat.php' ? "active" : ""?>">Asiakkaat</a></li>
@@ -13,7 +14,6 @@ require_once('kayttajarooli.php');
         <?php endif; ?>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'admin')): ?>
         <li><a href="turvallisuusraportti.php" class="<?php $page === 'turvallisuusraportti.php' ? "active" : ""?>">Turvallisuusraportti</a></li>
-        <li><a href="hinnasto.php" class="<?php $page === 'hinnasto.php' ? "active" : ""?>">Hinnasto</a></li>
         <li><a href="historia.php" class="<?php $page === 'historia.php' ? "active" : ""?>">Historia</a></li>
         <?php endif; ?>
     </ul>

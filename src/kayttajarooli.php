@@ -26,6 +26,7 @@ if (isset($_POST['rooli'])) {
         <option value="">Vaihda rooli</option>
         <option value="vieras">Vieras</option>
         <option value="käyttäjä">Käyttäjä</option>
+        <option value="Tavarantoimittaja">Tavarantoimittaja</option>
         <option value="admin">Admin</option>
     </select>
 </form>

@@ -64,9 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <meta charset="UTF-8">
     <title>Lasku <?= $id ?></title>
     <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
 
+<div class="content-container">
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
 <p><strong>Asiakas:</strong> <?= $lasku['asiakas'] ?></p>
@@ -149,5 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 <?php endif; ?>
+</div>
 </body>
 </html>
