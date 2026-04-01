@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
 
-<?php if($lasku['maksettu_pvm'] === ''): ?>
+<?php if($lasku['maksettu_pvm'] === '' && $lasku['erapvm'] !== ''): ?>
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="maksa_lasku">Merkitse maksetuksi</button>
