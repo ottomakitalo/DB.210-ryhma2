@@ -6,7 +6,7 @@ require_once('data/tyotehtavat_data.php');
 
 // Funtio tehty Copilotin avustuksella
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto']) 
-    && ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'Tavarantoimittaja')) {
+    && ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'tavarantoimittaja')) {
 
     if (!isset($_FILES['tiedosto']) || $_FILES['tiedosto']['error'] !== UPLOAD_ERR_OK) {
         echo "Tiedoston lataus epäonnistui.";
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
             <?php endforeach; ?>
         </table>
 
-        <?php if ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'Tavarantoimittaja'): ?>
+        <?php if ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'tavarantoimittaja'): ?>
         <h2>Päivitä Hinnasto XML-tiedostosta</h2>
         <form method="post" enctype="multipart/form-data">
             <input 
