@@ -16,7 +16,7 @@ require_once('data/laskut_data.php');
     <title>Laskut</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/laskuluettelo.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
     <div class="content-container">
