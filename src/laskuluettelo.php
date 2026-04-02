@@ -31,18 +31,58 @@ require_once('data/laskut_data.php');
                 <th>Eräpäivä</th>
                 <th>Status</th>
                 <th>Summa</th>
+                <th>Lisälaskut</th>
             </tr>
-
+            <!-- Käytetty Copilotia apuna -->
             <?php foreach($laskut as $id => $lasku): ?>
+                <?php
+                $styleEra = "";
+                if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
+                    $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
+                    //Eräpäivä punaiseksi, jos se on mennyt jo               
+                    if ($era < new DateTime()) {
+                        $styleEra = 'style="color:red;font-weight:bold"';
+                    }
+                }
+            ?>
             <tr>
                 <td><a href="lasku.php?id=<?= $id ?>"><?= $id ?></a></td>
                 <td><?= $lasku['asiakas'] ?></td>
                 <td><?= $lasku['kohde'] ?></td>
                 <td><?= $lasku['tyyppi'] ?></td>
                 <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
-                <td><?= $lasku['erapvm'] ?: '' ?></td>
+                <td <?= $styleEra ?>><?= $lasku['erapvm'] ?></td>
                 <td><?= $lasku['status'] ?></td>
                 <td><?= $lasku['yhteensä'] ?></td>
+
+                <td>
+                    <?php if ($lasku['status'] === 'Maksettu'): ?>
+                            -
+                        <?php elseif ($lasku['lisalaskuja'] == 0): ?>
+                            -
+                        <?php else: ?>
+
+                        <?php
+                        $ll = $lasku['lisalaskuja'];
+
+                        if ($ll == 1) {
+                            echo "Muistutuslasku";
+                        } else {
+                            $karhu_nro = $ll - 1;
+                            echo $karhu_nro . ". karhulasku";
+                        }
+
+                        // summa ja erä
+                        if ($ll > 0) {
+                            echo "<br>" . number_format($lasku['lisalasku_summa'], 2, ',', ' ') . " €";
+                            echo "<br>Erä: " . date('d.m.Y', strtotime($lasku['lisalasku_erapvm']));
+                        }
+                        ?>
+
+
+                    <?php endif; ?>
+                </td>
+
             </tr>
             <?php endforeach; ?>    
         </table>
