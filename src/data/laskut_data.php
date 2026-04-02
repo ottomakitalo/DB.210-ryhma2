@@ -34,5 +34,57 @@ while ($row = pg_fetch_assoc($q)) {
         'urakkahinta' => $row['urakkahinta'],
         'yhteensä' => $row['yhteensa']
     ];
+
+    // hae viimeisin lisälasku 
+    $q_ll = pg_query_params(
+        $yhteys,
+        "SELECT id, annettu_pvm, era_pvm, maksettu_pvm, edellinen_id
+        FROM lisalasku
+        WHERE alkp_id = $1
+        ORDER BY id DESC
+        LIMIT 1",
+        [$row['id']]
+    );
+
+    $lisalasku_summa = null;
+    $lisalasku_erapvm = null;
+
+    // Käytetty apuna copilotia
+    if ($q_ll && pg_num_rows($q_ll) > 0) {
+        $ll = pg_fetch_assoc($q_ll);
+
+        // Lasketaan summa
+        $laskutuslisa = 5.0;
+        $viivastys = 0;
+
+        // tarkista onko karhulasku vai ensimmäinen muistutus
+        if (!empty($ll['edellinen_id'])) {
+
+            $summa = (float)$row['yhteensa'];  // alkuperäisen laskun summa
+            $era_pvm = new DateTime($row['era_pvm']);
+            $nyt = new DateTime();
+            $paivia = max(0, $era_pvm->diff($nyt)->days);
+
+            $viivastys = ($summa * 0.16 * $paivia) / 365.0;
+        }
+
+        // kokonaislisä
+        $lisalasku_summa = $laskutuslisa + $viivastys;
+        $lisalasku_erapvm = $ll['era_pvm'];
+    }
+
+    // lisälaskujen määrä
+    $laskut[$row['id']]['lisalaskuja'] = (int)pg_fetch_result(
+        pg_query_params($yhteys,
+            "SELECT COUNT(*) FROM lisalasku WHERE alkp_id = $1",
+            [$row['id']]
+        ), 0
+    );
+
+    // viimeisin lisälasku
+    $laskut[$row['id']]['lisalasku_summa'] = $lisalasku_summa;
+    $laskut[$row['id']]['lisalasku_erapvm'] = $lisalasku_erapvm;
+
+
 }
 ?>

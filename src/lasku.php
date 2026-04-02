@@ -126,6 +126,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
 
+<h3>Lisälaskut</h3>
+<?php
+$q_lisalaskut = pg_query_params(
+    $yhteys,
+    "SELECT id, annettu_pvm, era_pvm, maksettu_pvm, edellinen_id
+     FROM lisalasku
+     WHERE alkp_id = $1
+     ORDER BY id",
+    [$id]
+);
+
+if (!$q_lisalaskut) {
+    echo "<p>Lisälaskujen haku epäonnistui.</p>";
+} elseif (pg_num_rows($q_lisalaskut) == 0) {
+    echo "<p>Ei lisälaskuja.</p>";
+} else {
+?>
+    <table>
+        <tr>
+            <th>Lisälasku</th>
+            <th>Antopäivä</th>
+            <th>Eräpäivä</th>
+            <th>Summa</th>
+            <th>Maksettu</th>
+            <th>Tyyppi</th>
+        </tr>
+
+    <!-- tehty copilotin avustuksella -->
+    <?php while ($r = pg_fetch_assoc($q_lisalaskut)): ?>
+
+        <?php
+        // Laske lisälaskun järjestysnumero
+        $jarjestys = pg_fetch_result(
+            pg_query_params(
+                $yhteys,
+                "SELECT COUNT(*) 
+                FROM lisalasku 
+                WHERE alkp_id = $1 AND id <= $2",
+                [$id, $r['id']]
+            ),
+            0,
+            0
+        );
+
+        // Laske summa 
+        $laskutuslisa = 5.0;
+        $viivastys = 0;
+
+        if (!empty($r['edellinen_id'])) {
+            $alkuperainen_summa = (float)$lasku['yhteensä'];
+            $era_pvm = new DateTime($lasku['erapvm']);
+            $nyt = new DateTime();
+            $paivia = max(0, $era_pvm->diff($nyt)->days);
+
+            $viivastys = ($alkuperainen_summa * 0.16 * $paivia) / 365.0;
+        }
+
+        $summa = $laskutuslisa + $viivastys;
+        $tyyppi = $r['edellinen_id'] ? "Karhulasku" : "Muistutuslasku";
+        ?>
+
+        <tr>
+            <td><?= $jarjestys ?></td>
+            <td><?= date('d.m.Y', strtotime($r['annettu_pvm'])) ?></td>
+            <td><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
+            <td><?= number_format($summa, 2, ',', ' ') ?> €</td>
+            <td><?= !empty($r['maksettu_pvm']) ? date('d.m.Y', strtotime($r['maksettu_pvm'])) : "" ?></td>
+            <td><?= $tyyppi ?></td>
+        </tr>
+
+    <?php endwhile; ?>
+    </table>
+<?php
+}
+?>
+
 <?php if($lasku['maksettu_pvm'] === '' && $lasku['erapvm'] !== ''): ?>
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
@@ -149,5 +225,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 <?php endif; ?>
+
+
+<?php
+$naytaLisapainike = false;
+
+if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
+    // Muutetaan eräpäivä DateTime-muotoon
+    $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
+    $nyt = new DateTime();
+
+    // Näytetään nappi vain, jos eräpäivä on mennyt
+    if ($era < $nyt) {
+        $naytaLisapainike = true;
+    }
+}
+?>
+
+<?php if ($naytaLisapainike): ?>
+<form action="luo_lisalasku.php" method="post">
+    <input type="hidden" name="id" value="<?= $id ?>">
+    <button type="submit">Luo muistutus- / karhulasku</button>
+</form>
+<?php endif; ?>
+
+
 </body>
 </html>
