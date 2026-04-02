@@ -18,17 +18,18 @@ if (isset($_POST['rooli'])) {
 </head>
 
 <body>
+<div class="rooli-container">
+<p class = "rooli">Nykyinen rooli: <?php echo $_SESSION['rooli'] ?? 'ei asetettu'; ?></p>
 
 <form method="post" class="rooli-valikko">
     <select name="rooli" onchange="this.form.submit()">
         <option value="">Vaihda rooli</option>
         <option value="vieras">Vieras</option>
         <option value="käyttäjä">Käyttäjä</option>
+        <option value="tavarantoimittaja">Tavarantoimittaja</option>
         <option value="admin">Admin</option>
     </select>
 </form>
-
-<p class = "rooli">Nykyinen rooli: <?php echo $_SESSION['rooli'] ?? 'ei asetettu'; ?></p>
-
+</div>
 </body>
 </html>

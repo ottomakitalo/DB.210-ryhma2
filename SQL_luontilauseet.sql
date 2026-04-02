@@ -171,9 +171,7 @@ CREATE TABLE tarvike_historia (
   sis_hinta DECIMAL(10,2) NOT NULL, 
   yksikko VARCHAR(128) NOT NULL, 
   poistettu_pvm DATE NOT NULL,
-  korvaus_id INT,
   tyyppi_nimi VARCHAR(128) NOT NULL, 
-  FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi),
-  FOREIGN KEY (korvaus_id) REFERENCES tarvike(id)
+  FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi)
 );
 

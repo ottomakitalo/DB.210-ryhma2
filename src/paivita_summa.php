@@ -25,7 +25,7 @@ function paivitaSumma($yhteys, $id) {
 
     // Laske tarvikkeiden summa (25% voittoprosentti + alv)
     $tarvikkeet_query = pg_query_params($yhteys,
-        "SELECT SUM(t.maara * (tt.sis_hinta * 1.25) * (1 - (t.alennus/100)) * ty.alv_prosentti) AS summa
+        "SELECT SUM(t.maara * (tt.sis_hinta * 1.25) * (1 - (t.alennus/100)) * (1 + ty.alv_prosentti/100)) AS summa
             FROM tarvikkeet t
             JOIN tarvike tt ON tt.id = t.tarvike_id
             JOIN tyyppi ty ON ty.nimi = tt.tyyppi_nimi
