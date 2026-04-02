@@ -249,6 +249,6 @@ if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
 </form>
 <?php endif; ?>
 
-
+</div>
 </body>
 </html>
