@@ -63,7 +63,7 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
 </head>
 <body>
 <?php require 'lasku.php'; ?>
-<div class="content-container">
+<div class="content-container" style="margin-top: 20px">
 <h2>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
 <form method="post" class="muokkaa-tarvikkeita">
     <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
@@ -116,5 +116,11 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
     </p>
 </form>
 </div>
+<script>
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
+</script>
 </body>
 </html>
