@@ -85,7 +85,7 @@ require_once('data/tarvikkeet_data.php');
                     <tr>
                         <th>Tuntityötyyppi</th>
                         <th>Tunnit</th>
-                        <th class="työ-alennus-column">Alennusprosentti</th>
+                        <th class="työ-alennus-column">Alennus-%</th>
                     </tr>
 
                     <?php foreach($kaikki_tehtavat as $id => $tuntityo): ?>
@@ -125,7 +125,7 @@ require_once('data/tarvikkeet_data.php');
                     <tr>
                         <th>Tarvike</th>
                         <th>Määrä</th>
-                        <th>Alennusprosentti</th>
+                        <th>Alennus-%</th>
                     </tr>
 
                     <?php foreach($kaikki_tarvikkeet as $id => $tarvike): ?>

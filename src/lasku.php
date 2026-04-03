@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
         <tr>
             <td><?= $tyotehtava['tehtava'] ?></td>
             <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] ?>%</td>
+            <td><?= $tyotehtava['alennus'] . ' %' ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
             <td><?= $tarvike['maara'] ?></td>
             <td><?= $tarvike['yksikko'] ?></td>
             <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <td><?= $tarvike['alennus'] ?>%</td>
+                <td><?= $tarvike['alennus'] . ' %' ?></td>
             <?php endif; ?>
         </tr>
         <?php endforeach; ?>
