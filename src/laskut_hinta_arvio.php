@@ -18,12 +18,12 @@ require_once('data/tarvikkeet_data.php');
     <title>Laskut</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/laskut.css">
+    <link rel="stylesheet" href="styles/laskut_hinta_arvio.css">
 </head>
 
 <body>
     <div class="content-container">
-        <a href="laskut.php">Takaisin laskuihin</a>
+        <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
         <h2>Luo lasku</h2>
         <h3>Hinta-arvio</h3>
         <form method="post" action="laskut_luo_lasku.php" class="hinta-arvio">

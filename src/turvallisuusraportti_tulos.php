@@ -21,7 +21,7 @@ require_once('turvallisuusraportti_luonti.php');
 </head>
 <body>
     <div class="content-container">
-        <a href="turvallisuusraportti.php">Takaisin turvallisuusraportin luontiin</a>
+        <a href="turvallisuusraportti.php" class="link-button">Takaisin turvallisuusraportin luontiin</a>
         <?php if(empty($_SESSION['turvallisuusraportti'])): ?>
         <p><strong>Turvallisuusraporttia ei olemassa. Luo ensin turvallisuusraportti.</strong></p>
         <?php else: ?>

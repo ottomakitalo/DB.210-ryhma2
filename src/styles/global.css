@@ -47,15 +47,21 @@ body {
     background-color: #77a5ff;
 }
 
-button, .back-link {
+button, .link-button {
     padding: 6px 14px;
     background-color: #e0e0e0;
     border-radius: 6px;
     font-size: 14px;
-    transition: 0.2s;
+    transition: background-color 0.2s;
     border: none;
+    color: black;
 }
 
-button:hover, .back-link:hover {
+button:hover, .link-button:hover {
     background-color: #c4c4c4;
+}
+
+.link-button {
+    text-decoration: none;
+    display: inline-block;
 }

@@ -1,0 +1,53 @@
+.hinta-arvio h4 {
+    margin-top: 32px;
+    margin-bottom: 16px  
+}
+
+.hinta-arvio .tyotyyppi-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.hinta-arvio .urakkahinta-container {
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hinta-arvio .urakkahinta-container .urakkahinta-input {
+    width: 93px;
+}
+
+.hinta-arvio table .tarvike-input,
+.hinta-arvio table .alennus-input {
+    width: 42px;
+}
+
+.hinta-arvio table .tunti-input {
+    width: 67px;
+}
+
+.hinta-arvio table td {
+    padding: 8px 4px;
+}
+
+table {
+    border-radius: 10px;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 8px 4px;
+    text-align: start;
+}
+
+th {
+    background-color: #5e93fb;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}

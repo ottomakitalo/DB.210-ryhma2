@@ -27,7 +27,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 
 <body>
     <div class="content-container">
-        <a href="laskut_hinta_arvio.php">Takaisin hinta-arvioon</a>
+        <a href="laskut_hinta_arvio.php" class="link-button">Takaisin hinta-arvioon</a>
         <?php if(empty($laskutiedot)): ?>
         <p><strong>Hinta-arviota ei olemassa. Luo ensin hinta-arvio.</strong></p>
         <?php else: ?>

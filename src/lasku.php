@@ -65,10 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <title>Lasku <?= $id ?></title>
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/taulu.css">
+    <link rel="stylesheet" href="styles/laskut.css">
 </head>
 <body>
 
 <div class="content-container">
+<a href="laskut.php" class="link-button">Takaisin laskuihin</a>
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
 <p><strong>Asiakas:</strong> <?= $lasku['asiakas'] ?></p>
@@ -245,7 +247,7 @@ if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
 ?>
 
 <?php if ($naytaLisapainike): ?>
-<form action="luo_lisalasku.php" method="post">
+<form action="luo_lisalasku.php" method="post" class="lisalasku_form">
     <input type="hidden" name="id" value="<?= $id ?>">
     <button type="submit">Luo muistutus- / karhulasku</button>
 </form>
