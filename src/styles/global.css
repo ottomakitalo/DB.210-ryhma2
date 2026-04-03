@@ -40,8 +40,22 @@ body {
     flex-direction: row;
     gap: 12px;
     padding-top: 20px;
+    align-items: center;
 }
 
 body {
     background-color: #77a5ff;
+}
+
+button, .back-link {
+    padding: 6px 14px;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s;
+    border: none;
+}
+
+button:hover, .back-link:hover {
+    background-color: #c4c4c4;
 }
