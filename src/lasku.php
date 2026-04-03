@@ -128,7 +128,7 @@ switch($page) {
 <?php else: ?>
 <p>Ei työtehtäviä.</p>
 <?php endif; ?>
-<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
     <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 
@@ -158,7 +158,7 @@ switch($page) {
 <?php else: ?>
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
-<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
     <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Muokkaa tarvikkeita</a></p>
 <?php endif; ?>
 
