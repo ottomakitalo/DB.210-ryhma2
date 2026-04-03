@@ -26,6 +26,8 @@ require_once('turvallisuusraportti_luonti.php');
         <p><strong>Turvallisuusraporttia ei olemassa. Luo ensin turvallisuusraportti.</strong></p>
         <?php else: ?>
         <h2>Turvallisuusraportti</h2>
+        <p>Alla olevasta taulukosta näet, mitä tarvikkeita on lähetetty kullekin asiakkaalle eriteltynä heidän työkohteillaan.</p> 
+        <p>Valitsemasi tarvikkeet ovat: <?= implode(', ', $_SESSION['tarvikkeet']) ?></p>
         <table class="turvallisuusraportti">
             <tr>
                 <th>Asiakas</th>
