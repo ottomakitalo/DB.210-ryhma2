@@ -242,8 +242,10 @@ if (!$q_lisalaskut) {
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="maksa_lasku">Merkitse maksetuksi</button>
-            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-            <label for="valmis">Lasku maksettu</label>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Lasku maksettu</label>
+            </div>
         </div>
     </form>
 <?php endif; ?>
@@ -252,8 +254,10 @@ if (!$q_lisalaskut) {
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="laskuta">Laskuta lasku</button>
-            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-            <label for="valmis">Valmis laskutettavaksi</label>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Valmis laskutettavaksi</label>
+            </div>
         </div>
     </form>
 <?php endif; ?>
