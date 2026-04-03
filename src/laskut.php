@@ -54,7 +54,7 @@ require_once('data/laskut_data.php');
                 <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
                 <td <?= $styleEra ?>><?= $lasku['erapvm'] ?></td>
                 <td><?= $lasku['status'] ?></td>
-                <td><?= $lasku['yhteensä'] ?></td>
+                <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></td>
 
                 <td>
                     <?php if ($lasku['status'] === 'Maksettu'): ?>

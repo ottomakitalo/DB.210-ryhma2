@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
 <p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
-<p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
+<p><strong>Summa:</strong> <?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></p>
 <p><strong>Status:</strong> <?= $lasku['status'] ?></p>
 <?php if($lasku['maksettu_pvm'] !== ''): ?>
     <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
