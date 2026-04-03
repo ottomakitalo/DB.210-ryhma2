@@ -8,11 +8,11 @@ require_once('kayttajarooli.php');
         <li><a href="index.php" class="<?= $page === 'index.php' ? "active" : ""?>">Etusivu</a></li>
         <li><a href="hinnasto.php" class="<?= $page === 'hinnasto.php' ? "active" : ""?>">Hinnasto</a></li>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'käyttäjä' || $_SESSION['rooli'] === 'admin')): ?>
-        <li><a href="laskut.php" class="<?= $page === 'laskut.php' ? "active" : ""?>">Laskut</a></li>
+        <li><a href="laskut.php" class="<?= str_starts_with($page, 'lasku') ? "active" : ""?>">Laskut</a></li>
         <li><a href="asiakkaat.php" class="<?= $page === 'asiakkaat.php' ? "active" : ""?>">Asiakkaat</a></li>
         <?php endif; ?>
         <?php if (isset($_SESSION['rooli']) && ($_SESSION['rooli'] === 'admin')): ?>
-        <li><a href="turvallisuusraportti.php" class="<?= $page === 'turvallisuusraportti.php' ? "active" : ""?>">Turvallisuusraportti</a></li>
+        <li><a href="turvallisuusraportti.php" class="<?= str_starts_with($page, 'turvallisuusraportti') ? "active" : ""?>">Turvallisuusraportti</a></li>
         <li><a href="historia.php" class="<?= $page === 'historia.php' ? "active" : ""?>">Historia</a></li>
         <?php endif; ?>
     </ul>
