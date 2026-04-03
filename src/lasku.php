@@ -57,14 +57,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
 }
 
 $page = basename($_SERVER['PHP_SELF']);
-$hrefTyotehtavienMuokkaus = "";
-$hrefTarvikkeidenMuokkaus = "";
-if($page === "lasku.php") {
-    $hrefTyotehtavienMuokkaus = "muokkaa_tyotehtavia.php?id=" . $id;
-    $hrefTarvikkeidenMuokkaus = "muokkaa_tarvikkeita.php?id=" . $id;
-} else {
-    $hrefTyotehtavienMuokkaus = "lasku.php?id=" . $id;
-    $hrefTarvikkeidenMuokkaus = "lasku.php?id=" . $id;
+$laskuPolku = "lasku.php?id=" . $id;
+$tyotehtavatPolku = "muokkaa_tyotehtavia.php?id=" . $id;
+$tarvikkeetPolku = "muokkaa_tarvikkeita.php?id=" . $id;
+
+
+$hrefTyotehtavat = "";
+$hrefTarvikkeet = "";
+switch($page) {
+    case "muokkaa_tyotehtavia.php":
+        $hrefTyotehtavat = $laskuPolku;
+        $hrefTarvikkeet = $tarvikkeetPolku;
+        break;
+
+    case "muokkaa_tarvikkeita.php":
+        $hrefTyotehtavat = $tyotehtavatPolku;
+        $hrefTarvikkeet = $laskuPolku;
+        break;        
+
+    default:
+        $hrefTyotehtavat = $tyotehtavatPolku;
+        $hrefTarvikkeet = $tarvikkeetPolku;
 }
 ?>
 
@@ -116,7 +129,7 @@ if($page === "lasku.php") {
 <p>Ei työtehtäviä.</p>
 <?php endif; ?>
 <?php if($lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTyotehtavienMuokkaus ?>" class="link-button">Muokkaa työtehtäviä</a></p>
+    <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 
 <?php if($tarvikkeet !== []): ?>
@@ -146,7 +159,7 @@ if($page === "lasku.php") {
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
 <?php if($lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTarvikkeidenMuokkaus ?>" class="link-button">Muokkaa tarvikkeita</a></p>
+    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Muokkaa tarvikkeita</a></p>
 <?php endif; ?>
 
 <h3>Lisälaskut</h3>
