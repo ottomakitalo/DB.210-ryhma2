@@ -48,7 +48,7 @@ require_once('data/laskut_data.php');
                 }
             ?>
             <tr>
-                <td><a href="lasku.php?id=<?= $id ?>"><?= $id ?></a></td>
+                <td><a href="lasku.php?id=<?= $id ?>" class="link-button"><?= $id ?></a></td>
                 <td><?= $lasku['asiakas'] ?></td>
                 <td><?= $lasku['kohde'] ?></td>
                 <td><?= $lasku['tyyppi'] ?></td>
