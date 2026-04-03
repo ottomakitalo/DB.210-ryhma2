@@ -95,7 +95,7 @@ if (isset($_POST['muokkaa_tehtavia'])) {
             </td>
             <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <td>
-                <?= number_format($tehtava['tuntihinta'] * 1.24, 2) ?> €
+                <?= number_format($tehtava['tuntihinta'] * 1.24, 2, ',', ' ') ?> €
             </td>
             <td>
                 <div>
