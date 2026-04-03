@@ -125,7 +125,7 @@ if(isset($_POST['luo_lasku'])) {
     }
     
     unset($_SESSION['laskutiedot']);
-    header("Location: laskut.php");
+    header("Location: laskut_hinta_arvio.php");
     exit();
 }
 
