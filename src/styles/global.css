@@ -1,5 +1,6 @@
 body { 
     font-family: Arial;
+    background-color: #77a5ff;
 }
 
 .content-container {
@@ -32,7 +33,7 @@ body {
 
 .navigation-list li .active {
     font-weight: bold;
-    color: green;
+    color: #236BFB;
 }
 
 .submit-button-container {
@@ -41,10 +42,6 @@ body {
     gap: 12px;
     padding-top: 20px;
     align-items: center;
-}
-
-body {
-    background-color: #77a5ff;
 }
 
 button, .link-button {
