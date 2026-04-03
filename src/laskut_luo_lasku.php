@@ -47,7 +47,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 
                 <div>
                     <span class="tieto-label">Työtyyppi:</span>
-                    <span><?= $laskutiedot['työtyyppi'] ?></span>
+                    <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö' ?></span>
                 </div>
 
                 <?php if(!empty($laskutiedot['tuntityöt']) || $laskutiedot['työtyyppi'] === 'urakka'): ?>
