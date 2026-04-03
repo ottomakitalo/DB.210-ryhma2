@@ -27,7 +27,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 
 <body>
     <div class="content-container">
-        <a href="laskut.php">Takaisin hinta-arvioon</a>
+        <a href="laskut_hinta_arvio.php" class="link-button">Takaisin hinta-arvioon</a>
         <?php if(empty($laskutiedot)): ?>
         <p><strong>Hinta-arviota ei olemassa. Luo ensin hinta-arvio.</strong></p>
         <?php else: ?>
@@ -47,7 +47,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 
                 <div>
                     <span class="tieto-label">Työtyyppi:</span>
-                    <span><?= $laskutiedot['työtyyppi'] ?></span>
+                    <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö' ?></span>
                 </div>
 
                 <?php if(!empty($laskutiedot['tuntityöt']) || $laskutiedot['työtyyppi'] === 'urakka'): ?>
@@ -60,7 +60,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     <th>Työtyyppi</th>
                                     <th>Tunnit</th>
                                     <th>Alv-prosentti</th>
-                                    <th>Alennusprosentti</th>
+                                    <th>Alennus-%</th>
                                     <th>Summa</th>
                                 </tr>
                             </thead>
@@ -97,7 +97,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     </td>
                                     <td>
                                         <div>
-                                            <span><?= $tuntityo['yhteensä'] ?></span>
+                                            <span><?= number_format($tuntityo['yhteensä'], 2, ',', ' ') ?></span>
                                             <span>€</span>
                                         </div>
                                     </td>
@@ -137,7 +137,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     </td>
                                     <td>
                                         <div>
-                                            <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['nettosumma'] : $tuntityotYhteensa ?></span>
+                                            <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['nettosumma'] : $tuntityotYhteensa, 2, ',', ' ') ?></span>
                                             <span>€</span>
                                         </div>
                                     </td>
@@ -157,7 +157,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 <th>Tarvike</th>
                                 <th>Määrä</th>
                                 <th>Alv-prosentti</th>
-                                <th>Alennusprosentti</th>
+                                <th>Alennus-%</th>
                                 <th>Summa</th>
                             </tr>
         
@@ -185,7 +185,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $tarvike['yhteensä'] ?></span>
+                                        <span><?= number_format($tarvike['yhteensä'], 2, ',', ' ') ?></span>
                                         <span>€</span>
                                     </div>
                                 </td>
@@ -204,7 +204,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     <td></td>
                                     <td>
                                         <div>
-                                            <span><?= $tarvikkeetYhteensa ?></span>
+                                            <span><?= number_format($tarvikkeetYhteensa, 2, ',', ' ') ?></span>
                                             <span>€</span>
                                         </div>
                                     </td>
@@ -217,22 +217,22 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
 
                 <div>
                     <span class="tieto-label">Nettosumma:</span>
-                    <span><?= $laskutiedot['nettosumma'] . ' €' ?></span>
+                    <span><?= number_format($laskutiedot['nettosumma'], 2, ',', ' ') . ' €' ?></span>
                 </div>
 
                 <div>
                     <span class="tieto-label">Alv:</span>
-                    <span><?= $laskutiedot['alvsumma'] . ' €' ?></span>
+                    <span><?= number_format($laskutiedot['alvsumma'], 2, ',', ' ') . ' €' ?></span>
                 </div>
 
                 <div>
                     <span class="tieto-label">Yhteensä:</span>
-                    <span><?= ($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']) . ' €' ?></span>
+                    <span><?= number_format(($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']), 2, ',', ' ') . ' €' ?></span>
                 </div>
 
                 <div>
                     <span class="tieto-label">Kotitalousvähennys:</span>
-                    <span><?= $laskutiedot['kt-vähennys'] . ' €' ?></span>
+                    <span><?= number_format($laskutiedot['kt-vähennys'], 2, ',', ' ') . ' €' ?></span>
                 </div>      
             </div>
 

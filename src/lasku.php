@@ -55,6 +55,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
         exit();
     }
 }
+
+$page = basename($_SERVER['PHP_SELF']);
+$laskuPolku = "lasku.php?id=" . $id;
+$tyotehtavatPolku = "muokkaa_tyotehtavia.php?id=" . $id;
+$tarvikkeetPolku = "muokkaa_tarvikkeita.php?id=" . $id;
+
+
+$hrefTyotehtavat = "";
+$hrefTarvikkeet = "";
+switch($page) {
+    case "muokkaa_tyotehtavia.php":
+        $hrefTyotehtavat = $laskuPolku;
+        $hrefTarvikkeet = $tarvikkeetPolku;
+        break;
+
+    case "muokkaa_tarvikkeita.php":
+        $hrefTyotehtavat = $tyotehtavatPolku;
+        $hrefTarvikkeet = $laskuPolku;
+        break;        
+
+    default:
+        $hrefTyotehtavat = $tyotehtavatPolku;
+        $hrefTarvikkeet = $tarvikkeetPolku;
+}
 ?>
 
 
@@ -65,10 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     <title>Lasku <?= $id ?></title>
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/taulu.css">
+    <link rel="stylesheet" href="styles/laskut.css">
 </head>
 <body>
 
 <div class="content-container">
+<a href="laskut.php" class="link-button">Takaisin laskuihin</a>
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
 <p><strong>Asiakas:</strong> <?= $lasku['asiakas'] ?></p>
@@ -76,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
 <p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
-<p><strong>Summa:</strong> <?= $lasku['yhteensä'] ?></p>
+<p><strong>Summa:</strong> <?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></p>
 <p><strong>Status:</strong> <?= $lasku['status'] ?></p>
 <?php if($lasku['maksettu_pvm'] !== ''): ?>
     <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
@@ -95,10 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
         <tr>
             <td><?= $tyotehtava['tehtava'] ?></td>
             <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] ?>%</td>
+            <td><?= $tyotehtava['alennus'] . ' %' ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
+<?php else: ?>
+<p>Ei työtehtäviä.</p>
+<?php endif; ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+    <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 
 <?php if($tarvikkeet !== []): ?>
@@ -119,13 +150,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
             <td><?= $tarvike['maara'] ?></td>
             <td><?= $tarvike['yksikko'] ?></td>
             <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <td><?= $tarvike['alennus'] ?>%</td>
+                <td><?= $tarvike['alennus'] . ' %' ?></td>
             <?php endif; ?>
         </tr>
         <?php endforeach; ?>
     </table>
 <?php else: ?>
     <p>Ei tarvikkeita.</p>
+<?php endif; ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Muokkaa tarvikkeita</a></p>
 <?php endif; ?>
 
 <h3>Lisälaskut</h3>
@@ -208,8 +242,10 @@ if (!$q_lisalaskut) {
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="maksa_lasku">Merkitse maksetuksi</button>
-            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-            <label for="valmis">Lasku maksettu</label>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Lasku maksettu</label>
+            </div>
         </div>
     </form>
 <?php endif; ?>
@@ -218,14 +254,12 @@ if (!$q_lisalaskut) {
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="laskuta">Laskuta lasku</button>
-            <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-            <label for="valmis">Valmis laskutettavaksi</label>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Valmis laskutettavaksi</label>
+            </div>
         </div>
     </form>
-<?php if($lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="muokkaa_tarvikkeita.php?id=<?= $id ?>">Muokkaa tarvikkeita</a></p>
-    <p><a href="muokkaa_tyotehtavia.php?id=<?= $id ?>">Muokkaa työtehtäviä</a></p>
-<?php endif; ?>
 <?php endif; ?>
 
 
@@ -245,7 +279,7 @@ if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
 ?>
 
 <?php if ($naytaLisapainike): ?>
-<form action="luo_lisalasku.php" method="post">
+<form action="luo_lisalasku.php" method="post" class="lisalasku_form">
     <input type="hidden" name="id" value="<?= $id ?>">
     <button type="submit">Luo muistutus- / karhulasku</button>
 </form>

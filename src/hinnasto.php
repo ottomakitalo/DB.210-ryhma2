@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
             <?php foreach ($kaikki_tehtavat as $tehtava): ?>
             <tr>
                 <td><?= htmlspecialchars($tehtava['tehtava']) ?></td>
-                <td><?= htmlspecialchars($tehtava['tuntihinta']) ?></td>
+                <td><?= htmlspecialchars(number_format($tehtava['tuntihinta'], 2, ',', ' ')) ?></td>
             </tr>
             <?php endforeach; ?>
         </table>
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
-                <td><?= htmlspecialchars($tarvike['hinta']) ?></td>
+                <td><?= htmlspecialchars(number_format($tarvike['hinta'], 2, ',', ' ')) ?></td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['varasto']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>

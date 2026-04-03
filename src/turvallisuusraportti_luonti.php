@@ -1,11 +1,13 @@
 <?php
 if(isset($_POST['luo-turvallisuusraportti'])) {
     unset($_SESSION['turvallisuusraportti']);
+    unset($_SESSION['tarvikkeet']);
 
     $tarvikkeet = $_POST['tarvikkeet'] ?? [];
     $tarvikeIdt = implode(',', $tarvikkeet);
 
     $turvallisuusraportti = [];
+    $tarvikkeetLista = [];
 
     if(!empty($tarvikeIdt)) {
         $q = pg_query($yhteys,
@@ -29,9 +31,14 @@ if(isset($_POST['luo-turvallisuusraportti'])) {
                 'määrä'      => $row['maara'],
                 'toimittaja' => $row['toimittaja']
             ];
+
+            $tarvikkeetLista[] = $row['tarvike'];
         }
     }
     
+    natcasesort($tarvikkeetLista);
+
     $_SESSION['turvallisuusraportti'] = $turvallisuusraportti;
+    $_SESSION['tarvikkeet'] = $tarvikkeetLista;
 }
 ?>

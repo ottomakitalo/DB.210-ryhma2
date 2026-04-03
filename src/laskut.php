@@ -7,9 +7,7 @@ if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
     exit();
 }
 
-require_once('data/asiakkaat_data.php');
-require_once('data/tyotehtavat_data.php');
-require_once('data/tarvikkeet_data.php');
+require_once('data/laskut_data.php');
 ?>
 
 <!DOCTYPE html>
@@ -18,172 +16,78 @@ require_once('data/tarvikkeet_data.php');
     <title>Laskut</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/laskut.css">
+    <link rel="stylesheet" href="styles/taulu.css">
 </head>
-
 <body>
     <div class="content-container">
-        <h2>Luo lasku</h2>
-        <h3>Hinta-arvio</h3>
-        <form method="post" action="laskut_luo_lasku.php" class="hinta-arvio">
-            <div class="tyokohde-container">
-                 <h4>Työkohde</h4>
-                <select name="tyokohde" required>
-                    <option value="">Valitse työkohde</option>
-                    <?php foreach($asiakkaat as $id => $asiakas) {
-                        foreach($asiakas['tyokohteet'] as $id => $tyokohde) {
-                            $value = $asiakas['id'] . ':' . $tyokohde['id'];
-                            $label = $asiakas['nimi'] . ' - ' . $tyokohde['osoite'];
-                            echo "<option value=\"$value\">$label</option>";
+        <h2>Laskut</h2>
+        <a href="laskut_hinta_arvio.php" class="link-button">Siirry laskun luontiin</a>
+        <h3>Laskuluettelo</h3>
+        <table>
+            <tr>
+                <th>Lasku</th>
+                <th>Asiakas</th>
+                <th>Työkohde</th>
+                <th>Tyyppi</th>
+                <th>Päiväys</th>
+                <th>Eräpäivä</th>
+                <th>Status</th>
+                <th>Summa</th>
+                <th>Lisälaskut</th>
+            </tr>
+            <!-- Käytetty Copilotia apuna -->
+            <?php foreach($laskut as $id => $lasku): ?>
+                <?php
+                $styleEra = "";
+                if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
+                    $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
+                    //Eräpäivä punaiseksi, jos se on mennyt jo               
+                    if ($era < new DateTime()) {
+                        $styleEra = 'style="color:red;font-weight:bold"';
+                    }
+                }
+            ?>
+            <tr>
+                <td><a href="lasku.php?id=<?= $id ?>"><?= $id ?></a></td>
+                <td><?= $lasku['asiakas'] ?></td>
+                <td><?= $lasku['kohde'] ?></td>
+                <td><?= $lasku['tyyppi'] ?></td>
+                <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
+                <td <?= $styleEra ?>><?= $lasku['erapvm'] ?></td>
+                <td><?= $lasku['status'] ?></td>
+                <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></td>
+
+                <td>
+                    <?php if ($lasku['status'] === 'Maksettu'): ?>
+                            -
+                        <?php elseif ($lasku['lisalaskuja'] == 0): ?>
+                            -
+                        <?php else: ?>
+
+                        <?php
+                        $ll = $lasku['lisalaskuja'];
+
+                        if ($ll == 1) {
+                            echo "Muistutuslasku";
+                        } else {
+                            $karhu_nro = $ll - 1;
+                            echo $karhu_nro . ". karhulasku";
                         }
-                    }?>
-                </select>
-            </div>
 
-            <div class="tyotyyppi-container">
-                <h4>Työtyyppi</h4>
-                <div class="tyotyyppi-inputs" id="tyotyyppi-inputs">
-                    <div>
-                        <input type="radio" name="tyotyyppi" value="tunti" id="tunti" required>
-                        <label for="tunti">Tuntityö</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="tyotyyppi" value="urakka" id="urakka" required>
-                        <label for="urakka">Urakka</label>
-                    </div>
-                </div>
-            </div>
+                        // summa ja erä
+                        if ($ll > 0) {
+                            echo "<br>" . number_format($lasku['lisalasku_summa'], 2, ',', ' ') . " €";
+                            echo "<br>Erä: " . date('d.m.Y', strtotime($lasku['lisalasku_erapvm']));
+                        }
+                        ?>
 
-            <div class="urakkahinta-container" id="urakkahinta-container" style="display:none">
-                <div>
-                    <span>Urakkahinta:</span>
-                    <input
-                        class="urakkahinta-input" 
-                        type="number" 
-                        name="urakkahinta" 
-                        placeholder="0"
-                        min="0">
-                    <span>€</span>
-                </div>
-                <div>
-                    <span>Alennusprosentti:</span>
-                    <input 
-                        class="alennus-input" 
-                        type="number" 
-                        name="urakka-alennus" 
-                        placeholder="0" 
-                        min="0"
-                        max="100">
-                    <span>%</span>
-                </div>   
-            </div>
 
-            <div class="tuntityot-container">
-                <h4>Tuntityöt</h4>
-                <table>
-                    <tr>
-                        <th>Tuntityötyyppi</th>
-                        <th>Tunnit</th>
-                        <th class="työ-alennus-column">Alennusprosentti</th>
-                    </tr>
+                    <?php endif; ?>
+                </td>
 
-                    <?php foreach($kaikki_tehtavat as $id => $tuntityo): ?>
-                    <tr>
-                        <td><?= $tuntityo['tehtava'] ?></td>
-                        <td>
-                            <div>
-                                <input
-                                    class="tunti-input" 
-                                    type="number" 
-                                    name="<?= $tuntityo['tehtava'] ?>" 
-                                    placeholder="0"
-                                    min="0">
-                                <span>h</span>
-                            </div>
-                        </td>
-                        <td class="työ-alennus-column">
-                            <div>
-                                <input 
-                                    class="alennus-input" 
-                                    type="number" 
-                                    name="<?= $tuntityo['tehtava'] ?>-alennus" 
-                                    placeholder="0" 
-                                    min="0"
-                                    max="100">
-                                <span>%</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>
-            
-            <div class="tarvikkeet-container">
-                <h4>Tarvikkeet</h4>
-                <table>
-                    <tr>
-                        <th>Tarvike</th>
-                        <th>Määrä</th>
-                        <th>Alennusprosentti</th>
-                    </tr>
-
-                    <?php foreach($kaikki_tarvikkeet as $id => $tarvike): ?>
-                    <tr>
-                        <td><?= $tarvike['tarvike'] ?></td>
-                        <td>
-                            <div>
-                                <input
-                                    class="tarvike-input" 
-                                    type="number" 
-                                    name="<?= $tarvike['tarvike'] ?>" 
-                                    placeholder="0"
-                                    min="0">
-                                <span><?= $tarvike['yksikkö'] ?></span>
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <input 
-                                    class="alennus-input"
-                                    type="number" 
-                                    name="<?= $tarvike['tarvike'] ?>-alennus" 
-                                    placeholder="0" 
-                                    min="0"
-                                    max="100">
-                                <span>%</span>
-                            </div>
-                        <td>
-                    </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>
-
-            <div class="submit-button-container">
-                <button type="submit" name="luo_hinta-arvio">Luo hinta-arvio</button>
-            </div>
-        </form>
+            </tr>
+            <?php endforeach; ?>    
+        </table>
     </div>
-    <script>
-        const urakkaSelection = document.getElementById('urakkahinta-container');
-        const tyotyyppiContainer = document.getElementById('tyotyyppi-inputs');
-        const alennusInputs = document.querySelectorAll('.työ-alennus-column');
-
-        tyotyyppiContainer.addEventListener('change', (e) => {
-            if(e.target.value === 'urakka') {
-                urakkaSelection.style.display = '';
-
-                alennusInputs.forEach(el => {
-                    el.style.display ='none'
-                });
-            }
-            else if(e.target.value === 'tunti') {
-                urakkaSelection.style.display = 'none';
-
-                alennusInputs.forEach(el => {
-                    el.style.display =''
-                });
-            }
-        });
-    </script>
 </body>
 </html>

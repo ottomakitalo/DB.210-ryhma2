@@ -32,7 +32,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
                 'tyyppi'   => $tuntityo['tehtava'],
                 'kesto'    => $kesto,
                 'alennus'  => $alennusprosentti,
-                'yhteensä' => $tuntityoYhteensa,
+                'yhteensä' => round($tuntityoYhteensa, 2),
             ];
         }
     }
@@ -60,7 +60,7 @@ if(isset($_POST['luo_hinta-arvio'])) {
                 'yksikkö'  => $tarvike['yksikkö'],
                 'alennus'  => $alennusprosentti,
                 'alv'      => $tarvike['alv'],
-                'yhteensä' => $tarvikeYhteensa,
+                'yhteensä' => round($tarvikeYhteensa, 2),
             ];
         }
     }
@@ -98,10 +98,10 @@ if(isset($_POST['luo_hinta-arvio'])) {
         'urakka-alennus' => $urakkaAlennus,
         'tuntityöt'      => $valitutTyot,
         'tarvikkeet'     => $valitutTarvikkeet,
-        'nettosumma'     => $nettosumma,
-        'alvsumma'       => $alvsumma,
-        'yhteensä'       => $nettosumma + $alvsumma,
-        'kt-vähennys'    => $kotitalousVahennys
+        'nettosumma'     => round($nettosumma, 2),
+        'alvsumma'       => round($alvsumma, 2),
+        'yhteensä'       => round($nettosumma + $alvsumma, 2),
+        'kt-vähennys'    => round($kotitalousVahennys, 2)
     ];
 }
 
@@ -125,7 +125,7 @@ if(isset($_POST['luo_lasku'])) {
     }
     
     unset($_SESSION['laskutiedot']);
-    header("Location: laskut.php");
+    header("Location: laskut_hinta_arvio.php");
     exit();
 }
 
