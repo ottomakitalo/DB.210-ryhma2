@@ -52,3 +52,11 @@ tr:hover {
 tr:not(:last-child) {
     border-bottom: 1px solid;
 }
+
+input[type=checkbox]+label {
+    transition: color 0.2s;
+}
+
+input[type=checkbox]:disabled+label {
+    color: #ccc;
+}
