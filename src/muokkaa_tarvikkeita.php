@@ -25,16 +25,39 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
     foreach ($kaikki_tarvikkeet as $tarvike_id => $tarvike) {
         $maara = isset($maarat[$tarvike_id]) ? (int)$maarat[$tarvike_id] : 0;
         if ($maara <= 0) continue;
-        $alennus = isset($alennukset[$tarvike_id]) ? (float)$alennukset[$tarvike_id] : 0.0;
+        $alennus = (isset($alennukset[$tarvike_id]) && $alennukset[$tarvike_id] !== '') ? (float)$alennukset[$tarvike_id] : null;
 
-        $insert = pg_query_params(
+        $tarvikkeet_maara = pg_query_params(
             $yhteys,
-            "UPDATE tarvikkeet SET maara = maara + $3, alennus = $4 WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1) AND tarvike_id = $2",
-            [$id, $tarvike_id, $maara, $alennus]
+            "SELECT maara FROM tarvikkeet WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1) AND tarvike_id = $2",
+            [$id, $tarvike_id]
         );
+        if ($tarvikkeet_maara === false) {
+            die("Tarvikkeiden haku epäonnistui: " . pg_last_error($yhteys));
+        }
 
-        if ($insert === false) {
-            die("Tuotteen lisäys epäonnistui: " . pg_last_error($yhteys));
+        // Jos tarviketta ei vielä ole laskulla, lisätään uusi rivi, muuten päivitetään vanhaa
+        if (pg_num_rows($tarvikkeet_maara) === 0)  {
+            $insert = pg_query_params(
+                $yhteys,
+                "INSERT INTO tarvikkeet (tyosuoritus_id, tarvike_id, maara, alennus) VALUES ((SELECT tyosuoritus_id FROM lasku WHERE id = $1), $2, $3, $4)",
+                [$id, $tarvike_id, $maara, $alennus ?? 0]
+            );
+
+            if ($insert === false) {
+                die("Tarvikkeen lisäys epäonnistui: " . pg_last_error($yhteys));
+            }
+        }
+        else {
+            $update = pg_query_params(
+                $yhteys,
+                "UPDATE tarvikkeet SET maara = maara + $3, alennus = COALESCE($4, alennus) WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1) AND tarvike_id = $2",
+                [$id, $tarvike_id, $maara, $alennus]
+            );
+
+            if ($update === false) {
+                die("Tuotteen päivitys epäonnistui: " . pg_last_error($yhteys));
+            }
         }
 
         $updateVarasto = pg_query_params(
@@ -100,7 +123,7 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
                         placeholder="<?= isset($tarvikkeet[$tid]['alennus']) ? htmlspecialchars($tarvikkeet[$tid]['alennus']) : 0 ?>"
                         min="0"
                         max="100"
-                        value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : '' ?>"
+                        value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : null ?>"
                     <span>%</span>
                 </div>
             </td>
