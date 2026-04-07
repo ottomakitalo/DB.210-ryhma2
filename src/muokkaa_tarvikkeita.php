@@ -26,6 +26,19 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
         $maara = isset($maarat[$tarvike_id]) ? (int)$maarat[$tarvike_id] : 0;
         if ($maara <= 0) continue;
         $alennus = (isset($alennukset[$tarvike_id]) && $alennukset[$tarvike_id] !== '') ? (float)$alennukset[$tarvike_id] : null;
+        
+        // Hae alv-prosentti tietokannasta
+        $alv_prosentti = pg_query_params(
+            $yhteys,
+            "SELECT alv_prosentti FROM tyyppi 
+            JOIN tarvike ON tarvike.tyyppi_nimi = tyyppi.nimi
+            WHERE tarvike.id = $1",
+            [$tarvike_id]
+        );
+        $alv = 0;
+        if ($alv_prosentti && $row = pg_fetch_assoc($alv_prosentti)) {
+            $alv = (float)$row['alv_prosentti'];
+        }
 
         $tarvikkeet_maara = pg_query_params(
             $yhteys,
@@ -69,6 +82,19 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
         if(!$updateVarasto) {
             die("Varaston päivitys epäonnistui: " . pg_last_error($yhteys));
         }
+
+        // päivitä summa (sis. alennus, 25% voittoprosentti, ja alv)
+        $updateSumma = pg_query_params(
+            $yhteys,
+            "UPDATE lasku SET yhteensa = yhteensa + ($1 * (sis_hinta * (1 - COALESCE($2, 0) / 100.0) * 1.25 * (1 + $3 / 100.0))) 
+            FROM tarvike 
+            WHERE lasku.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $4) AND tarvike.id = $5",
+            [$maara, $alennus, $alv, $id, $tarvike_id]
+        );
+
+        if ($updateSumma === false) {
+            die("Laskun summan päivitys epäonnistui: " . pg_last_error($yhteys));
+        }
     }
 
     header("Location: lasku.php?id=" . $id);
@@ -86,7 +112,6 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
 <?php require 'lasku.php'; ?>
 <div class="content-container" style="margin-top: 20px">
 <h2>Lisää tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
-<h4>Alennus päivitetään myös aikasemmille tarvikkeille</h4>
 <form method="post" class="lisaa-tarvikkeita">
     <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
     <table border="1" cellpadding="8" class="tarvikkeet">
@@ -116,15 +141,20 @@ if (isset($_POST['lisaa_tarvikkeita'])) {
             <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
             <td>
                 <div>
+                    <?php if (!isset($tarvikkeet[$tid]['alennus'])): ?>
                     <input
                         class="alennus-input"
                         type="number"
                         name="alennus[<?= $tid ?>]"
-                        placeholder="<?= isset($tarvikkeet[$tid]['alennus']) ? htmlspecialchars($tarvikkeet[$tid]['alennus']) : 0 ?>"
+                        placeholder="0"
                         min="0"
                         max="100"
                         value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : null ?>"
+                    >
                     <span>%</span>
+                    <?php else: ?>
+                    <span><?= htmlspecialchars($tarvikkeet[$tid]['alennus']) ?> %</span>
+                    <?php endif; ?>
                 </div>
             </td>
             <?php endif; ?>
