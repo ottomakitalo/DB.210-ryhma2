@@ -16,16 +16,10 @@ if ($lasku === null || $lasku['erapvm'] !== '') {
 }
 
 // Functio tehty Copilotin avustuksella
-if (isset($_POST['muokkaa_tarvikkeita'])) {
+if (isset($_POST['lisaa_tarvikkeita'])) {
     $maarat = $_POST['maara'] ?? [];
     $alennukset = $_POST['alennus'] ?? [];
     $tyyppi = $_POST['tyyppi'] ?? [];
-
-    // Poista vanhat tarvikkeet laskulta
-    $del = pg_query_params($yhteys, "DELETE FROM tarvikkeet WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)", [$id]);
-    if ($del === false) {
-        die('Poisto epäonnistui: ' . pg_last_error($yhteys));
-    }
 
     // Lisää uudet tarvikkeet (vain kun määrä > 0)
     foreach ($kaikki_tarvikkeet as $tarvike_id => $tarvike) {
@@ -35,20 +29,24 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
 
         $insert = pg_query_params(
             $yhteys,
-            "INSERT INTO tarvikkeet (tyosuoritus_id, tarvike_id, maara, alennus) VALUES ((SELECT tyosuoritus_id FROM lasku WHERE id = $1), $2, $3, $4)",
+            "UPDATE tarvikkeet SET maara = maara + $3, alennus = $4 WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1) AND tarvike_id = $2",
             [$id, $tarvike_id, $maara, $alennus]
         );
 
         if ($insert === false) {
             die("Tuotteen lisäys epäonnistui: " . pg_last_error($yhteys));
         }
-    }
 
-    // Urakkatyössä summa ei muutu, muuten päivitetään summa uusilla tiedoilla
-    if ($tyyppi !== 'Urakka') {
-        paivitaSumma($yhteys, $id);
-    }
+        $updateVarasto = pg_query_params(
+            $yhteys,
+            "UPDATE tarvike SET varasto = varasto - $1 WHERE id = $2",
+            [$maara, $tarvike_id]
+        );
 
+        if(!$updateVarasto) {
+            die("Varaston päivitys epäonnistui: " . pg_last_error($yhteys));
+        }
+    }
 
     header("Location: lasku.php?id=" . $id);
     exit;
@@ -59,15 +57,15 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
 <html lang="fi">
 <head>
     <meta charset="UTF-8">
-    <title>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></title>
+    <title>Lisää tarvikkeita laskulle <?= htmlspecialchars($id) ?></title>
 </head>
 <body>
 <?php require 'lasku.php'; ?>
 <div class="content-container" style="margin-top: 20px">
-<h2>Muokkaa tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
-<form method="post" class="muokkaa-tarvikkeita">
+<h2>Lisää tarvikkeita laskulle <?= htmlspecialchars($id) ?></h2>
+<h4>Alennus päivitetään myös aikasemmille tarvikkeille</h4>
+<form method="post" class="lisaa-tarvikkeita">
     <input type="hidden" name="tyyppi" value="<?= htmlspecialchars($lasku['tyyppi'] ?? '') ?>">
-    <h4>Tarvikkeet</h4>
     <table border="1" cellpadding="8" class="tarvikkeet">
         <tr>
             <th>Tarvike</th>
@@ -99,10 +97,10 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
                         class="alennus-input"
                         type="number"
                         name="alennus[<?= $tid ?>]"
-                        placeholder="0"
+                        placeholder="<?= isset($tarvikkeet[$tid]['alennus']) ? htmlspecialchars($tarvikkeet[$tid]['alennus']) : 0 ?>"
                         min="0"
                         max="100"
-                        value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : 0 ?>">
+                        value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : '' ?>"
                     <span>%</span>
                 </div>
             </td>
@@ -112,7 +110,7 @@ if (isset($_POST['muokkaa_tarvikkeita'])) {
     </table>
 
     <p>
-        <button type="submit" name="muokkaa_tarvikkeita">Tallenna</button>
+        <button type="submit" name="lisaa_tarvikkeita">Tallenna</button>
     </p>
 </form>
 </div>

@@ -224,6 +224,16 @@ function createNewTarvikkeet($yhteys, $tyosuoritusId, $tarvikeId, $maara, $alenn
     if(!$updateTarvike) {
         die("Tarvikkeen lisäys epäonnistui: " . pg_last_error($yhteys));
     }
+
+    $updateVarasto = pg_query_params(
+        $yhteys,
+        "UPDATE tarvike SET varasto = varasto - $1 WHERE id = $2",
+        [$maara, $tarvikeId]
+    );
+
+    if(!$updateVarasto) {
+        die("Varaston päivitys epäonnistui: " . pg_last_error($yhteys));
+    }
 }
 
 /**
@@ -246,7 +256,6 @@ function createNewLasku($yhteys, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, 
         [$laskuId, $laskuValmis, $luotuPvm, $annettuPvm, $eraPvm, $maksettuStatus, $yhteensa, $asiakasId, $tyosuoritusId]
     );
 
-        
     if(!$updateLasku) {
         die("Laskun lisäys epäonnistui: " . pg_last_error($yhteys));
     }

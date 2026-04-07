@@ -159,7 +159,7 @@ switch($page) {
     <p>Ei tarvikkeita.</p>
 <?php endif; ?>
 <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Muokkaa tarvikkeita</a></p>
+    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
 <?php endif; ?>
 
 <h3>Lisälaskut</h3>

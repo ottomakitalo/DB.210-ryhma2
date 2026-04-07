@@ -28,6 +28,7 @@ $q = pg_query_params(
 
 while ($row = pg_fetch_assoc($q)) {
     $tarvikkeet[$row['id']] = [
+        'id' => $row['id'],
         'tarvike' => $row['nimi'],
         'maara'   => (float)$row['maara'],
         'yksikko' => $row['yksikko'],
