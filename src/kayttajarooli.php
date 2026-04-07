@@ -25,7 +25,6 @@ if (isset($_POST['rooli'])) {
     <select name="rooli" onchange="this.form.submit()">
         <option value="">Vaihda rooli</option>
         <option value="vieras">Vieras</option>
-        <option value="käyttäjä">Käyttäjä</option>
         <option value="tavarantoimittaja">Tavarantoimittaja</option>
         <option value="admin">Admin</option>
     </select>

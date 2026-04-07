@@ -2,7 +2,7 @@
 // Koodin luomisessa käytetty apuna Copilotia
 
 session_start();
-if ($_SESSION['rooli'] !== 'admin' && $_SESSION['rooli'] !== 'käyttäjä') {
+if ($_SESSION['rooli'] !== 'admin') {
     header("Location: index.php");
     exit();
 }
