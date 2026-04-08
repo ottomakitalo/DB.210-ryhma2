@@ -168,10 +168,11 @@ switch($page) {
 // Perinnän tila
 if ($lasku['lisalaskuja'] > 0) {
     if ($lasku['status'] === 'Avoinna') {
-        echo "<p><strong>Perintä auki</strong></p>";
+        echo "<p><span style='color:red;font-weight:bold;'>Perintä käynnissä</span></p>";
     } else {
-        echo "<p><strong>Perintä valmis</strong></p>";
+        echo "<p><span style='color:green;font-weight:bold;'>Perintä valmis</span></p>";
     }
+
 }
 ?>
 
