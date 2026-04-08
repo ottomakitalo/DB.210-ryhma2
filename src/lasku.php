@@ -163,6 +163,18 @@ switch($page) {
 <?php endif; ?>
 
 <h3>Lisälaskut</h3>
+
+<?php
+// Perinnän tila
+if ($lasku['lisalaskuja'] > 0) {
+    if ($lasku['status'] === 'Avoinna') {
+        echo "<p><strong>Perintä auki</strong></p>";
+    } else {
+        echo "<p><strong>Perintä valmis</strong></p>";
+    }
+}
+?>
+
 <?php
 $q_lisalaskut = pg_query_params(
     $yhteys,
@@ -179,13 +191,13 @@ if (!$q_lisalaskut) {
     echo "<p>Ei lisälaskuja.</p>";
 } else {
 ?>
+
     <table>
         <tr>
             <th>Lisälasku</th>
             <th>Antopäivä</th>
             <th>Eräpäivä</th>
             <th>Summa</th>
-            <th>Maksettu</th>
             <th>Tyyppi</th>
         </tr>
 
@@ -228,7 +240,6 @@ if (!$q_lisalaskut) {
             <td><?= date('d.m.Y', strtotime($r['annettu_pvm'])) ?></td>
             <td><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
             <td><?= number_format($summa, 2, ',', ' ') ?> €</td>
-            <td><?= !empty($r['maksettu_pvm']) ? date('d.m.Y', strtotime($r['maksettu_pvm'])) : "" ?></td>
             <td><?= $tyyppi ?></td>
         </tr>
 

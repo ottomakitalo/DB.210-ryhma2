@@ -33,7 +33,7 @@ require_once('data/laskut_data.php');
                 <th>Eräpäivä</th>
                 <th>Status</th>
                 <th>Summa</th>
-                <th>Lisälaskut</th>
+                <th>Viimeisin maksamaton lisälasku</th>
             </tr>
             <!-- Käytetty Copilotia apuna -->
             <?php foreach($laskut as $id => $lasku): ?>
@@ -52,8 +52,10 @@ require_once('data/laskut_data.php');
                 <td><?= $lasku['asiakas'] ?></td>
                 <td><?= $lasku['kohde'] ?></td>
                 <td><?= $lasku['tyyppi'] ?></td>
-                <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td>
-                <td <?= $styleEra ?>><?= $lasku['erapvm'] ?></td>
+                <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td> 
+                <td <?= $styleEra ?>>
+                    <?= !empty($lasku['erapvm']) ? $lasku['erapvm'] : '-' ?>
+                </td>
                 <td><?= $lasku['status'] ?></td>
                 <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></td>
 
@@ -77,7 +79,9 @@ require_once('data/laskut_data.php');
                         // summa ja erä
                         if ($ll > 0) {
                             echo "<br>" . number_format($lasku['lisalasku_summa'], 2, ',', ' ') . " €";
-                            echo "<br>Erä: " . date('d.m.Y', strtotime($lasku['lisalasku_erapvm']));
+                            echo "<br><span style='color:#E68200;font-weight:bold;'>Eräpäivä: " 
+                                    . date('d.m.Y', strtotime($lasku['lisalasku_erapvm'])) 
+                                    . "</span>";
                         }
                         ?>
 
