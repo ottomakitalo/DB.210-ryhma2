@@ -10,7 +10,15 @@ if ($_SESSION['rooli'] !== 'admin') {
 require_once('data/tarvikkeet_data.php');
 
 $tarvikkeet = $kaikki_tarvikkeet;
-uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['toimittaja']);});
+uasort($tarvikkeet, function($a, $b) { 
+    $toimittajaVertailu = strcasecmp($a['toimittaja'], $b['toimittaja']);
+
+    if($toimittajaVertailu === 0) {
+        return strcasecmp($a['tarvike'], $b['tarvike']);
+    }
+
+    return $toimittajaVertailu;
+});
 ?>
 
 
