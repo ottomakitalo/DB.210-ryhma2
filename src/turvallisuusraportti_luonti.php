@@ -39,6 +39,6 @@ if(isset($_POST['luo-turvallisuusraportti'])) {
     natcasesort($tarvikkeetLista);
 
     $_SESSION['turvallisuusraportti'] = $turvallisuusraportti;
-    $_SESSION['tarvikkeet'] = $tarvikkeetLista;
+    $_SESSION['tarvikkeet'] = array_unique($tarvikkeetLista);
 }
 ?>
