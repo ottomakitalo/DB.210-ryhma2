@@ -121,9 +121,7 @@ if (isset($_POST['muokkaa_tehtavia'])) {
                         value="<?= isset($_POST['tunnit'][$tid])
                             ? (int)$_POST['tunnit'][$tid]
                             : $nyky_tunnit ?>"
-                        placeholder="<?= isset($_POST['tunnit'][$tid])
-                            ? (int)$_POST['tunnit'][$tid]
-                            : $nyky_tunnit ?>"
+                        placeholder="0"
                     >
                 </div>
             </td>
@@ -142,9 +140,7 @@ if (isset($_POST['muokkaa_tehtavia'])) {
                         value="<?= isset($_POST['alennus'][$tid])
                             ? (float)$_POST['alennus'][$tid]
                             : $nyky_alennukset ?>"
-                        placeholder="<?= isset($_POST['alennus'][$tid])
-                            ? (float)$_POST['alennus'][$tid]
-                            : $nyky_alennukset ?>"
+                        placeholder="0"
                     >
                     <span>%</span>
                 </div>
