@@ -93,7 +93,7 @@ switch($page) {
 </head>
 <body>
 
-<div class="content-container">
+<div class="content-container lasku">
 <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
@@ -101,66 +101,72 @@ switch($page) {
 <p><strong>Työkohde:</strong> <?= $lasku['kohde'] ?></p>
 <p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
-<p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '' ?></p>
+<p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '-' ?></p>
 <p><strong>Summa:</strong> <?= number_format($lasku['yhteensä'], 2, ',', ' ') ?> €</p>
 <p><strong>Status:</strong> <?= $lasku['status'] ?></p>
 <?php if($lasku['maksettu_pvm'] !== ''): ?>
     <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
 <?php endif; ?>
 
-<?php if($tyotehtavat !== []): ?>
-    <h3>Työtehtävät</h3>
-    <table border="1" cellpadding="8" class="tarvikkeet">
-        <tr>
-            <th>Työtehtävä</th>
-            <th>Tunnit</th>
-            <th>Alennus</th>
-        </tr>
+<div class="tuntityot-tarvikkeet-container">
+    <div class="flex-container">
+        <h3>Työtehtävät</h3>
+        <?php if($tyotehtavat !== []): ?>
+            <table border="1" cellpadding="8" class="tarvikkeet">
+                <tr>
+                    <th>Työtehtävä</th>
+                    <th>Tunnit</th>
+                    <th>Alennus</th>
+                </tr>
 
-        <?php foreach($tyotehtavat as $tyotehtava): ?>
-        <tr>
-            <td><?= $tyotehtava['tehtava'] ?></td>
-            <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] . ' %' ?></td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-<?php else: ?>
-<p>Ei työtehtäviä.</p>
-<?php endif; ?>
-<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
-<?php endif; ?>
+                <?php foreach($tyotehtavat as $tyotehtava): ?>
+                <tr>
+                    <td><?= $tyotehtava['tehtava'] ?></td>
+                    <td><?= $tyotehtava['tunnit'] ?></td>
+                    <td><?= $tyotehtava['alennus'] . ' %' ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+        <p>Ei työtehtäviä.</p>
+        <?php endif; ?>
+        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+            <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
+        <?php endif; ?>
+    </div>
 
-<?php if($tarvikkeet !== []): ?>
-    <h3>Tarvikkeet</h3>
-    <table border="1" cellpadding="8" class="tarvikkeet">
-        <tr>
-            <th>Tarvike</th>
-            <th>Määrä</th>
-            <th>Yksikkö</th>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <th>Alennus</th>
-            <?php endif; ?>
-        </tr>
+    <div class="flex-container">
+        <h3>Tarvikkeet</h3>
+        <?php if($tarvikkeet !== []): ?>
+            <table border="1" cellpadding="8" class="tarvikkeet">
+                <tr>
+                    <th>Tarvike</th>
+                    <th>Määrä</th>
+                    <th>Yksikkö</th>
+                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                        <th>Alennus</th>
+                    <?php endif; ?>
+                </tr>
 
-        <?php foreach($tarvikkeet as $tarvike): ?>
-        <tr>
-            <td><?= $tarvike['tarvike'] ?></td>
-            <td><?= $tarvike['maara'] ?></td>
-            <td><?= $tarvike['yksikko'] ?></td>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <td><?= $tarvike['alennus'] . ' %' ?></td>
-            <?php endif; ?>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-<?php else: ?>
-    <p>Ei tarvikkeita.</p>
-<?php endif; ?>
-<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
-<?php endif; ?>
+                <?php foreach($tarvikkeet as $tarvike): ?>
+                <tr>
+                    <td><?= $tarvike['tarvike'] ?></td>
+                    <td><?= $tarvike['maara'] ?></td>
+                    <td><?= $tarvike['yksikko'] ?></td>
+                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                        <td><?= $tarvike['alennus'] . ' %' ?></td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p>Ei tarvikkeita.</p>
+        <?php endif; ?>
+        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+            <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
+        <?php endif; ?>
+    </div>
+</div>
 
 <h3>Lisälaskut</h3>
 
@@ -168,7 +174,7 @@ switch($page) {
 // Perinnän tila
 if ($lasku['lisalaskuja'] > 0) {
     if ($lasku['status'] === 'Avoinna') {
-        echo "<p><span style='color:red;font-weight:bold;'>Perintä käynnissä</span></p>";
+        echo "<p><span style='color:#E68200;font-weight:bold;'>Perintä käynnissä</span></p>";
     } else {
         echo "<p><span style='color:green;font-weight:bold;'>Perintä valmis</span></p>";
     }
@@ -193,7 +199,7 @@ if (!$q_lisalaskut) {
 } else {
 ?>
 
-    <table>
+    <table class="lisalasku-table">
         <tr>
             <th>Lisälasku</th>
             <th>Antopäivä</th>
@@ -232,6 +238,8 @@ if (!$q_lisalaskut) {
             $viivastys = ($alkuperainen_summa * 0.16 * $paivia) / 365.0;
         }
 
+        $viivastynyt = $era_pvm < $nyt ? 'lasku-myohassa' : '';
+
         $summa = $laskutuslisa + $viivastys;
         $tyyppi = $r['edellinen_id'] ? "Karhulasku" : "Muistutuslasku";
         ?>
@@ -239,7 +247,7 @@ if (!$q_lisalaskut) {
         <tr>
             <td><?= $jarjestys ?></td>
             <td><?= date('d.m.Y', strtotime($r['annettu_pvm'])) ?></td>
-            <td><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
+            <td class="<?= $viivastynyt ?>"><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
             <td><?= number_format($summa, 2, ',', ' ') ?></td>
             <td><?= $tyyppi ?></td>
         </tr>

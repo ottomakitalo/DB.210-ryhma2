@@ -10,7 +10,16 @@ if ($_SESSION['rooli'] !== 'admin') {
 require_once('data/tarvikkeet_data.php');
 
 $tarvikkeet = $kaikki_tarvikkeet;
-uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['toimittaja']);});
+// Järjestä tarvikkeet ensin toimittajan nimen perusteella ja sitten tarvikkeen nimen perusteella
+uasort($tarvikkeet, function($a, $b) { 
+    $toimittajaVertailu = strcasecmp($a['toimittaja'], $b['toimittaja']);
+
+    if($toimittajaVertailu === 0) {
+        return strcasecmp($a['tarvike'], $b['tarvike']);
+    }
+
+    return $toimittajaVertailu;
+});
 ?>
 
 
@@ -24,10 +33,12 @@ uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['t
     <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
-    <div class="content-container">
+    <div class="content-container turvallisuusraportti_luonti" >
         <h2>Luo turvallisuusraportti tarvikkeesta</h2>
+        <p>Tältä sivulta voit luoda turvallisuusraportin valituista tarvikkeista.</p>
+        <p>Turvallisuusraportti sisältää tiedon siitä, kenelle asiakkalle kyseisiä tarvikkeita on lähetetty sekä mihin työkohteisiin.</p>
         <form method="post" action="turvallisuusraportti_tulos.php" class="luo-turvallisuusraportti">
-            <div>
+            <div class="flex-container">
                 <table>
                     <tr>
                         <th></th>

@@ -13,6 +13,11 @@ body {
     margin: auto;
 }
 
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .navigation-container {
     display: flex;
     justify-content: center;
@@ -34,6 +39,10 @@ body {
 .navigation-list li .active {
     font-weight: bold;
     color: #236BFB;
+}
+
+.navigation-list li a:hover:not(.active) {
+    color: #1A53D0;
 }
 
 .submit-button-container {
@@ -92,9 +101,59 @@ input {
     border: none;
 }
 
+.urakkahinta-input {
+    width: 93px;
+}
+
+.tarvike-input,
+.alennus-input,
+.alennus-input {
+    width: 44px;
+}
+
+.tunti-input {
+    width: 67px;
+}
+
 .virheviesti {
     color: red;
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: break-word;
+}
+
+.turvallisuusraportti_luonti {
+    max-width: 550px;
+}
+
+.turvallisuusraportti_tulos {
+    max-width: 980px;
+}
+
+.laskuluettelo {
+    max-width: 1080px;
+}
+
+.laskut_luo_hinta_arvio {
+    max-width: 700px;
+}
+
+.laskut_luo_arvio {
+    max-width: 700px;
+}
+
+.hinnasto {
+    max-width: 830px;
+}
+
+.historia {
+    max-width: 830px;
+}
+
+.etusivu {
+    max-width: 850px;
+}
+
+.lasku {
+    max-width: 800px;
 }

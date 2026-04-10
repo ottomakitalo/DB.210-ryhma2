@@ -20,14 +20,19 @@ require_once('turvallisuusraportti_luonti.php');
     <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
-    <div class="content-container">
+    <div class="content-container turvallisuusraportti_tulos">
         <a href="turvallisuusraportti.php" class="link-button">Takaisin turvallisuusraportin luontiin</a>
         <?php if(empty($_SESSION['turvallisuusraportti'])): ?>
         <p><strong>Turvallisuusraporttia ei olemassa. Luo ensin turvallisuusraportti.</strong></p>
         <?php else: ?>
         <h2>Turvallisuusraportti</h2>
-        <p>Alla olevasta taulukosta näet, mitä tarvikkeita on lähetetty kullekin asiakkaalle eriteltynä heidän työkohteillaan.</p> 
-        <p>Valitsemasi tarvikkeet ovat: <?= implode(', ', $_SESSION['tarvikkeet']) ?></p>
+        <p>Tältä sivulta näet, mitä turvallisuusriskin alla olevia tuotteita on lähetetty kullekin asiakkaalle ja heidän työkohteisiinsa.</p> 
+        <p>Valitsemasi tarvikkeet ovat:</p>
+        <ul>
+            <?php foreach($_SESSION['tarvikkeet'] as $id => $tarvike): ?>
+                <li><?= $tarvike ?> </li>
+            <?php endforeach; ?>
+        </ul>
         <table class="turvallisuusraportti">
             <tr>
                 <th>Asiakas</th>
@@ -38,8 +43,13 @@ require_once('turvallisuusraportti_luonti.php');
                 <th>Tarvikkeen toimittaja</th>
             </tr>
 
-            <?php foreach($_SESSION['turvallisuusraportti'] as $id => $rivi): ?>
-            <tr>
+            <?php 
+            $viimeAsiakas = "";
+            foreach($_SESSION['turvallisuusraportti'] as $id => $rivi): 
+                $rivinLuokka = $rivi['asiakas'] !== $viimeAsiakas ? 'uusi-asiakas' : '';
+                $viimeAsiakas = $rivi['asiakas'];
+                ?>
+            <tr class="<?= $rivinLuokka ?>">
                 <td>
                     <div>
                         <span><?= $rivi['asiakas'] ?></span>    
@@ -62,7 +72,7 @@ require_once('turvallisuusraportti_luonti.php');
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['määrä'] ?></span>    
+                        <span><?= $rivi['määrä'] . ' ' . $rivi['yksikkö'] ?></span>    
                     </div>
                 </td>
                 <td>

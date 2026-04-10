@@ -18,14 +18,14 @@ require_once('data/historia_data.php');
 </head>
 
 <body>
-    <div class="content-container">
+    <div class="content-container historia">
         <h2>Tarvikehistoria</h2>
         <table>
             <tr>
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
-                <th>Sisäänottohinta (€)</th>
+                <th>Sisäänottohinta</th>
                 <th>Yksikkö</th>
                 <th>Alv</th>
                 <th>Poistettu pvm</th>
@@ -35,7 +35,7 @@ require_once('data/historia_data.php');
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
-                <td><?= htmlspecialchars($tarvike['hinta']) ?></td>
+                <td><?= htmlspecialchars($tarvike['hinta']) ?> €</td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>
                 <td><?= htmlspecialchars($tarvike['poistettu_pvm']) ?></td>

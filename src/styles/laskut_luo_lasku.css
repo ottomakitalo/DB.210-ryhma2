@@ -1,31 +1,28 @@
-.luo-lasku .flex-container {
-    display: flex;
-    flex-direction: column;
-}
-
 .luo-lasku .tieto-label {
     font-weight: bold;
 }
 
-.luo-lasku .yhteenveto-container {
+.luo-lasku .laskuarvio-container{
+    gap: 20px;
+}
+
+.luo-lasku .yhteenveto-container,
+.luo-lasku .summat-container,
+.luo-lasku .perustiedot-container {
     gap: 8px;
 }
 
-.luo-lasku .laskuarvio-container {
-    gap: 8px;
-}
-
-.yhteenveto-container table {
+table {
     border-collapse: collapse;
 }
 
-.yhteenveto-container table td,
-.yhteenveto-container table th {
+table td,
+table th {
     padding: 12px 8px;
     text-align: center;
 }
 
-.yhteenveto-container table tfoot tr {
+table tfoot tr {
     font-weight: bold;
     border-top: 2px solid #333;
 }
@@ -51,6 +48,10 @@ tr:hover {
 
 tr:not(:last-child) {
     border-bottom: 1px solid;
+}
+
+.summat-container td:not(:last-child), th:not(:last-child) {
+    border-right: 1px solid #e3e3e3;
 }
 
 input[type=checkbox]+label {

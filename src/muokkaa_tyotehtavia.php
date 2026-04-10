@@ -115,12 +115,15 @@ if (isset($_POST['muokkaa_tehtavia'])) {
                 <div>
                     <input
                         type="number"
+                        class="tunti-input"
                         name="tunnit[<?= $tid ?>]"
                         min="0"
                         value="<?= isset($_POST['tunnit'][$tid])
                             ? (int)$_POST['tunnit'][$tid]
                             : $nyky_tunnit ?>"
-                        placeholder="0"
+                        placeholder="<?= isset($_POST['tunnit'][$tid])
+                            ? (int)$_POST['tunnit'][$tid]
+                            : $nyky_tunnit ?>"
                     >
                 </div>
             </td>
@@ -132,13 +135,16 @@ if (isset($_POST['muokkaa_tehtavia'])) {
                 <div>
                     <input
                         type="number"
+                        class="alennus-input"
                         name="alennus[<?= $tid ?>]"
                         min="0"
                         max="100"
                         value="<?= isset($_POST['alennus'][$tid])
                             ? (float)$_POST['alennus'][$tid]
                             : $nyky_alennukset ?>"
-                        placeholder="0"
+                        placeholder="<?= isset($_POST['alennus'][$tid])
+                            ? (float)$_POST['alennus'][$tid]
+                            : $nyky_alennukset ?>"
                     >
                     <span>%</span>
                 </div>

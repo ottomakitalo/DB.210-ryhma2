@@ -7,3 +7,11 @@
 .turvallisuusraportti {
     border-collapse: collapse;
 }
+
+.turvallisuusraportti_tulos tr.uusi-asiakas td {
+    border-top: 1px solid;
+}
+
+.turvallisuusraportti_tulos tr:not(:last-child) {
+    border-bottom: 1px solid #e3e3e3;
+}

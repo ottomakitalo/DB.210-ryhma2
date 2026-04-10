@@ -11,7 +11,7 @@ require_once('navigation.php');
 </head>
 
 <body>
-    <div class="content-container">
+    <div class="content-container etusivu">
         <p>Tmi Sähkötärsky</p>
     </div>
 </body>
