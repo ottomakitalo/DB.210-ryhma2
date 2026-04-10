@@ -24,11 +24,10 @@ require_once('data/tarvikkeet_data.php');
 <body>
     <div class="content-container laskut_luo_hinta_arvio">
         <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
-        <h2>Luo lasku</h2>
-        <h3>Hinta-arvio</h3>
+        <h2>Hinta-arvio</h2>
         <form method="post" action="laskut_luo_lasku.php" class="hinta-arvio">
             <div class="tyokohde-container">
-                 <h4>Työkohde</h4>
+                <h3>Työkohde</h3>
                 <select name="tyokohde" required>
                     <option value="">Valitse työkohde</option>
                     <?php foreach($asiakkaat as $id => $asiakas) {
@@ -42,7 +41,7 @@ require_once('data/tarvikkeet_data.php');
             </div>
 
             <div class="tyotyyppi-container">
-                <h4>Työtyyppi</h4>
+                <h3>Työtyyppi</h3>
                 <div class="tyotyyppi-inputs" id="tyotyyppi-inputs">
                     <div>
                         <input type="radio" name="tyotyyppi" value="tunti" id="tunti" required>
@@ -80,7 +79,7 @@ require_once('data/tarvikkeet_data.php');
             </div>
 
             <div class="tuntityot-container">
-                <h4>Tuntityöt</h4>
+                <h3>Tuntityöt</h3>
                 <table>
                     <tr>
                         <th>Tuntityötyyppi</th>
@@ -120,7 +119,7 @@ require_once('data/tarvikkeet_data.php');
             </div>
             
             <div class="tarvikkeet-container">
-                <h4>Tarvikkeet</h4>
+                <h3>Tarvikkeet</h3>
                 <table>
                     <tr>
                         <th>Tarvike</th>
@@ -153,7 +152,7 @@ require_once('data/tarvikkeet_data.php');
                                     max="100">
                                 <span>%</span>
                             </div>
-                        <td>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </table>
