@@ -67,16 +67,22 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 <th>Tunnit</th>
                                 <th>Alv-%</th>
                                 <th>Alennus-%</th>
-                                <th>Summa</th>
+                                <th>Nettosumma</th>
+                                <th>Alv</th>
+                                <th>Yhteensä</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <?php
                             $tunnitYhteensa = 0;
+                            $tuntityotNetto = 0;
+                            $tuntityotAlv = 0;
                             $tuntityotYhteensa = 0;
                             foreach($laskutiedot['tuntityöt'] as $id => $tuntityo): 
                             $tunnitYhteensa += $tuntityo['kesto'];
+                            $tuntityotNetto += $tuntityo['nettosumma'];
+                            $tuntityotAlv += $tuntityo['alvsumma'];
                             $tuntityotYhteensa += $tuntityo['yhteensä'];?>
                             <tr>
                                 <td>
@@ -99,6 +105,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 <td>
                                     <div>
                                         <span><?= $tuntityo['alennus'] . ' %' ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= number_format($tuntityo['nettosumma'], 2, ',', ' ') ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= number_format($tuntityo['alvsumma'], 2, ',', ' ') ?></span>
+                                        <span>€</span>
                                     </div>
                                 </td>
                                 <td>
@@ -143,6 +161,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 </td>
                                 <td>
                                     <div>
+                                        <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['urakkaNetto'] : $tuntityotNetto, 2, ',', ' ') ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['urakkaAlv'] : $tuntityotAlv, 2, ',', ' ') ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
                                         <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['nettosumma'] : $tuntityotYhteensa, 2, ',', ' ') ?></span>
                                         <span>€</span>
                                     </div>
@@ -162,13 +192,20 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             <th>Määrä</th>
                             <th>Alv-%</th>
                             <th>Alennus-%</th>
-                            <th>Summa</th>
+                            <th>Nettosumma</th>
+                            <th>Alv</th>
+                            <th>Yhteensä</th>
                         </tr>
     
                         <?php 
+                        $tarvikkeetNetto = 0;
+                        $tarvikkeetAlv = 0;
                         $tarvikkeetYhteensa = 0;
                         foreach($laskutiedot['tarvikkeet'] as $id => $tarvike):
-                            $tarvikkeetYhteensa += $tarvike['yhteensä'] ?>
+                            $tarvikkeetNetto += $tarvike['nettosumma'];
+                            $tarvikkeetAlv += $tarvike['alvsumma'];
+                            $tarvikkeetYhteensa += $tarvike['yhteensä'];
+                            ?>
                         <tr>
                             <td><div><span><?= $tarvike['tarvike'] ?></span></div></td>
                             <td>
@@ -185,6 +222,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             <td>
                                 <div>
                                     <span><?= $tarvike['alennus'] . ' %' ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= number_format($tarvike['nettosumma'], 2, ',', ' ') ?></span>
+                                    <span>€</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span><?= number_format($tarvike['alvsumma'], 2, ',', ' ') ?></span>
+                                    <span>€</span>
                                 </div>
                             </td>
                             <td>
@@ -206,6 +255,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 <td></td>
                                 <td></td>
                                 <td></td>
+                                <td>
+                                    <div>
+                                        <span><?= number_format($tarvikkeetNetto, 2, ',', ' ') ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span><?= number_format($tarvikkeetAlv, 2, ',', ' ') ?></span>
+                                        <span>€</span>
+                                    </div>
+                                </td>
                                 <td>
                                     <div>
                                         <span><?= number_format($tarvikkeetYhteensa, 2, ',', ' ') ?></span>
