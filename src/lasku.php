@@ -93,7 +93,7 @@ switch($page) {
 </head>
 <body>
 
-<div class="content-container">
+<div class="content-container lasku">
 <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
