@@ -22,7 +22,7 @@ require_once('data/tarvikkeet_data.php');
 </head>
 
 <body>
-    <div class="content-container">
+    <div class="content-container laskut_luo_hinta_arvio">
         <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
         <h2>Luo lasku</h2>
         <h3>Hinta-arvio</h3>
