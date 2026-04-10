@@ -21,6 +21,20 @@ if (isset($_POST['muokkaa_tehtavia'])) {
     $alennukset = $_POST['alennus'] ?? [];
     $tyyppi = $_POST['tyyppi'] ?? [];
 
+    $nyk_summa = pg_query_params(
+        $yhteys,
+        "SELECT COALESCE(SUM(t.tunnit * tt.tuntihinta * (1 - t.alennus/100) * 1.24), 0)
+        FROM tehtavat t
+        JOIN tyotehtava tt ON tt.id = t.tyotehtava_id
+        WHERE t.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)",
+        [$id]
+    );
+
+    if ($nyk_summa === false) {
+        die("Tarvikkeiden summan hakeminen epäonnistui: " . pg_last_error($yhteys));
+    }
+    $nyk_summa = (float)pg_fetch_result($nyk_summa, 0, 0);
+
     // Poista vanhat tehtävät laskulta
     $del = pg_query_params($yhteys, "DELETE FROM tehtavat WHERE tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)", [$id]);
     if ($del === false) {
@@ -49,13 +63,13 @@ if (isset($_POST['muokkaa_tehtavia'])) {
         // päivitä summa (sis. alennus ja alv)
         $updateSumma = pg_query_params(
             $yhteys,
-            "UPDATE lasku SET yhteensa = (
+            "UPDATE lasku SET yhteensa = yhteensa - $1 + (
                 SELECT COALESCE(SUM(t.tunnit * tt.tuntihinta * (1 - t.alennus/100) * 1.24), 0)
                 FROM tehtavat t
                 JOIN tyotehtava tt ON tt.id = t.tyotehtava_id
-                WHERE t.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)
-            ) WHERE id = $1",
-            [$id]
+                WHERE t.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $2)
+            ) WHERE id = $2",
+            [$nyk_summa, $id]
         );
 
         if ($updateSumma === false) {
