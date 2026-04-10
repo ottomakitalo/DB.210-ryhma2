@@ -1,6 +1,7 @@
 <?php
 require 'db.php';
 require_once('navigation.php');
+require_once 'lisalasku_funktiot.php';
 
 if ($_SESSION['rooli'] !== 'admin') {
     header("Location: index.php");
@@ -208,6 +209,11 @@ if (!$q_lisalaskut) {
             <th>Tyyppi</th>
         </tr>
 
+        
+    <?php
+    $viimeisinLisalaskuSumma = 0.0;
+    ?>
+
     <!-- tehty copilotin avustuksella -->
     <?php while ($r = pg_fetch_assoc($q_lisalaskut)): ?>
 
@@ -225,22 +231,15 @@ if (!$q_lisalaskut) {
             0
         );
 
-        // Laske summa 
-        $laskutuslisa = 5.0;
-        $viivastys = 0;
+        $summa = laskeLisalaskunSumma(
+            (float)$lasku['yhteensä'],
+            $lasku['erapvm'],
+            $r['annettu_pvm'],
+            $jarjestys
+        );
 
-        if (!empty($r['edellinen_id'])) {
-            $alkuperainen_summa = (float)$lasku['yhteensä'];
-            $era_pvm = new DateTime($lasku['erapvm']);
-            $nyt = new DateTime();
-            $paivia = max(0, $era_pvm->diff($nyt)->days);
+        $viimeisinLisalaskuSumma = $summa;
 
-            $viivastys = ($alkuperainen_summa * 0.16 * $paivia) / 365.0;
-        }
-
-        $viivastynyt = $era_pvm < $nyt ? 'lasku-myohassa' : '';
-
-        $summa = $laskutuslisa + $viivastys;
         $tyyppi = $r['edellinen_id'] ? "Karhulasku" : "Muistutuslasku";
         ?>
 
@@ -253,6 +252,13 @@ if (!$q_lisalaskut) {
         </tr>
 
     <?php endwhile; ?>
+    <!-- Alkuperäisen laskun summa + lisämaksujen summa -->
+    <?php if ($lasku['lisalaskuja'] > 0): ?>
+        <p>
+            <strong>Summa + erääntymismaksut:</strong>
+            <?= number_format($lasku['yhteensä'] + $viimeisinLisalaskuSumma, 2, ',', ' ') ?> €
+        </p>
+    <?php endif; ?>
     </table>
 <?php
 }
@@ -284,18 +290,44 @@ if (!$q_lisalaskut) {
 
 
 <?php
+
 $naytaLisapainike = false;
 
 if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
-    // Muutetaan eräpäivä DateTime-muotoon
-    $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
-    $nyt = new DateTime();
 
-    // Näytetään nappi vain, jos eräpäivä on mennyt
-    if ($era < $nyt) {
-        $naytaLisapainike = true;
+    // Onko alkuperäinen lasku on erääntynyt?
+    $alkpEra = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
+    $tanaan = new DateTime();
+    $tanaan->setTime(0, 0, 0);
+
+    if ($alkpEra < $tanaan) {
+
+        if ($lasku['lisalaskuja'] == 0) {
+            $naytaLisapainike = true;
+        }
+
+        // Jos on lisälaskuja, tarkistetaan onko edellisen lisälaskun erapv mennyt jo
+        else {
+            $q = pg_query_params(
+                $yhteys,
+                "SELECT era_pvm 
+                 FROM lisalasku 
+                 WHERE alkp_id = $1 
+                 ORDER BY id DESC 
+                 LIMIT 1",
+                [$id]
+            );
+
+            if ($r = pg_fetch_assoc($q)) {
+                $viimeisinEra = new DateTime($r['era_pvm']);
+                if ($viimeisinEra < $tanaan) {
+                    $naytaLisapainike = true;
+                }
+            }
+        }
     }
 }
+
 ?>
 
 <?php if ($naytaLisapainike): ?>

@@ -8,6 +8,7 @@ if ($_SESSION['rooli'] !== 'admin') {
 }
 
 require_once('data/laskut_data.php');
+require_once 'lisalasku_funktiot.php';
 ?>
 
 <!DOCTYPE html>
@@ -40,18 +41,21 @@ require_once('data/laskut_data.php');
             <!-- Käytetty Copilotia apuna -->
             <?php foreach($laskut as $id => $lasku): ?>
                 <?php
-                $styleEra = "";
-                if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
-                    $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
-                    // Eräpäivä oranssiksi, jos olemassa jo lisälaskuja 
-                    if($lasku['lisalaskuja'] > 0) {
-                        $styleEra = 'style="color:#E68200;font-weight:bold"';
-                    }
-                        
-                    // Eräpäivä punaiseksi, jos se on mennyt jo
-                    else if ($era < new DateTime()) {
-                        $styleEra = 'style="color:red;font-weight:bold"';
-                    }
+                    $eraClass = "";
+
+                    if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
+                        $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
+                        $tanaan = new DateTime();
+                        $tanaan->setTime(0, 0, 0);
+
+                        // oranssi jos lisälaskuja
+                        if ($lasku['lisalaskuja'] > 0) {
+                            $eraClass = "erapvm-oranssi";
+                        } else if ($era < $tanaan) {
+                            // Menneet eräpäivät punaisena, jos ei olla vielä annettu lisälaskuja
+                            $eraClass = "erapvm-punainen";
+                        }
+
                 }
             ?>
             <tr>
@@ -60,42 +64,73 @@ require_once('data/laskut_data.php');
                 <td><?= $lasku['kohde'] ?></td>
                 <td><?= $lasku['tyyppi'] ?></td>
                 <td><?= $lasku['pvm'] ?: $lasku['luotu'] ?></td> 
-                <td <?= $styleEra ?>>
+                <td class="<?= $eraClass ?>">
                     <?= !empty($lasku['erapvm']) ? $lasku['erapvm'] : '-' ?>
                 </td>
                 <td><?= $lasku['status'] ?></td>
                 <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?> €</td>
 
                 <td>
-                    <?php if ($lasku['status'] === 'Maksettu'): ?>
-                            -
-                        <?php elseif ($lasku['lisalaskuja'] == 0): ?>
-                            -
-                        <?php else: ?>
+                <?php
+                if ($lasku['status'] === 'Avoinna' && $lasku['lisalaskuja'] > 0) {
 
-                        <?php
-                        $ll = $lasku['lisalaskuja'];
+                    $jarjestys = $lasku['lisalaskuja'];
 
-                        if ($ll == 1) {
-                            echo "Muistutuslasku";
+                    // Hae uusimman lisälaskun päivämäärät
+                    $q = pg_query_params(
+                        $yhteys,
+                        "SELECT annettu_pvm, era_pvm
+                        FROM lisalasku
+                        WHERE alkp_id = $1
+                        ORDER BY id DESC
+                        LIMIT 1",
+                        [$id]
+                    );
+
+                    if ($r = pg_fetch_assoc($q)) {
+
+                        $uusinSumma = laskeLisalaskunSumma(
+                            (float)$lasku['yhteensä'],
+                            $lasku['erapvm'],
+                            $r['annettu_pvm'],
+                            $jarjestys
+                        );
+
+                        // Tyyppiteksti
+                        if ($jarjestys == 1) {
+                            echo "Muistutuslasku<br>";
                         } else {
-                            $karhu_nro = $ll - 1;
-                            echo $karhu_nro . ". karhulasku";
+                            echo ($jarjestys - 1) . ". karhulasku<br>";
                         }
 
-                        // summa ja erä
-                        if ($ll > 0) {
-                            echo "<br>" . number_format($lasku['lisalasku_summa'], 2, ',', ' ') . " €";
-                            // Eräpäivä oranssiksi, paitsi jos se on mennyt jo
-                            $vari = new DateTime($lasku['lisalasku_erapvm']) < new DateTime() ? 'red' : '#E68200';
-                            echo "<br><span style='color:$vari;font-weight:bold;'>Eräpäivä: " 
-                                    . date('d.m.Y', strtotime($lasku['lisalasku_erapvm'])) 
-                                    . "</span>";
+                        // Uusin lisälasku
+                        echo number_format($uusinSumma, 2, ',', ' ') . " € ";
+
+                        // Kokonaissumma (alkuperäinen + lisälasku)
+                        $kokonais = $lasku['yhteensä'] + $uusinSumma;
+                        echo "(yht. " . number_format($kokonais, 2, ',', ' ') . " €)<br>";
+                        
+                        $eraLisalasku = new DateTime($r['era_pvm']);
+                        $tanaan = new DateTime();
+                        $tanaan->setTime(0, 0, 0);
+                        
+                        // Oletuksena eräpäivä oranssi
+                        $eraClass = "erapvm-oranssi";
+
+                        // Erääntyneet eräpäivät punaiseksi
+                        if ($eraLisalasku < $tanaan) {
+                            $eraClass = "erapvm-punainen";
                         }
-                        ?>
 
+                        echo "<span class='$eraClass'>Eräpäivä: "
+                        . date('d.m.Y', strtotime($r['era_pvm']))
+                        . "</span>";
+                    }
 
-                    <?php endif; ?>
+                } else {
+                    echo "-";
+                }
+                ?>
                 </td>
 
             </tr>

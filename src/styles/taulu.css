@@ -28,3 +28,13 @@ tr:not(:last-child) {
 tr:hover {
     background-color: #f1f1f1;
 }
+
+.erapvm-oranssi {
+    color: #E68200;
+    font-weight: bold;
+}
+
+.erapvm-punainen {
+    color: red;
+    font-weight: bold;
+}
