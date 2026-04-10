@@ -1,3 +1,11 @@
 .lisalasku_form {
     margin-top: 10px;
 }
+
+.lisalasku-table tr:last-child {
+    font-weight: bold;
+}
+
+.lisalasku-table tr:not(:last-child) {
+    color: #838282;
+}

@@ -193,7 +193,7 @@ if (!$q_lisalaskut) {
 } else {
 ?>
 
-    <table>
+    <table class="lisalasku-table">
         <tr>
             <th>Lisälasku</th>
             <th>Antopäivä</th>
