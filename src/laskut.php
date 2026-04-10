@@ -43,8 +43,13 @@ require_once('data/laskut_data.php');
                 $styleEra = "";
                 if ($lasku['status'] === 'Avoinna' && !empty($lasku['erapvm'])) {
                     $era = DateTime::createFromFormat('d.m.Y', $lasku['erapvm']);
-                    //Eräpäivä punaiseksi, jos se on mennyt jo               
-                    if ($era < new DateTime()) {
+                    // Eräpäivä oranssiksi, jos olemassa jo lisälaskuja 
+                    if($lasku['lisalaskuja'] > 0) {
+                        $styleEra = 'style="color:#E68200;font-weight:bold"';
+                    }
+                        
+                    // Eräpäivä punaiseksi, jos se on mennyt jo
+                    else if ($era < new DateTime()) {
                         $styleEra = 'style="color:red;font-weight:bold"';
                     }
                 }
@@ -81,7 +86,9 @@ require_once('data/laskut_data.php');
                         // summa ja erä
                         if ($ll > 0) {
                             echo "<br>" . number_format($lasku['lisalasku_summa'], 2, ',', ' ') . " €";
-                            echo "<br><span style='color:#E68200;font-weight:bold;'>Eräpäivä: " 
+                            // Eräpäivä oranssiksi, paitsi jos se on mennyt jo
+                            $vari = new DateTime($lasku['lisalasku_erapvm']) < new DateTime() ? 'red' : '#E68200';
+                            echo "<br><span style='color:$vari;font-weight:bold;'>Eräpäivä: " 
                                     . date('d.m.Y', strtotime($lasku['lisalasku_erapvm'])) 
                                     . "</span>";
                         }
