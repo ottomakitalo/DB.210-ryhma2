@@ -12,7 +12,7 @@ $q = pg_query($yhteys,
 "SELECT l.id, l.luotu_pvm, l.annettu_pvm, l.era_pvm, 
 l.maksettu_pvm,l.maksettu_status, yhteensa,
         a.nimi AS asiakas, k.osoite AS kohde,
-        ts.tyotyyppi, urakkahinta
+        ts.tyotyyppi, urakkahinta, urakka_alennus
  FROM lasku l
  JOIN asiakas a ON a.id = l.asiakas_id
  JOIN tyosuoritus ts ON ts.id = l.tyosuoritus_id
@@ -32,6 +32,7 @@ while ($row = pg_fetch_assoc($q)) {
         'pvm'     => !empty($row['annettu_pvm']) ? date('d.m.Y', strtotime($row['annettu_pvm'])) : '',
         'erapvm'  => !empty($row['era_pvm']) ? date('d.m.Y', strtotime($row['era_pvm'])) : '',
         'urakkahinta' => $row['urakkahinta'],
+        'urakka_alennus' => (float)$row['urakka_alennus'],
         'yhteensä' => $row['yhteensa']
     ];
 

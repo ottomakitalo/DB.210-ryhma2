@@ -57,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     }
 }
 
+$myyntihintakerroin = 1.25;
+
 $page = basename($_SERVER['PHP_SELF']);
 $laskuPolku = "lasku.php?id=" . $id;
 $tyotehtavatPolku = "muokkaa_tyotehtavia.php?id=" . $id;
@@ -79,6 +81,70 @@ switch($page) {
     default:
         $hrefTyotehtavat = $tyotehtavatPolku;
         $hrefTarvikkeet = $tarvikkeetPolku;
+}
+
+$nettosumma = 0;
+$alvsumma = 0;
+$kotitalousVahennys = 0;
+
+$tuntityotNetto = 0;
+$tuntityotAlv = 0;
+$tunnitYhteensa = 0;
+foreach($tyotehtavat as $tuntityo) {
+    $kesto = $tuntityo['tunnit'];
+    $alennusprosentti = $tuntityo['alennus'];
+
+    if($kesto > 0) {
+        $tunnitYhteensa += $kesto;
+
+        $tuntityoNetto = ($kesto * $tuntityo['tuntihinta']) * (1 - ($alennusprosentti / 100));
+        $tuntityoAlv = $tuntityoNetto * 0.24;
+        
+        $tuntityoYhteensa = $tuntityoNetto + $tuntityoAlv;
+        
+        $tuntityotNetto += $tuntityoNetto;
+        $tuntityotAlv += $tuntityoAlv;
+    }
+}
+
+$tarvikkeetNetto = 0;
+$tarvikkeetAlv = 0;
+foreach($tarvikkeet as $tarvike) {
+    $kappaleMaara = $tarvike['maara'];
+    $alennusprosentti = $tarvike['alennus'];
+
+    if($kappaleMaara > 0) {
+        $tarvikeNetto = ($kappaleMaara * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($alennusprosentti / 100));
+        $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
+
+        $tarvikeYhteensa = $tarvikeNetto + $tarvikeAlv;
+
+        $tarvikkeetNetto += $tarvikeNetto;
+        $tarvikkeetAlv += $tarvikeAlv;
+    }
+}
+
+$tyotyyppi = $lasku['tyyppi'];
+$urakkahinta = NULL;
+$urakkaAlennus = NULL;
+if($tyotyyppi === 'Urakka') {
+    $urakkahinta = $lasku['urakkahinta'];
+    $urakkaAlennus = $lasku['urakka_alennus'];
+
+    $urakkaNetto = $urakkahinta * (1 - $urakkaAlennus / 100);
+    $urakkaAlv = $urakkaNetto * 0.24;
+
+    $urakkaYhteensa = $urakkaNetto + $urakkaAlv;
+
+    $nettosumma = $urakkaNetto + $tarvikkeetNetto;
+    $alvsumma = $tarvikkeetAlv + $urakkaAlv;
+    $kotitalousVahennys = $urakkaYhteensa;
+}
+
+else {
+    $nettosumma = $tuntityotNetto + $tarvikkeetNetto;
+    $alvsumma = $tuntityotAlv + $tarvikkeetAlv;
+    $kotitalousVahennys = $tuntityotNetto + $tuntityotAlv;
 }
 ?>
 
@@ -103,71 +169,233 @@ switch($page) {
 <p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
 <p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
 <p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '-' ?></p>
-<p><strong>Summa:</strong> <?= number_format($lasku['yhteensä'], 2, ',', ' ') ?> €</p>
 <p><strong>Status:</strong> <?= $lasku['status'] ?></p>
 <?php if($lasku['maksettu_pvm'] !== ''): ?>
     <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
 <?php endif; ?>
 
-<div class="tuntityot-tarvikkeet-container">
-    <div class="flex-container">
-        <h3>Työtehtävät</h3>
-        <?php if($tyotehtavat !== []): ?>
-            <table border="1" cellpadding="8" class="tarvikkeet">
-                <tr>
-                    <th>Työtehtävä</th>
-                    <th>Tunnit</th>
-                    <th>Alennus</th>
-                </tr>
+<h3>Työerittely</h3>
+<?php if($tyotehtavat !== [] || $lasku['tyyppi'] === 'Urakka'): ?>
+<div class="yhteenveto-container flex-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Työtyyppi</th>
+                <th>Tunnit</th>
+                <th>Alv-%</th>
+                <th>Alennus-%</th>
+                <th>Nettosumma</th>
+                <th>Alv</th>
+                <th>Yhteensä</th>
+            </tr>
+        </thead>
 
-                <?php foreach($tyotehtavat as $tyotehtava): ?>
-                <tr>
-                    <td><?= $tyotehtava['tehtava'] ?></td>
-                    <td><?= $tyotehtava['tunnit'] ?></td>
-                    <td><?= $tyotehtava['alennus'] . ' %' ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        <?php else: ?>
-        <p>Ei työtehtäviä.</p>
-        <?php endif; ?>
-        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-            <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
-        <?php endif; ?>
-    </div>
+        <tbody>
+            <?php
+            foreach($tyotehtavat as $tuntityo):
+            $tuntityoNetto = ($tuntityo['tunnit'] * $tuntityo['tuntihinta']) * (1 - ($tuntityo['alennus'] / 100));
+            $tuntityoAlv = $tuntityoNetto * 0.24;
+            ?>
+            <tr>
+                <td>
+                    <div>
+                        <span><?= $tuntityo['tehtava'] ?></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= $tuntityo['tunnit'] ?></span>
+                        <span>h</span>
+                    </div>
+                </td>
+                <?php if($lasku['tyyppi'] === 'Tuntityö'): ?>
+                <td>
+                    <div>
+                        <span> 24 % </span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= $tuntityo['alennus'] . ' %' ?></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($tuntityoNetto, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($tuntityoAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($tuntityoNetto + $tuntityoAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <?php endif; ?>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
 
-    <div class="flex-container">
-        <h3>Tarvikkeet</h3>
-        <?php if($tarvikkeet !== []): ?>
-            <table border="1" cellpadding="8" class="tarvikkeet">
-                <tr>
-                    <th>Tarvike</th>
-                    <th>Määrä</th>
-                    <th>Yksikkö</th>
-                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                        <th>Alennus</th>
+        <tfoot>
+            <tr>
+                <td>
+                    <div>
+                        <span><?= $lasku['tyyppi'] === 'Urakka' ? 'Urakka' : 'Yhteensä:' ?></span>
+                    </div>
+                </td>
+                <td>
+                    <?php if($lasku['tyyppi'] === 'Tuntityö'): ?>
+                    <div>
+                        <span><?= $tunnitYhteensa ?></span>
+                        <span>h</span>
+                    </div>
                     <?php endif; ?>
-                </tr>
-
-                <?php foreach($tarvikkeet as $tarvike): ?>
-                <tr>
-                    <td><?= $tarvike['tarvike'] ?></td>
-                    <td><?= $tarvike['maara'] ?></td>
-                    <td><?= $tarvike['yksikko'] ?></td>
-                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                        <td><?= $tarvike['alennus'] . ' %' ?></td>
+                </td>
+                <td>
+                    <?php if($lasku['tyyppi'] === 'Urakka'): ?>
+                    <div>
+                        <span><?= '24 %' ?></span>
+                    </div>
                     <?php endif; ?>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        <?php else: ?>
-            <p>Ei tarvikkeita.</p>
-        <?php endif; ?>
-        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-            <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
-        <?php endif; ?>
-    </div>
+                </td>
+                <td>
+                    <?php if($lasku['tyyppi'] === 'Urakka'): ?>
+                    <div>
+                        <span><?= $lasku['urakka_alennus'] . ' %' ?></span>
+                    </div>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] : $tuntityotNetto, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] * 0.24 : $tuntityotAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] + ($lasku['urakkahinta'] * 0.24) : $tuntityotNetto + $tuntityotAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
+<?php else: ?>
+<p>Ei työtehtäviä.</p>
+<?php endif; ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+    <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
+<?php endif; ?>
+
+<h3>Tarvikkeet</h3>
+<?php if($tarvikkeet !== []): ?>
+<div class="yhteenveto-container flex-container">
+    <table>
+        <tr>
+            <th>Tarvike</th>
+            <th>Määrä</th>
+            <th>Alv-%</th>
+            <th>Alennus-%</th>
+            <th>Nettosumma</th>
+            <th>Alv</th>
+            <th>Yhteensä</th>
+        </tr>
+
+        <?php 
+        foreach($tarvikkeet as $tarvike):
+            $tarvikeNetto = ($tarvike['maara'] * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($tarvike['alennus'] / 100));
+            $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
+            ?>
+        <tr>
+            <td><div><span><?= $tarvike['tarvike'] ?></span></div></td>
+            <td>
+                <div>
+                    <span><?= $tarvike['maara'] ?></span>
+                    <span><?= $tarvike['yksikko'] ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= $tarvike['alv'] . ' %' ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= $tarvike['alennus'] . ' %' ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeNetto, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeAlv, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeNetto + $tarvikeAlv, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+        </tr>
+        <?php  ?>
+        <?php endforeach; ?>
+        <tfoot>
+            <tr>
+                <td>
+                    <div>
+                        <span>Yhteensä:</span>
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div>
+                        <span><?= number_format($tarvikkeetNetto, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($tarvikkeetAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span><?= number_format($tarvikkeetNetto + $tarvikkeetAlv, 2, ',', ' ') ?></span>
+                        <span>€</span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<?php else: ?>
+    <p>Ei tarvikkeita.</p>
+<?php endif; ?>
+<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
+<?php endif; ?>
 
 <h3>Lisälaskut</h3>
 
@@ -252,17 +480,35 @@ if (!$q_lisalaskut) {
         </tr>
 
     <?php endwhile; ?>
-    <!-- Alkuperäisen laskun summa + lisämaksujen summa -->
-    <?php if ($lasku['lisalaskuja'] > 0): ?>
-        <p>
-            <strong>Summa + erääntymismaksut:</strong>
-            <?= number_format($lasku['yhteensä'] + $viimeisinLisalaskuSumma, 2, ',', ' ') ?> €
-        </p>
-    <?php endif; ?>
     </table>
 <?php
 }
 ?>
+
+<h3>Laskun hintaerittely</h3>
+<div class="summat-container flex-container">
+    <table>
+        <tr>
+            <th>Nettosumma</th>
+            <th>Alv</th>
+            <th>Yhteensä</th>
+            <?php if ($lasku['lisalaskuja'] > 0): ?>
+            <th>Yhteensä + erääntymismaksut</th>
+            <?php endif; ?> 
+            <th>Kotitalousvähennys</th>        
+        </tr>
+        <tr>
+            <td><?= number_format($nettosumma, 2, ',', ' ') . ' €' ?></td>
+            <td><?= number_format($alvsumma, 2, ',', ' ') . ' €' ?></td>
+            <td><?= number_format(($nettosumma + $alvsumma), 2, ',', ' ') . ' €' ?></td>
+            <?php if ($lasku['lisalaskuja'] > 0): ?>
+            <td><?= number_format(($nettosumma + $alvsumma) + $viimeisinLisalaskuSumma, 2, ',', ' ') . ' €' ?></td>
+            <?php endif; ?>
+            <td><?= number_format($kotitalousVahennys, 2, ',', ' ') . ' €' ?></td>        
+        </tr>                    
+    </table>
+</div>
+
 
 <?php if($lasku['maksettu_pvm'] === '' && $lasku['erapvm'] !== ''): ?>
     <form method="post" action="lasku.php?id=<?= $id ?>">

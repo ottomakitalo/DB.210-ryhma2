@@ -32,6 +32,8 @@ if(isset($_POST['luo_hinta-arvio'])) {
                 'tyyppi'   => $tuntityo['tehtava'],
                 'kesto'    => $kesto,
                 'alennus'  => $alennusprosentti,
+                'nettosumma' => round($tuntityoNetto, 2),
+                'alvsumma'   => round($tuntityoAlv, 2),
                 'yhteensä' => round($tuntityoYhteensa, 2),
             ];
         }
@@ -54,12 +56,14 @@ if(isset($_POST['luo_hinta-arvio'])) {
             $tarvikkeetAlv += $tarvikeAlv;
 
             $valitutTarvikkeet[] = [
-                'id'       => $id,
-                'tarvike'  => $tarvike['tarvike'],
-                'määrä'    => $kappaleMaara,
-                'yksikkö'  => $tarvike['yksikkö'],
-                'alennus'  => $alennusprosentti,
-                'alv'      => $tarvike['alv'],
+                'id'        => $id,
+                'tarvike'   => $tarvike['tarvike'],
+                'määrä'     => $kappaleMaara,
+                'yksikkö'   => $tarvike['yksikkö'],
+                'alennus'   => $alennusprosentti,
+                'alv'       => $tarvike['alv'],
+                'nettosumma' => round($tarvikeNetto, 2),
+                'alvsumma'   => round($tarvikeAlv, 2),
                 'yhteensä' => round($tarvikeYhteensa, 2),
             ];
         }
@@ -70,6 +74,8 @@ if(isset($_POST['luo_hinta-arvio'])) {
     $tyotyyppi = $_POST['tyotyyppi'];
     $urakkahinta = NULL;
     $urakkaAlennus = NULL;
+    $urakkaNetto = NULL;
+    $urakkaAlv = NULL;
     if($tyotyyppi === 'urakka') {
         $urakkahinta = intval($_POST['urakkahinta']);
         $urakkaAlennus = intval($_POST['urakka-alennus']);
@@ -99,6 +105,8 @@ if(isset($_POST['luo_hinta-arvio'])) {
         'tuntityöt'      => $valitutTyot,
         'tarvikkeet'     => $valitutTarvikkeet,
         'nettosumma'     => round($nettosumma, 2),
+        'urakkaNetto'    => round($urakkaNetto, 2),
+        'urakkaAlv'      => round($urakkaAlv, 2),
         'alvsumma'       => round($alvsumma, 2),
         'yhteensä'       => round($nettosumma + $alvsumma, 2),
         'kt-vähennys'    => round($kotitalousVahennys, 2)

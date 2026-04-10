@@ -19,3 +19,45 @@
 tr:last-child .lasku-myohassa {
     color: red;
 }
+
+table {
+    border-collapse: collapse;
+}
+
+table td,
+table th {
+    padding: 12px 8px;
+    text-align: center;
+}
+
+table tfoot tr {
+    font-weight: bold;
+    border-top: 2px solid #333;
+}
+
+table {
+    border-radius: 10px;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 8px 4px;
+    text-align: start;
+}
+
+th {
+    background-color: #5e93fb;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+tr:not(:last-child) {
+    border-bottom: 1px solid;
+}
+
+.summat-container td:not(:last-child), th:not(:last-child) {
+    border-right: 1px solid #e3e3e3;
+}
