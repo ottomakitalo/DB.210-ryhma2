@@ -125,27 +125,6 @@ INSERT INTO tehtavat VALUES (5, 1, 3, 0);
 INSERT INTO tehtavat VALUES (5, 2, 12, 0);
 
 
-CREATE TABLE tarvikkeet ( 
-  tyosuoritus_id INT, 
-  tarvike_id INT, 
-  maara INT NOT NULL, 
-  alennus DECIMAL(5,2), 
-  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
-  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
-  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
-); 
-
-INSERT INTO tarvikkeet VALUES (1, 1, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 2, 3, 10);
-INSERT INTO tarvikkeet VALUES (2, 3, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 7, 1, 20);
-INSERT INTO tarvikkeet VALUES (3, 4, 100, 10);
-INSERT INTO tarvikkeet VALUES (3, 5, 1, 5);
-INSERT INTO tarvikkeet VALUES (4, 6, 2, 0);
-INSERT INTO tarvikkeet VALUES (5, 2, 3, 0);
-INSERT INTO tarvikkeet VALUES (5, 7, 1, 0);
-
-
 CREATE TABLE lisalasku ( 
   id INT PRIMARY KEY, 
   annettu_pvm DATE NOT NULL, 
@@ -175,3 +154,34 @@ CREATE TABLE tarvike_historia (
   FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi)
 );
 
+CREATE TABLE tarvikkeet ( 
+  tyosuoritus_id INT, 
+  tarvike_id INT, 
+  historia_id INT,
+  maara INT NOT NULL, 
+  alennus DECIMAL(5,2), 
+  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
+  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
+  FOREIGN KEY (historia_id) REFERENCES tarvike_historia(id),
+  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
+); 
+
+INSERT INTO tarvikkeet VALUES (1, 1, null, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 2, null, 3, 10);
+INSERT INTO tarvikkeet VALUES (2, 3, null, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 7, null, 20, 0);
+INSERT INTO tarvikkeet VALUES (3, 4, null, 100, 10);
+INSERT INTO tarvikkeet VALUES (3, 5, null, 1, 5);
+INSERT INTO tarvikkeet VALUES (4, 6, null, 2, 0);
+INSERT INTO tarvikkeet VALUES (5, 2, null, 0, 0);
+INSERT INTO tarvikkeet VALUES (5, 7, null, 0, 0);
+
+CREATE TABLE historia_tarvikkeet ( 
+  tyosuoritus_id INT, 
+  historia_id INT, 
+  maara INT NOT NULL, 
+  alennus DECIMAL(5,2), 
+  PRIMARY KEY (tyosuoritus_id, historia_id), 
+  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
+  FOREIGN KEY (historia_id) REFERENCES tarvike_historia(id)
+);
