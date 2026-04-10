@@ -159,8 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
         <table>
             <tr>
                 <th>Tehtävä</th>
-                <th>Tuntihinta (€, ennen alv)</th>
-                <th>Tuntihinta (€, sis. 24% alv)</th>
+                <th>Tuntihinta (ennen alv)</th>
+                <th>Tuntihinta (sis. 24 % alv)</th>
             </tr>
             <?php foreach ($kaikki_tehtavat as $tehtava): ?>
             <tr>
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
         </table>
 
         <h2>Tarvikkeet</h2>
-        <h5>Ulosmenohinta lasketaan 25% voittoprosentilla.</h5>
+        <h5>Ulosmenohinta lasketaan 25 % voittoprosentilla.</h5>
         <h5>Alennusprosentti vähennetään alvittomasta hinnasta.</h5>
 
         <?php if ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'tavarantoimittaja'): ?>
@@ -197,8 +197,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
-                <th>Sisäänottohinta (€)</th>
-                <th>Ulosmenohinta (€)</th>
+                <th>Sisäänottohinta</th>
+                <th>Ulosmenohinta</th>
                 <th>Yksikkö</th>
                 <th>Varasto</th>
                 <th>Alv</th>
@@ -208,8 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
-                <td><?= htmlspecialchars(number_format($tarvike['hinta'], 2, ',', ' ')) ?></td>
-                <td><?= htmlspecialchars(number_format($tarvike['hinta'] * 1.25, 2, ',', ' ')) ?></td>
+                <td><?= htmlspecialchars(number_format($tarvike['hinta'], 2, ',', ' ')) ?> €</td>
+                <td><?= htmlspecialchars(number_format($tarvike['hinta'] * 1.25, 2, ',', ' ')) ?> €</td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['varasto']) . ' '. htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>
