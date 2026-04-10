@@ -80,7 +80,7 @@ require_once('data/tarvikkeet_data.php');
             </div>
 
             <div class="tuntityot-tarvikkeet-container">
-                <div class="tuntityot-container">
+                <div class="flex-container">
                     <h3>Tuntityöt</h3>
                     <table>
                         <tr>
@@ -120,7 +120,7 @@ require_once('data/tarvikkeet_data.php');
                     </table>
                 </div>
                 
-                <div class="tarvikkeet-container">
+                <div class="flex-container">
                     <h3>Tarvikkeet</h3>
                     <table>
                         <tr>

@@ -109,7 +109,7 @@ switch($page) {
 <?php endif; ?>
 
 <div class="tuntityot-tarvikkeet-container">
-    <div class="tuntityot-container">
+    <div class="flex-container">
         <h3>Työtehtävät</h3>
         <?php if($tyotehtavat !== []): ?>
             <table border="1" cellpadding="8" class="tarvikkeet">
@@ -135,7 +135,7 @@ switch($page) {
         <?php endif; ?>
     </div>
 
-    <div class="tarvikkeet-container">
+    <div class="flex-container">
         <h3>Tarvikkeet</h3>
         <?php if($tarvikkeet !== []): ?>
             <table border="1" cellpadding="8" class="tarvikkeet">
