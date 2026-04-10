@@ -121,6 +121,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                             $ok = false;
                             break;
                         }
+                        
+                        // Siirretään laskuille liitetyt rivit `tarvikkeet`-taulusta
+                        // vastaaviin riveihin `historia_tarvikkeet` ennen tarvike-rivin poistamista
+                        $qtar = pg_query_params(
+                            $yhteys,
+                            'SELECT tyosuoritus_id, maara, alennus FROM tarvikkeet WHERE tarvike_id = $1',
+                            [$id]
+                        );
+                        if ($qtar === false) {
+                            $virheviesti = "Tietokantavirhe: tarvikkeet-haku epäonnistui: " . pg_last_error($yhteys);
+                            $ok = false;
+                            break;
+                        }
+
+                        while ($tarrow = pg_fetch_assoc($qtar)) {
+                            $insertHist = pg_query_params(
+                                $yhteys,
+                                'INSERT INTO historia_tarvikkeet (historia_id, tyosuoritus_id, maara, alennus) VALUES ($1, $2, $3, $4)',
+                                [$histora_id, $tarrow['tyosuoritus_id'], $tarrow['maara'], $tarrow['alennus']]
+                            );
+                            if ($insertHist === false) {
+                                $virheviesti = "Virhe historia_tarvikkeet-taulun päivityksessä: " . pg_last_error($yhteys);
+                                $ok = false;
+                                break 2;
+                            }
+                        }
+
+                        // Poistetaan vanhat viittaukset tarvikkeeseen
+                        $u = pg_query_params(
+                            $yhteys,
+                            'DELETE FROM tarvikkeet WHERE tarvike_id=$1',
+                            [$id]
+                        );
+                        if ($u === false) {
+                            $virheviesti = "Virhe tarvikkeet-taulun päivityksessä: " . pg_last_error($yhteys);
+                            $ok = false;
+                            break;
+                        }
+
                         $histora_id++;
 
                         $d = pg_query_params($yhteys, 'DELETE FROM tarvike WHERE id=$1 AND toimittaja=$2', [$id, $toimittaja]);
