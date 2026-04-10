@@ -105,6 +105,26 @@ INSERT INTO tarvike VALUES (7, 'pistorasia', 'Vare', 'Moponet', 10, 'kpl', 400, 
 INSERT INTO tarvike VALUES (8, 'termostaatti', 'Baden', 'Moponet', 20, 'kpl', 50, 'Yleinen');
 INSERT INTO tarvike VALUES (9, 'valaisin', 'Airam', 'Moponet', 5, 'kpl', 100, 'Yleinen');
 
+CREATE TABLE tarvikkeet ( 
+  tyosuoritus_id INT, 
+  tarvike_id INT, 
+  maara INT NOT NULL, 
+  alennus DECIMAL(5,2), 
+  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
+  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
+  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
+); 
+
+INSERT INTO tarvikkeet VALUES (1, 1, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 2, 3, 10);
+INSERT INTO tarvikkeet VALUES (2, 3, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 7, 20, 0);
+INSERT INTO tarvikkeet VALUES (3, 4, 100, 10);
+INSERT INTO tarvikkeet VALUES (3, 5, 1, 5);
+INSERT INTO tarvikkeet VALUES (4, 6, 2, 0);
+INSERT INTO tarvikkeet VALUES (5, 2, 0, 0);
+INSERT INTO tarvikkeet VALUES (5, 7, 0, 0);
+
 
 CREATE TABLE tehtavat ( 
   tyosuoritus_id INT, 
@@ -152,28 +172,6 @@ CREATE TABLE tarvike_historia (
   tyyppi_nimi VARCHAR(128) NOT NULL, 
   FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi)
 );
-
-CREATE TABLE tarvikkeet ( 
-  tyosuoritus_id INT, 
-  tarvike_id INT, 
-  historia_id INT,
-  maara INT NOT NULL, 
-  alennus DECIMAL(5,2), 
-  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
-  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
-  FOREIGN KEY (historia_id) REFERENCES tarvike_historia(id),
-  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
-); 
-
-INSERT INTO tarvikkeet VALUES (1, 1, null, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 2, null, 3, 10);
-INSERT INTO tarvikkeet VALUES (2, 3, null, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 7, null, 20, 0);
-INSERT INTO tarvikkeet VALUES (3, 4, null, 100, 10);
-INSERT INTO tarvikkeet VALUES (3, 5, null, 1, 5);
-INSERT INTO tarvikkeet VALUES (4, 6, null, 2, 0);
-INSERT INTO tarvikkeet VALUES (5, 2, null, 0, 0);
-INSERT INTO tarvikkeet VALUES (5, 7, null, 0, 0);
 
 CREATE TABLE historia_tarvikkeet ( 
   tyosuoritus_id INT, 
