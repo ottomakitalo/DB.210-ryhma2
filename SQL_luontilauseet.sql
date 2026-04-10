@@ -118,12 +118,12 @@ CREATE TABLE tarvikkeet (
 INSERT INTO tarvikkeet VALUES (1, 1, 1, 0);
 INSERT INTO tarvikkeet VALUES (2, 2, 3, 10);
 INSERT INTO tarvikkeet VALUES (2, 3, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 7, 20, 0);
+INSERT INTO tarvikkeet VALUES (2, 7, 1, 0);
 INSERT INTO tarvikkeet VALUES (3, 4, 100, 10);
 INSERT INTO tarvikkeet VALUES (3, 5, 1, 5);
 INSERT INTO tarvikkeet VALUES (4, 6, 2, 0);
-INSERT INTO tarvikkeet VALUES (5, 2, 0, 0);
-INSERT INTO tarvikkeet VALUES (5, 7, 0, 0);
+INSERT INTO tarvikkeet VALUES (5, 2, 3, 0);
+INSERT INTO tarvikkeet VALUES (5, 7, 1, 0);
 
 
 CREATE TABLE tehtavat ( 
