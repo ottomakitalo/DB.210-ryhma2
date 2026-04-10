@@ -49,11 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
         ];
     }
 
-    if (count($uudet_tarvikkeet) === 0) {
-        $virheviesti = "XML:stä ei löytynyt yhtään tarviketta.";
-        $ok = false;
-    }
-
     if (!pg_query($yhteys, 'BEGIN')) {
         $virheviesti = "Tietokantavirhe: transaktion aloitus epäonnistui.";
         $ok = false;
