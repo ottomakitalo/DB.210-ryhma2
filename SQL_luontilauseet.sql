@@ -57,9 +57,9 @@ CREATE TABLE lasku (
   FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id) 
 );
 
-INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, 142.65, 1, 1);
+INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, false, 130.20, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
-INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2517.81, 3, 3);
+INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2488.18, 3, 3);
 INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 5);
 INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 725.13, 3, 4);
 
@@ -125,27 +125,6 @@ INSERT INTO tehtavat VALUES (5, 1, 3, 0);
 INSERT INTO tehtavat VALUES (5, 2, 12, 0);
 
 
-CREATE TABLE tarvikkeet ( 
-  tyosuoritus_id INT, 
-  tarvike_id INT, 
-  maara INT NOT NULL, 
-  alennus DECIMAL(5,2), 
-  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
-  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
-  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
-); 
-
-INSERT INTO tarvikkeet VALUES (1, 1, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 2, 3, 10);
-INSERT INTO tarvikkeet VALUES (2, 3, 1, 0);
-INSERT INTO tarvikkeet VALUES (2, 7, 1, 20);
-INSERT INTO tarvikkeet VALUES (3, 4, 100, 10);
-INSERT INTO tarvikkeet VALUES (3, 5, 1, 5);
-INSERT INTO tarvikkeet VALUES (4, 6, 2, 0);
-INSERT INTO tarvikkeet VALUES (5, 2, 3, 0);
-INSERT INTO tarvikkeet VALUES (5, 7, 1, 0);
-
-
 CREATE TABLE lisalasku ( 
   id INT PRIMARY KEY, 
   annettu_pvm DATE NOT NULL, 
@@ -162,7 +141,6 @@ INSERT INTO lisalasku VALUES (2, '2025-11-27', '2025-12-13', '2025-12-01', 1, 1)
 INSERT INTO lisalasku VALUES (3, '2026-02-15', '2026-03-01', null, null, 3);
 INSERT INTO lisalasku VALUES (4, '2026-03-05', '2026-03-20', null, 3, 3);
 
-
 CREATE TABLE tarvike_historia ( 
   id INT PRIMARY KEY, 
   nimi VARCHAR(128) NOT NULL, 
@@ -175,3 +153,34 @@ CREATE TABLE tarvike_historia (
   FOREIGN KEY (tyyppi_nimi) REFERENCES tyyppi(nimi)
 );
 
+CREATE TABLE tarvikkeet ( 
+  tyosuoritus_id INT, 
+  tarvike_id INT, 
+  historia_id INT,
+  maara INT NOT NULL, 
+  alennus DECIMAL(5,2), 
+  PRIMARY KEY (tyosuoritus_id, tarvike_id), 
+  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
+  FOREIGN KEY (historia_id) REFERENCES tarvike_historia(id),
+  FOREIGN KEY (tarvike_id) REFERENCES tarvike(id)
+); 
+
+INSERT INTO tarvikkeet VALUES (1, 1, null, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 2, null, 3, 10);
+INSERT INTO tarvikkeet VALUES (2, 3, null, 1, 0);
+INSERT INTO tarvikkeet VALUES (2, 7, null, 20, 0);
+INSERT INTO tarvikkeet VALUES (3, 4, null, 100, 10);
+INSERT INTO tarvikkeet VALUES (3, 5, null, 1, 5);
+INSERT INTO tarvikkeet VALUES (4, 6, null, 2, 0);
+INSERT INTO tarvikkeet VALUES (5, 2, null, 0, 0);
+INSERT INTO tarvikkeet VALUES (5, 7, null, 0, 0);
+
+CREATE TABLE historia_tarvikkeet ( 
+  tyosuoritus_id INT, 
+  historia_id INT, 
+  maara INT NOT NULL, 
+  alennus DECIMAL(5,2), 
+  PRIMARY KEY (tyosuoritus_id, historia_id), 
+  FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id), 
+  FOREIGN KEY (historia_id) REFERENCES tarvike_historia(id)
+);
