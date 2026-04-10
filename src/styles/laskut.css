@@ -9,3 +9,14 @@
 .lisalasku-table tr:not(:last-child) {
     color: #838282;
 }
+
+.tuntityot-tarvikkeet-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.tuntityot-container, .tarvikkeet-container {
+    display: flex;
+    flex-direction: column;
+}

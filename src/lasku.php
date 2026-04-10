@@ -108,59 +108,65 @@ switch($page) {
     <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
 <?php endif; ?>
 
-<?php if($tyotehtavat !== []): ?>
-    <h3>Työtehtävät</h3>
-    <table border="1" cellpadding="8" class="tarvikkeet">
-        <tr>
-            <th>Työtehtävä</th>
-            <th>Tunnit</th>
-            <th>Alennus</th>
-        </tr>
+<div class="tuntityot-tarvikkeet-container">
+    <div class="tuntityot-container">
+        <h3>Työtehtävät</h3>
+        <?php if($tyotehtavat !== []): ?>
+            <table border="1" cellpadding="8" class="tarvikkeet">
+                <tr>
+                    <th>Työtehtävä</th>
+                    <th>Tunnit</th>
+                    <th>Alennus</th>
+                </tr>
 
-        <?php foreach($tyotehtavat as $tyotehtava): ?>
-        <tr>
-            <td><?= $tyotehtava['tehtava'] ?></td>
-            <td><?= $tyotehtava['tunnit'] ?></td>
-            <td><?= $tyotehtava['alennus'] . ' %' ?></td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-<?php else: ?>
-<p>Ei työtehtäviä.</p>
-<?php endif; ?>
-<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
-<?php endif; ?>
+                <?php foreach($tyotehtavat as $tyotehtava): ?>
+                <tr>
+                    <td><?= $tyotehtava['tehtava'] ?></td>
+                    <td><?= $tyotehtava['tunnit'] ?></td>
+                    <td><?= $tyotehtava['alennus'] . ' %' ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+        <p>Ei työtehtäviä.</p>
+        <?php endif; ?>
+        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+            <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
+        <?php endif; ?>
+    </div>
 
-<?php if($tarvikkeet !== []): ?>
-    <h3>Tarvikkeet</h3>
-    <table border="1" cellpadding="8" class="tarvikkeet">
-        <tr>
-            <th>Tarvike</th>
-            <th>Määrä</th>
-            <th>Yksikkö</th>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <th>Alennus</th>
-            <?php endif; ?>
-        </tr>
+    <div class="tarvikkeet-container">
+        <h3>Tarvikkeet</h3>
+        <?php if($tarvikkeet !== []): ?>
+            <table border="1" cellpadding="8" class="tarvikkeet">
+                <tr>
+                    <th>Tarvike</th>
+                    <th>Määrä</th>
+                    <th>Yksikkö</th>
+                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                        <th>Alennus</th>
+                    <?php endif; ?>
+                </tr>
 
-        <?php foreach($tarvikkeet as $tarvike): ?>
-        <tr>
-            <td><?= $tarvike['tarvike'] ?></td>
-            <td><?= $tarvike['maara'] ?></td>
-            <td><?= $tarvike['yksikko'] ?></td>
-            <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
-                <td><?= $tarvike['alennus'] . ' %' ?></td>
-            <?php endif; ?>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-<?php else: ?>
-    <p>Ei tarvikkeita.</p>
-<?php endif; ?>
-<?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
-    <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
-<?php endif; ?>
+                <?php foreach($tarvikkeet as $tarvike): ?>
+                <tr>
+                    <td><?= $tarvike['tarvike'] ?></td>
+                    <td><?= $tarvike['maara'] ?></td>
+                    <td><?= $tarvike['yksikko'] ?></td>
+                    <?php if ($lasku['tyyppi'] !== 'Urakka'): ?>
+                        <td><?= $tarvike['alennus'] . ' %' ?></td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p>Ei tarvikkeita.</p>
+        <?php endif; ?>
+        <?php if($lasku['erapvm'] === '' && $lasku['tyyppi'] !== 'Urakka'): ?>
+            <p><a href="<?= $hrefTarvikkeet ?>" class="link-button">Lisää tarvikkeita</a></p>
+        <?php endif; ?>
+    </div>
+</div>
 
 <h3>Lisälaskut</h3>
 
