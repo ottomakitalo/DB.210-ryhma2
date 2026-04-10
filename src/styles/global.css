@@ -13,6 +13,11 @@ body {
     margin: auto;
 }
 
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .navigation-container {
     display: flex;
     justify-content: center;
