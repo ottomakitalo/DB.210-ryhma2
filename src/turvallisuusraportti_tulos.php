@@ -27,7 +27,12 @@ require_once('turvallisuusraportti_luonti.php');
         <?php else: ?>
         <h2>Turvallisuusraportti</h2>
         <p>Alla olevasta taulukosta näet, mitä tarvikkeita on lähetetty kullekin asiakkaalle eriteltynä heidän työkohteillaan.</p> 
-        <p>Valitsemasi tarvikkeet ovat: <?= implode(', ', $_SESSION['tarvikkeet']) ?></p>
+        <p>Valitsemasi tarvikkeet ovat:</p>
+        <ul>
+            <?php foreach($_SESSION['tarvikkeet'] as $id => $tarvike): ?>
+                <li><?= $tarvike ?> </li>
+            <?php endforeach; ?>
+        </ul>
         <table class="turvallisuusraportti">
             <tr>
                 <th>Asiakas</th>
