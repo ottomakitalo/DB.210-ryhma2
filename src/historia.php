@@ -25,7 +25,7 @@ require_once('data/historia_data.php');
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
-                <th>Sisäänottohinta (€)</th>
+                <th>Sisäänottohinta</th>
                 <th>Yksikkö</th>
                 <th>Alv</th>
                 <th>Poistettu pvm</th>
