@@ -52,3 +52,14 @@ th {
 tr:hover {
     background-color: #f1f1f1;
 }
+
+.tuntityot-tarvikkeet-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.tuntityot-container, .tarvikkeet-container {
+    display: flex;
+    flex-direction: column;
+}
