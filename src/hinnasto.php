@@ -107,21 +107,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                     $ok = false;
                 } else {
                     $row = pg_fetch_assoc($result);
-                    $historaId = $row['id'];
-                    $poistettuPvm = date('Y-m-d');
+                    $histora_id = $row['id'];
+                    $poistettu_pvm = date('Y-m-d');
 
                     foreach ($existing as $id => $row) {
                         $h = pg_query_params(
                             $yhteys,
                             'INSERT INTO tarvike_historia (id, nimi, merkki, toimittaja, sis_hinta, yksikko, poistettu_pvm, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                            [$historaId, $row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettuPvm, $row['tyyppi_nimi']]
+                            [$histora_id, $row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettu_pvm, $row['tyyppi_nimi']]
                         );
                         if ($h === false) {
                             $virheviesti = "Virhe tarvike_historia-taulun päivityksessä: " . pg_last_error($yhteys);
                             $ok = false;
                             break;
                         }
-                        $historaId++;
+                        $histora_id++;
 
                         $d = pg_query_params($yhteys, 'DELETE FROM tarvike WHERE id=$1 AND toimittaja=$2', [$id, $toimittaja]);
                         if ($d === false) {
@@ -159,18 +159,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
         <table>
             <tr>
                 <th>Tehtävä</th>
-                <th>Tuntihinta (ennen alv)</th>
+                <th>Tuntihinta (€, ennen alv)</th>
+                <th>Tuntihinta (€, sis. 24% alv)</th>
             </tr>
             <?php foreach ($kaikki_tehtavat as $tehtava): ?>
             <tr>
                 <td><?= htmlspecialchars($tehtava['tehtava']) ?></td>
                 <td><?= htmlspecialchars(number_format($tehtava['tuntihinta'], 2, ',', ' ')) ?></td>
+                <td><?= htmlspecialchars(number_format($tehtava['tuntihinta'] * 1.24, 2, ',', ' ')) ?></td>
             </tr>
             <?php endforeach; ?>
         </table>
 
         <h2>Tarvikkeet</h2>
-        <h5>Sisäänottohintaan lisätään 25% voittoprosentti sekä alv.</h5>
+        <h5>Ulosmenohinta lasketaan 25% voittoprosentilla.</h5>
         <h5>Alennusprosentti vähennetään alvittomasta hinnasta.</h5>
 
         <?php if ($_SESSION['rooli'] === 'admin' || $_SESSION['rooli'] === 'tavarantoimittaja'): ?>
@@ -195,8 +197,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
-                <th>Sisäänottohinta</th>
-                <th>Ulosmenohinta</th>
+                <th>Sisäänottohinta (€)</th>
+                <th>Ulosmenohinta (€)</th>
                 <th>Yksikkö</th>
                 <th>Varasto</th>
                 <th>Alv</th>
@@ -207,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
                 <td><?= htmlspecialchars(number_format($tarvike['hinta'], 2, ',', ' ')) ?></td>
-                <td><?= htmlspecialchars(number_format($tarvike['hinta'] * 1.25 * (1 + $tarvike['alv'] / 100), 2, ',', ' ')) ?></td>
+                <td><?= htmlspecialchars(number_format($tarvike['hinta'] * 1.25, 2, ',', ' ')) ?></td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['varasto']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>

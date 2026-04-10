@@ -9,7 +9,6 @@ if ($_SESSION['rooli'] !== 'admin') {
 
 require_once('data/lasku_data.php');
 require_once('data/tyotehtavat_data.php');
-require_once('paivita_summa.php');
 
 // Vain keskeneräisiä laskuja voi muokata
 if ($lasku === null || $lasku['erapvm'] !== '') {
@@ -47,7 +46,21 @@ if (isset($_POST['muokkaa_tehtavia'])) {
     
     // Urakkatyössä summa ei muutu, muuten päivitetään summa uusilla tiedoilla
     if ($tyyppi !== 'Urakka') {
-        paivitaSumma($yhteys, $id);
+        // päivitä summa (sis. alennus ja alv)
+        $updateSumma = pg_query_params(
+            $yhteys,
+            "UPDATE lasku SET yhteensa = (
+                SELECT COALESCE(SUM(t.tunnit * tt.tuntihinta * (1 - t.alennus/100) * 1.24), 0)
+                FROM tehtavat t
+                JOIN tyotehtava tt ON tt.id = t.tyotehtava_id
+                WHERE t.tyosuoritus_id = (SELECT tyosuoritus_id FROM lasku WHERE id = $1)
+            ) WHERE id = $1",
+            [$id]
+        );
+
+        if ($updateSumma === false) {
+            die("Laskun summan päivitys epäonnistui: " . pg_last_error($yhteys));
+        }
     }
 
     header("Location: lasku.php?id=" . $id);
@@ -78,18 +91,22 @@ if (isset($_POST['muokkaa_tehtavia'])) {
             <?php endif; ?>
         </tr>
 
-        <?php foreach($kaikki_tehtavat as $tid => $tehtava): ?>
+        <?php foreach($kaikki_tehtavat as $tid => $tehtava): 
+            $nyky_tunnit = $tyotehtavat[$tid]['tunnit'] ?? '';
+            $nyky_alennukset = $tyotehtavat[$tid]['alennus'] ?? '';
+        ?>
         <tr>
             <td><?= htmlspecialchars($tehtava['tehtava']) ?></td>
             <td>
                 <div>
                     <input
-                        class="tarvike-input"
                         type="number"
                         name="tunnit[<?= $tid ?>]"
-                        placeholder="0"
                         min="0"
-                        value="<?= isset($_POST['tunnit'][$tid]) ? (int)$_POST['tunnit'][$tid] : 0 ?>"
+                        value="<?= isset($_POST['tunnit'][$tid])
+                            ? (int)$_POST['tunnit'][$tid]
+                            : $nyky_tunnit ?>"
+                        placeholder="0"
                     >
                 </div>
             </td>
@@ -100,13 +117,15 @@ if (isset($_POST['muokkaa_tehtavia'])) {
             <td>
                 <div>
                     <input
-                        class="alennus-input"
                         type="number"
                         name="alennus[<?= $tid ?>]"
-                        placeholder="0"
                         min="0"
                         max="100"
-                        value="<?= isset($_POST['alennus'][$tid]) ? (float)$_POST['alennus'][$tid] : 0 ?>">
+                        value="<?= isset($_POST['alennus'][$tid])
+                            ? (float)$_POST['alennus'][$tid]
+                            : $nyky_alennukset ?>"
+                        placeholder="0"
+                    >
                     <span>%</span>
                 </div>
             </td>
