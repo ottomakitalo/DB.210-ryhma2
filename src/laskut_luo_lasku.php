@@ -59,7 +59,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                 <tr>
                                     <th>Työtyyppi</th>
                                     <th>Tunnit</th>
-                                    <th>Alv-prosentti</th>
+                                    <th>Alv-%</th>
                                     <th>Alennus-%</th>
                                     <th>Summa</th>
                                 </tr>
@@ -156,7 +156,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             <tr>
                                 <th>Tarvike</th>
                                 <th>Määrä</th>
-                                <th>Alv-prosentti</th>
+                                <th>Alv-%</th>
                                 <th>Alennus-%</th>
                                 <th>Summa</th>
                             </tr>
