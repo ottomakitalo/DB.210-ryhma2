@@ -199,8 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <th>Toimittaja</th>
                 <th>Sisäänottohinta</th>
                 <th>Ulosmenohinta</th>
-                <th>Yksikkö</th>
-                <th>Varasto</th>
+                <th>Varastossa</th>
                 <th>Alv</th>
             </tr>
             <?php foreach ($kaikki_tarvikkeet as $tarvike): ?>
@@ -210,7 +209,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
                 <td><?= htmlspecialchars(number_format($tarvike['hinta'], 2, ',', ' ')) ?> €</td>
                 <td><?= htmlspecialchars(number_format($tarvike['hinta'] * 1.25, 2, ',', ' ')) ?> €</td>
-                <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['varasto']) . ' '. htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>
             </tr>
