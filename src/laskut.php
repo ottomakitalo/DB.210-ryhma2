@@ -57,7 +57,7 @@ require_once('data/laskut_data.php');
                     <?= !empty($lasku['erapvm']) ? $lasku['erapvm'] : '-' ?>
                 </td>
                 <td><?= $lasku['status'] ?></td>
-                <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?></td>
+                <td><?= number_format($lasku['yhteensä'], 2, ',', ' ') ?> €</td>
 
                 <td>
                     <?php if ($lasku['status'] === 'Maksettu'): ?>

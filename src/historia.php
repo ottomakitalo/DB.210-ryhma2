@@ -35,7 +35,7 @@ require_once('data/historia_data.php');
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>
-                <td><?= htmlspecialchars($tarvike['hinta']) ?></td>
+                <td><?= htmlspecialchars($tarvike['hinta']) ?> €</td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>
                 <td><?= htmlspecialchars($tarvike['poistettu_pvm']) ?></td>
