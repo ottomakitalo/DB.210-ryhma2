@@ -12,7 +12,7 @@ require_once('data/lasku_data.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
     if ($id === null) {
         echo "Laskua ei löytynyt.";
-        exit;
+        exit();
     }
 
     $annettu = date('Y-m-d');
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['laskuta'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['maksa_lasku'])) {
     if ($id === null) {
         echo "Laskua ei löytynyt.";
-        exit;
+        exit();
     }
 
     $maksettu_pvm = date('Y-m-d');
@@ -198,7 +198,7 @@ if (!$q_lisalaskut) {
             <th>Lisälasku</th>
             <th>Antopäivä</th>
             <th>Eräpäivä</th>
-            <th>Summa</th>
+            <th>Summa (€)</th>
             <th>Tyyppi</th>
         </tr>
 
@@ -240,7 +240,7 @@ if (!$q_lisalaskut) {
             <td><?= $jarjestys ?></td>
             <td><?= date('d.m.Y', strtotime($r['annettu_pvm'])) ?></td>
             <td><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
-            <td><?= number_format($summa, 2, ',', ' ') ?> €</td>
+            <td><?= number_format($summa, 2, ',', ' ') ?></td>
             <td><?= $tyyppi ?></td>
         </tr>
 

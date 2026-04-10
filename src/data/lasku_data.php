@@ -52,6 +52,7 @@ $q = pg_query_params(
 
 while ($row = pg_fetch_assoc($q)) {
     $tyotehtavat[$row['id']] = [
+        'id' => $row['id'],
         'tehtava' => $row['nimi'],
         'tunnit'   => (float)$row['tunnit'],
         'alennus' => (float)$row['alennus']
