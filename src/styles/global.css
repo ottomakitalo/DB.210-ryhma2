@@ -101,6 +101,20 @@ input {
     border: none;
 }
 
+.urakkahinta-input {
+    width: 93px;
+}
+
+.tarvike-input,
+.alennus-input,
+.alennus-input {
+    width: 44px;
+}
+
+.tunti-input {
+    width: 67px;
+}
+
 .virheviesti {
     color: red;
     white-space: pre-wrap;

@@ -16,20 +16,6 @@ h4 {
     gap: 4px;
 }
 
-.urakkahinta-container .urakkahinta-input {
-    width: 93px;
-}
-
-table .tarvike-input,
-table .alennus-input,
-.alennus-input {
-    width: 44px;
-}
-
-table .tunti-input {
-    width: 67px;
-}
-
 table td {
     padding: 8px 4px;
 }
