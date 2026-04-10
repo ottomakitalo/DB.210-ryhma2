@@ -26,7 +26,7 @@ require_once('turvallisuusraportti_luonti.php');
         <p><strong>Turvallisuusraporttia ei olemassa. Luo ensin turvallisuusraportti.</strong></p>
         <?php else: ?>
         <h2>Turvallisuusraportti</h2>
-        <p>Alla olevasta taulukosta näet, mitä tarvikkeita on lähetetty kullekin asiakkaalle eriteltynä heidän työkohteillaan.</p> 
+        <p>Tältä sivulta näet, mitä turvallisuusriskin alla olevia tuotteita on lähetetty kullekin asiakkaalle eriteltynä heidän työkohteillaan.</p> 
         <p>Valitsemasi tarvikkeet ovat:</p>
         <ul>
             <?php foreach($_SESSION['tarvikkeet'] as $id => $tarvike): ?>
@@ -67,7 +67,7 @@ require_once('turvallisuusraportti_luonti.php');
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['määrä'] ?></span>    
+                        <span><?= $rivi['määrä'] . ' ' . $rivi['yksikkö'] ?></span>    
                     </div>
                 </td>
                 <td>
