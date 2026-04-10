@@ -19,7 +19,7 @@ require_once('data/laskut_data.php');
     <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
-    <div class="content-container">
+    <div class="content-container laskuluettelo">
         <h2>Laskut</h2>
         <a href="laskut_hinta_arvio.php" class="link-button">Siirry laskun luontiin</a>
         <h3>Laskuluettelo</h3>

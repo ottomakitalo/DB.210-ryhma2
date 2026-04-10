@@ -18,7 +18,7 @@ require_once('data/historia_data.php');
 </head>
 
 <body>
-    <div class="content-container">
+    <div class="content-container historia">
         <h2>Tarvikehistoria</h2>
         <table>
             <tr>

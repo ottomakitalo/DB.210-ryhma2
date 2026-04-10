@@ -24,7 +24,7 @@ uasort($tarvikkeet, function($a, $b) { return strcasecmp($a['toimittaja'], $b['t
     <link rel="stylesheet" href="styles/taulu.css">
 </head>
 <body>
-    <div class="content-container">
+    <div class="content-container turvallisuusraportti_luonti" >
         <h2>Luo turvallisuusraportti tarvikkeesta</h2>
         <form method="post" action="turvallisuusraportti_tulos.php" class="luo-turvallisuusraportti">
             <div>

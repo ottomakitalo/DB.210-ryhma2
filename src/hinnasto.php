@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
 </head>
 
 <body>
-    <div class="content-container">
+    <div class="content-container hinnasto">
         <h2>Työtehtävät</h2>
         <table>
             <tr>

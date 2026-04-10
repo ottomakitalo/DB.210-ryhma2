@@ -102,3 +102,31 @@ input {
     word-break: break-word;
     overflow-wrap: break-word;
 }
+
+.turvallisuusraportti_luonti {
+    max-width: 450px;
+}
+
+.turvallisuusraportti_tulos {
+    max-width: 980px;
+}
+
+.laskuluettelo {
+    max-width: 1080px;
+}
+
+.laskut_luo_lasku {
+    max-width: 310px;
+}
+
+.hinnasto {
+    max-width: 830px;
+}
+
+.historia {
+    max-width: 830px;
+}
+
+.etusivu {
+    max-width: 850px;
+}
