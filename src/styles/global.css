@@ -36,6 +36,10 @@ body {
     color: #236BFB;
 }
 
+.navigation-list li a:hover:not(.active) {
+    color: #1A53D0;
+}
+
 .submit-button-container {
     display: flex;
     flex-direction: row;
