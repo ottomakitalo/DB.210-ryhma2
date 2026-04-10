@@ -238,6 +238,8 @@ if (!$q_lisalaskut) {
             $viivastys = ($alkuperainen_summa * 0.16 * $paivia) / 365.0;
         }
 
+        $viivastynyt = $era_pvm < $nyt ? 'lasku-myohassa' : '';
+
         $summa = $laskutuslisa + $viivastys;
         $tyyppi = $r['edellinen_id'] ? "Karhulasku" : "Muistutuslasku";
         ?>
@@ -245,7 +247,7 @@ if (!$q_lisalaskut) {
         <tr>
             <td><?= $jarjestys ?></td>
             <td><?= date('d.m.Y', strtotime($r['annettu_pvm'])) ?></td>
-            <td><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
+            <td class="<?= $viivastynyt ?>"><?= date('d.m.Y', strtotime($r['era_pvm'])) ?></td>
             <td><?= number_format($summa, 2, ',', ' ') ?></td>
             <td><?= $tyyppi ?></td>
         </tr>
