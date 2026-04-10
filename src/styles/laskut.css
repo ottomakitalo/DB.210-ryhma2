@@ -1,3 +1,21 @@
 .lisalasku_form {
     margin-top: 10px;
 }
+
+.lisalasku-table tr:last-child {
+    font-weight: bold;
+}
+
+.lisalasku-table tr:not(:last-child) {
+    color: #838282;
+}
+
+.tuntityot-tarvikkeet-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+tr:last-child .lasku-myohassa {
+    color: red;
+}

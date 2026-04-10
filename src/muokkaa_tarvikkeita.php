@@ -9,7 +9,6 @@ if ($_SESSION['rooli'] !== 'admin') {
 
 require_once('data/lasku_data.php');
 require_once('data/tarvikkeet_data.php');
-require_once('paivita_summa.php');
 
 if ($lasku === null || $lasku['erapvm'] !== '') {
     exit();

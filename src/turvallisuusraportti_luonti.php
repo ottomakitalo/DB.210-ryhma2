@@ -11,14 +11,15 @@ if(isset($_POST['luo-turvallisuusraportti'])) {
 
     if(!empty($tarvikeIdt)) {
         $q = pg_query($yhteys,
-            "SELECT ak.nimi AS asiakas, tk.osoite, SUM(tarvikkeet.maara) AS maara, tv.nimi AS tarvike, tv.merkki, tv.toimittaja
+            "SELECT ak.nimi AS asiakas, tk.osoite, SUM(tarvikkeet.maara) AS maara, tv.nimi AS tarvike, tv.merkki, tv.toimittaja, tarvike.yksikko
             FROM tarvike tv
             JOIN tarvikkeet ON tv.id = tarvikkeet.tarvike_id
+            JOIN tarvike ON tv.id = tarvike.id
             JOIN tyosuoritus ts ON ts.id = tarvikkeet.tyosuoritus_id
             JOIN tyokohde tk ON tk.id = ts.tyokohde_id
             JOIN asiakas ak ON ak.id = tk.asiakas_id
             WHERE tv.id IN ($tarvikeIdt)
-            GROUP BY ak.nimi, tk.osoite, tv.nimi, tv.merkki, tv.toimittaja
+            GROUP BY ak.nimi, tk.osoite, tv.nimi, tv.merkki, tv.toimittaja, tarvike.yksikko
             ORDER BY ak.nimi");
     
     
@@ -29,6 +30,7 @@ if(isset($_POST['luo-turvallisuusraportti'])) {
                 'tarvike'    => $row['tarvike'],
                 'merkki'     => $row['merkki'],
                 'määrä'      => $row['maara'],
+                'yksikkö'    => $row['yksikko'],
                 'toimittaja' => $row['toimittaja']
             ];
 
@@ -39,6 +41,6 @@ if(isset($_POST['luo-turvallisuusraportti'])) {
     natcasesort($tarvikkeetLista);
 
     $_SESSION['turvallisuusraportti'] = $turvallisuusraportti;
-    $_SESSION['tarvikkeet'] = $tarvikkeetLista;
+    $_SESSION['tarvikkeet'] = array_unique($tarvikkeetLista);
 }
 ?>

@@ -22,6 +22,14 @@ $q = pg_query_params(
      JOIN tyosuoritus ts ON ts.id = tvt.tyosuoritus_id
      WHERE ts.id = (
         SELECT tyosuoritus_id FROM lasku WHERE id = $1
+     )
+     UNION
+     SELECT h.id, h.nimi, tvt.maara, h.yksikko, tvt.alennus
+     FROM tarvike_historia h
+     JOIN historia_tarvikkeet tvt ON tvt.historia_id = h.id
+     JOIN tyosuoritus ts ON ts.id = tvt.tyosuoritus_id
+     WHERE ts.id = (
+        SELECT tyosuoritus_id FROM lasku WHERE id = $1
      )",
     [$id]
 );
@@ -52,6 +60,7 @@ $q = pg_query_params(
 
 while ($row = pg_fetch_assoc($q)) {
     $tyotehtavat[$row['id']] = [
+        'id' => $row['id'],
         'tehtava' => $row['nimi'],
         'tunnit'   => (float)$row['tunnit'],
         'alennus' => (float)$row['alennus']
