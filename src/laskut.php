@@ -22,7 +22,7 @@ require_once 'lisalasku_funktiot.php';
 <body>
     <div class="content-container laskuluettelo">
         <h2>Laskut</h2>
-        <p>Tältä sivulta löydät kaikki laskut laskuluettelosta. Siirtyäksesi tietyn laskun tietoihin voit painaa kyseisen laskun numeroa.</p>
+        <p>Tältä sivulta löydät kaikki laskut laskuluettelosta. Luodaksesi muistutus-/karhulaskun, tai siirtyäksesi tietyn laskun tietoihin voit painaa kyseisen laskun numeroa.</p>
         <p>Luodaksesi uuden laskun, paina alla olevaa "Siirry laskun luontiin"-nappia. Laskun luonnin sivulta voit luoda uuden laskun luomalla ensin hinta-arvion kyseiselle työlle.</p>
         <a href="laskut_hinta_arvio.php" class="link-button">Siirry laskun luontiin</a>
         <h3>Laskuluettelo</h3>
