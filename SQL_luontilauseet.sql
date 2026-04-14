@@ -39,8 +39,8 @@ CREATE TABLE tyosuoritus (
 INSERT INTO tyosuoritus VALUES (1, 'urakka', 0, 100, 1);
 INSERT INTO tyosuoritus VALUES (2, 'tunti', null, null, 2);
 INSERT INTO tyosuoritus VALUES (3, 'tunti', null, null, 3);
-INSERT INTO tyosuoritus VALUES (4, 'urakka', 0, 50, 5);
-INSERT INTO tyosuoritus VALUES (5, 'tunti', null, null, 4);
+INSERT INTO tyosuoritus VALUES (4, 'urakka', 0, 50, 4);
+INSERT INTO tyosuoritus VALUES (5, 'tunti', null, null, 5);
 
 CREATE TABLE lasku ( 
   id INT PRIMARY KEY, 
