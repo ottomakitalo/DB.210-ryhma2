@@ -5,10 +5,11 @@ CREATE TABLE asiakas (
 );
 
 INSERT INTO asiakas VALUES (1, 'Jaska Hosunen', 'Susimetsä');
-INSERT INTO asiakas VALUES (2, 'Lissu Jokinen', 'Susimetsä');
+INSERT INTO asiakas VALUES (2, 'Lissu Jokinen', 'Nurmitie');
 INSERT INTO asiakas VALUES (3, 'Masa Näsänen', 'Masalantie');
-INSERT INTO asiakas VALUES (4, 'Matti Matinpoika', 'Matinkatu');
-INSERT INTO asiakas VALUES (5, 'Minna Hiiri', 'Hiirenkolo');
+INSERT INTO asiakas VALUES (4, 'Lissu Jokinen', 'Susimetsä');
+INSERT INTO asiakas VALUES (5, 'Matti Matinpoika', 'Matinkatu');
+INSERT INTO asiakas VALUES (6, 'Minna Hiiri', 'Hiirenkolo');
 
 
 CREATE TABLE tyokohde ( 
@@ -22,9 +23,9 @@ INSERT INTO tyokohde VALUES (1, 'Susimetsä', 1);
 INSERT INTO tyokohde VALUES (2, 'Nurmitie', 2);
 INSERT INTO tyokohde VALUES (3, 'Puotonkorpi', 3);
 INSERT INTO tyokohde VALUES (4, 'Masalantie', 3);
-INSERT INTO tyokohde VALUES (5, 'Huitsinneva', 2);
-INSERT INTO tyokohde VALUES (6, 'Matinkatu', 4);
-INSERT INTO tyokohde VALUES (7, 'Koivukatu', 2);
+INSERT INTO tyokohde VALUES (5, 'Huitsinneva', 4);
+INSERT INTO tyokohde VALUES (6, 'Matinkatu', 5);
+INSERT INTO tyokohde VALUES (7, 'Koivukatu', 5);
 
 
 CREATE TABLE tyosuoritus ( 
