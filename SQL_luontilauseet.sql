@@ -61,8 +61,8 @@ CREATE TABLE lasku (
 INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, false, 130.20, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
 INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2488.18, 3, 3);
-INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 725.13, 2, 5);
-INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 3, 4);
+INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 4);
+INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 725.13, 3, 5);
 
 CREATE TABLE tyotehtava ( 
   id INT PRIMARY KEY, 
