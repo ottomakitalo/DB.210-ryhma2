@@ -5,10 +5,11 @@ CREATE TABLE asiakas (
 );
 
 INSERT INTO asiakas VALUES (1, 'Jaska Hosunen', 'Susimetsä');
-INSERT INTO asiakas VALUES (2, 'Lissu Jokinen', 'Susimetsä');
+INSERT INTO asiakas VALUES (2, 'Lissu Jokinen', 'Nurmitie');
 INSERT INTO asiakas VALUES (3, 'Masa Näsänen', 'Masalantie');
-INSERT INTO asiakas VALUES (4, 'Matti Matinpoika', 'Matinkatu');
-INSERT INTO asiakas VALUES (5, 'Minna Hiiri', 'Hiirenkolo');
+INSERT INTO asiakas VALUES (4, 'Lissu Jokinen', 'Susimetsä');
+INSERT INTO asiakas VALUES (5, 'Matti Matinpoika', 'Matinkatu');
+INSERT INTO asiakas VALUES (6, 'Minna Hiiri', 'Hiirenkolo');
 
 
 CREATE TABLE tyokohde ( 
@@ -22,9 +23,9 @@ INSERT INTO tyokohde VALUES (1, 'Susimetsä', 1);
 INSERT INTO tyokohde VALUES (2, 'Nurmitie', 2);
 INSERT INTO tyokohde VALUES (3, 'Puotonkorpi', 3);
 INSERT INTO tyokohde VALUES (4, 'Masalantie', 3);
-INSERT INTO tyokohde VALUES (5, 'Huitsinneva', 2);
-INSERT INTO tyokohde VALUES (6, 'Matinkatu', 4);
-INSERT INTO tyokohde VALUES (7, 'Koivukatu', 2);
+INSERT INTO tyokohde VALUES (5, 'Huitsinneva', 4);
+INSERT INTO tyokohde VALUES (6, 'Matinkatu', 5);
+INSERT INTO tyokohde VALUES (7, 'Koivukatu', 5);
 
 
 CREATE TABLE tyosuoritus ( 
@@ -36,10 +37,10 @@ CREATE TABLE tyosuoritus (
   FOREIGN KEY (tyokohde_id) REFERENCES tyokohde(id) 
 ); 
 
-INSERT INTO tyosuoritus VALUES (1, 'urakka', 0, 100, 1);
+INSERT INTO tyosuoritus VALUES (1, 'urakka', 100, 0, 1);
 INSERT INTO tyosuoritus VALUES (2, 'tunti', null, null, 2);
 INSERT INTO tyosuoritus VALUES (3, 'tunti', null, null, 3);
-INSERT INTO tyosuoritus VALUES (4, 'urakka', 0, 50, 5);
+INSERT INTO tyosuoritus VALUES (4, 'urakka', 50, 0, 5);
 INSERT INTO tyosuoritus VALUES (5, 'tunti', null, null, 4);
 
 CREATE TABLE lasku ( 
@@ -60,8 +61,8 @@ CREATE TABLE lasku (
 INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, false, 130.20, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
 INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2488.18, 3, 3);
-INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 5);
-INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 725.13, 3, 4);
+INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 4);
+INSERT INTO lasku VALUES (5, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 725.13, 3, 5);
 
 CREATE TABLE tyotehtava ( 
   id INT PRIMARY KEY, 
