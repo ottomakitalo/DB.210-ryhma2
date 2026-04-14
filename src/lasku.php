@@ -164,14 +164,14 @@ else {
 <a href="laskut.php" class="link-button">Takaisin laskuihin</a>
 <h2>Lasku <?= htmlspecialchars($id) ?></h2>
 
-<p><strong>Asiakas:</strong> <?= $lasku['asiakas'] ?></p>
-<p><strong>Työkohde:</strong> <?= $lasku['kohde'] ?></p>
-<p><strong>Tyyppi:</strong> <?= $lasku['tyyppi'] ?></p>
-<p><strong>Päiväys:</strong> <?= $lasku['pvm'] ?: $lasku['luotu'] ?></p>
-<p><strong>Eräpäivä:</strong> <?= $lasku['erapvm'] ?: '-' ?></p>
-<p><strong>Status:</strong> <?= $lasku['status'] ?></p>
+<p><strong>Asiakas:</strong> <?= htmlspecialchars($lasku['asiakas']) ?></p>
+<p><strong>Työkohde:</strong> <?= htmlspecialchars($lasku['kohde']) ?></p>
+<p><strong>Tyyppi:</strong> <?= htmlspecialchars($lasku['tyyppi']) ?></p>
+<p><strong>Päiväys:</strong> <?= htmlspecialchars($lasku['pvm']) ?: htmlspecialchars($lasku['luotu']) ?></p>
+<p><strong>Eräpäivä:</strong> <?= htmlspecialchars($lasku['erapvm']) ?: '-' ?></p>
+<p><strong>Status:</strong> <?= htmlspecialchars($lasku['status']) ?></p>
 <?php if($lasku['maksettu_pvm'] !== ''): ?>
-    <p><strong>Maksettu pvm:</strong> <?= $lasku['maksettu_pvm'] ?></p>
+    <p><strong>Maksettu pvm:</strong> <?= htmlspecialchars($lasku['maksettu_pvm']) ?></p>
 <?php endif; ?>
 
 <h3>Työerittely</h3>
@@ -199,12 +199,12 @@ else {
             <tr>
                 <td>
                     <div>
-                        <span><?= $tuntityo['tehtava'] ?></span>
+                        <span><?= htmlspecialchars($tuntityo['tehtava']) ?></span>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $tuntityo['tunnit'] ?></span>
+                        <span><?= htmlspecialchars($tuntityo['tunnit']) ?></span>
                         <span>h</span>
                     </div>
                 </td>
@@ -216,7 +216,7 @@ else {
                 </td>
                 <td>
                     <div>
-                        <span><?= $tuntityo['alennus'] . ' %' ?></span>
+                        <span><?= htmlspecialchars($tuntityo['alennus']) . ' %' ?></span>
                     </div>
                 </td>
                 <td>
@@ -320,21 +320,21 @@ else {
             $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
             ?>
         <tr>
-            <td><div><span><?= $tarvike['tarvike'] ?></span></div></td>
+            <td><div><span><?= htmlspecialchars($tarvike['tarvike']) ?></span></div></td>
             <td>
                 <div>
-                    <span><?= $tarvike['maara'] ?></span>
-                    <span><?= $tarvike['yksikko'] ?></span>
+                    <span><?= htmlspecialchars($tarvike['maara']) ?></span>
+                    <span><?= htmlspecialchars($tarvike['yksikko']) ?></span>
                 </div>
             </td>
             <td>
                 <div>
-                    <span><?= $tarvike['alv'] . ' %' ?></span>
+                    <span><?= htmlspecialchars($tarvike['alv']) . ' %' ?></span>
                 </div>
             </td>
             <td>
                 <div>
-                    <span><?= $tarvike['alennus'] . ' %' ?></span>
+                    <span><?= htmlspecialchars($tarvike['alennus']) . ' %' ?></span>
                 </div>
             </td>
             <td>

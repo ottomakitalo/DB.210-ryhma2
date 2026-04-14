@@ -63,18 +63,18 @@ require 'data/asiakkaat_data.php';
 
             <?php foreach($asiakkaat as $asiakas): ?>
             <tr>
-                <td><?= $asiakas['nimi'] ?></td>
-                <td><?= $asiakas['osoite'] ?></td>
+                <td><?= htmlspecialchars($asiakas['nimi']) ?></td>
+                <td><?= htmlspecialchars($asiakas['osoite']) ?></td>
 
                 <td class="tyokohde-cell">
                     <div class="tyokohde-container">
                         <?php foreach($asiakas['tyokohteet'] as $t): ?>  
                             <span>
-                                📍 <?= $t['osoite'] ?>
+                                📍 <?= htmlspecialchars($t['osoite']) ?>
                             </span>
                         <?php endforeach; ?>
                         <form method="post">
-                            <input type="hidden" name="asiakas_id" value="<?= $asiakas['id'] ?>">
+                            <input type="hidden" name="asiakas_id" value="<?= htmlspecialchars($asiakas['id']) ?>">
                             <input type="text" name="osoite" placeholder="Osoite" required>
                             <button type="submit" name="lisaa_tyokohde">Lisää työkohde</button>
                         </form>

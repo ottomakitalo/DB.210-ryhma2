@@ -43,17 +43,17 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                 <div class="perustiedot-container flex-container">
                     <div>
                         <span class="tieto-label">Asiakas:</span>
-                        <span><?= $asiakkaat[$laskutiedot['asiakas']]['nimi'] ?></span>
+                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></span>
                     </div>
             
                     <div>
                         <span class="tieto-label">Kohde:</span>
-                        <span><?= $asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite'] ?></span>
+                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></span>
                     </div>
 
                     <div>
                         <span class="tieto-label">Työtyyppi:</span>
-                        <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö' ?></span>
+                        <span><?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></span>
                     </div>
                 </div>
 
@@ -87,12 +87,12 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             <tr>
                                 <td>
                                     <div>
-                                        <span><?= $tuntityo['tyyppi'] ?></span>
+                                        <span><?= htmlspecialchars($tuntityo['tyyppi']) ?></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= $tuntityo['kesto'] ?></span>
+                                        <span><?= htmlspecialchars($tuntityo['kesto']) ?></span>
                                         <span>h</span>
                                     </div>
                                 </td>
@@ -207,16 +207,16 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                             $tarvikkeetYhteensa += $tarvike['yhteensä'];
                             ?>
                         <tr>
-                            <td><div><span><?= $tarvike['tarvike'] ?></span></div></td>
+                            <td><div><span><?= htmlspecialchars($tarvike['tarvike']) ?></span></div></td>
                             <td>
                                 <div>
-                                    <span><?= $tarvike['määrä'] ?></span>
-                                    <span><?= $tarvike['yksikkö'] ?></span>
+                                    <span><?= htmlspecialchars($tarvike['määrä']) ?></span>
+                                    <span><?= htmlspecialchars($tarvike['yksikkö']) ?></span>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <span><?= $tarvike['alv'] . ' %' ?></span>
+                                    <span><?= htmlspecialchars($tarvike['alv']) . ' %' ?></span>
                                 </div>
                             </td>
                             <td>

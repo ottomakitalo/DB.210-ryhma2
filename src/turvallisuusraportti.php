@@ -59,17 +59,17 @@ uasort($tarvikkeet, function($a, $b) {
                         </td>
                         <td>
                             <div>
-                                <span><?= $tarvike['toimittaja'] ?></span>
+                                <span><?= htmlspecialchars($tarvike['toimittaja']) ?></span>
                             </div>
                         </td>
                         <td>
                             <div>
-                                <span><?= $tarvike['tarvike'] ?></span>
+                                <span><?= htmlspecialchars($tarvike['tarvike']) ?></span>
                             </div>
                         </td>
                         <td>
                             <div>
-                                <span><?= $tarvike['merkki'] ?></span>
+                                <span><?= htmlspecialchars($tarvike['merkki']) ?></span>
                             </div>
                         </td>
                     </tr>

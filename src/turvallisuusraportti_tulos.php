@@ -52,32 +52,32 @@ require_once('turvallisuusraportti_luonti.php');
             <tr class="<?= $rivinLuokka ?>">
                 <td>
                     <div>
-                        <span><?= $rivi['asiakas'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['asiakas']) ?></span>    
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['osoite'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['osoite']) ?></span>    
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['tarvike'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['tarvike']) ?></span>    
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['merkki'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['merkki']) ?></span>    
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['määrä'] . ' ' . $rivi['yksikkö'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['määrä']) . ' ' . htmlspecialchars($rivi['yksikkö']) ?></span>    
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= $rivi['toimittaja'] ?></span>    
+                        <span><?= htmlspecialchars($rivi['toimittaja']) ?></span>    
                     </div>
                 </td>
             </tr>

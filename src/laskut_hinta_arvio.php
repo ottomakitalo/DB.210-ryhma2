@@ -35,7 +35,7 @@ require_once('data/tarvikkeet_data.php');
                         foreach($asiakas['tyokohteet'] as $id => $tyokohde) {
                             $value = $asiakas['id'] . ':' . $tyokohde['id'];
                             $label = $asiakas['nimi'] . ' - ' . $tyokohde['osoite'];
-                            echo "<option value=\"$value\">$label</option>";
+                            echo "<option value=\"$value\">".htmlspecialchars($label)."</option>";
                         }
                     }?>
                 </select>
@@ -91,7 +91,7 @@ require_once('data/tarvikkeet_data.php');
 
                         <?php foreach($kaikki_tehtavat as $id => $tuntityo): ?>
                         <tr>
-                            <td><?= $tuntityo['tehtava'] ?></td>
+                            <td><?= htmlspecialchars($tuntityo['tehtava']) ?></td>
                             <td>
                                 <div>
                                     <input
@@ -131,7 +131,7 @@ require_once('data/tarvikkeet_data.php');
 
                         <?php foreach($kaikki_tarvikkeet as $id => $tarvike): ?>
                         <tr>
-                            <td><?= $tarvike['tarvike'] ?></td>
+                            <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                             <td>
                                 <div>
                                     <input
@@ -140,7 +140,7 @@ require_once('data/tarvikkeet_data.php');
                                         name="<?= $tarvike['tarvike'] ?>" 
                                         placeholder="0"
                                         min="0">
-                                    <span><?= $tarvike['yksikkö'] ?></span>
+                                    <span><?= htmlspecialchars($tarvike['yksikkö']) ?></span>
                                 </div>
                             </td>
                             <td>
