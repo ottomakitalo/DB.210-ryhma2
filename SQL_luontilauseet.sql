@@ -58,7 +58,7 @@ CREATE TABLE lasku (
   FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id) 
 );
 
-INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, false, 130.20, 1, 1);
+INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, 130.20, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
 INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2488.18, 3, 3);
 INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 4);
