@@ -28,7 +28,7 @@ require_once('data/historia_data.php');
                 <th>Sisäänottohinta</th>
                 <th>Yksikkö</th>
                 <th>Alv</th>
-                <th>Poistettu pvm</th>
+                <th>Poistettu/muokattu pvm</th>
             </tr>
             <?php foreach ($historia as $tarvike): ?>
             <tr>
