@@ -417,7 +417,7 @@ if ($lasku['lisalaskuja'] > 0) {
 <?php
 $q_lisalaskut = pg_query_params(
     $yhteys,
-    "SELECT id, annettu_pvm, era_pvm, maksettu_pvm, edellinen_id
+    "SELECT id, annettu_pvm, era_pvm, edellinen_id
      FROM lisalasku
      WHERE alkp_id = $1
      ORDER BY id",
