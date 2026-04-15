@@ -60,65 +60,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
             $virheviesti = "Tietokantavirhe: tarvikkeiden hakeminen epäonnistui.";
             $ok = false;
         } else {
-            $existing = [];
+            $olemassa = [];
             while ($row = pg_fetch_assoc($res)) {
-                $existing[(int)$row['id']] = $row;
+                $olemassa[(int)$row['id']] = $row;
+            }
+
+            // Haetaan seuraava historia id
+            $result_hist = pg_query($yhteys, "SELECT COALESCE(MAX(id),0)+1 AS id FROM tarvike_historia");
+            if ($result_hist === false) {
+                $virheviesti = "Tietokantavirhe: historia ID:n hakeminen epäonnistui.";
+                $ok = false;
+            } else {
+                $rowh = pg_fetch_assoc($result_hist);
+                $histora_id = $rowh['id'];
+                $poistettu_pvm = date('Y-m-d');
             }
 
             foreach ($uudet_tarvikkeet as $item) {
                 $id = $item['id'];
-                if (isset($existing[$id])) {
-                    $r = pg_query_params(
-                        $yhteys,
-                        'UPDATE tarvike SET nimi=$1, merkki=$2, sis_hinta=$3, yksikko=$4, tyyppi_nimi=$5 WHERE id=$6 AND toimittaja=$7',
-                        [$item['nimi'], $item['merkki'], $item['sis_hinta'], $item['yksikko'], $item['tyyppi_nimi'], $id, $toimittaja]
+                if (isset($olemassa[$id])) {
+                    // Tarkistetaan, onko jokin kenttä muuttunut
+                    $vanha = $olemassa[$id];
+                    $muuttunut = (
+                        trim((string)$vanha['nimi']) !== $item['nimi'] ||
+                        trim((string)$vanha['merkki']) !== $item['merkki'] ||
+                        (float)$vanha['sis_hinta'] !== (float)$item['sis_hinta'] ||
+                        trim((string)$vanha['yksikko']) !== $item['yksikko'] ||
+                        trim((string)$vanha['tyyppi_nimi']) !== $item['tyyppi_nimi']
                     );
-                    if ($r === false) {
-                        $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);
-                        $ok = false;
-                        break;
-                    }
-                    unset($existing[$id]);
-                } else {
-                    $r = pg_query_params(
-                        $yhteys,
-                        'INSERT INTO tarvike (id, nimi, merkki, toimittaja, sis_hinta, yksikko, varasto, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                        [$id, $item['nimi'], $item['merkki'], $toimittaja, $item['sis_hinta'], $item['yksikko'], 0, $item['tyyppi_nimi']]
-                    );
-                    if ($r === false) {
-                        $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);
-                        $ok = false;
-                        break;
-                    }
-                }
-            }
 
-            if ($ok) {
-                $result = pg_query($yhteys,
-                    "SELECT COALESCE(MAX(id),0)+1 AS id FROM tarvike_historia"
-                );
-                if ($result === false) {
-                    $virheviesti = "Tietokantavirhe: historia ID:n hakeminen epäonnistui.";
-                    $ok = false;
-                } else {
-                    $row = pg_fetch_assoc($result);
-                    $histora_id = $row['id'];
-                    $poistettu_pvm = date('Y-m-d');
-
-                    foreach ($existing as $id => $row) {
+                    // Jos jokin kenttä on muuttunut, tallenna vanha rivi historiaan ja päivitä uusi tieto samaan id:hen
+                    if ($muuttunut) {
+                        // Tallennetaan vanha rivi historiaan
                         $h = pg_query_params(
                             $yhteys,
                             'INSERT INTO tarvike_historia (id, nimi, merkki, toimittaja, sis_hinta, yksikko, poistettu_pvm, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                            [$histora_id, $row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettu_pvm, $row['tyyppi_nimi']]
+                            [$histora_id, $vanha['nimi'], $vanha['merkki'], $vanha['toimittaja'], $vanha['sis_hinta'], $vanha['yksikko'], $poistettu_pvm, $vanha['tyyppi_nimi']]
                         );
                         if ($h === false) {
                             $virheviesti = "Virhe tarvike_historia-taulun päivityksessä: " . pg_last_error($yhteys);
                             $ok = false;
                             break;
                         }
-                        
-                        // Siirretään laskuille liitetyt rivit `tarvikkeet`-taulusta
-                        // vastaaviin riveihin `historia_tarvikkeet` ennen tarvike-rivin poistamista
+
+                        // Siirretään laskuille liitetyt rivit tarvikkeet->historia_tarvikkeet
                         $qtar = pg_query_params(
                             $yhteys,
                             'SELECT tyosuoritus_id, maara, alennus FROM tarvikkeet WHERE tarvike_id = $1',
@@ -156,13 +141,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                         }
 
                         $histora_id++;
+                    }
 
-                        $d = pg_query_params($yhteys, 'DELETE FROM tarvike WHERE id=$1 AND toimittaja=$2', [$id, $toimittaja]);
-                        if ($d === false) {
-                            $virheviesti = "Virhe tarvike-taulun päivityksessä: " .  pg_last_error($yhteys);
+                    // Päivitetään (uusi versio jää samaan id:hen)
+                    $r = pg_query_params(
+                        $yhteys,
+                        'UPDATE tarvike SET nimi=$1, merkki=$2, sis_hinta=$3, yksikko=$4, tyyppi_nimi=$5 WHERE id=$6 AND toimittaja=$7',
+                        [$item['nimi'], $item['merkki'], $item['sis_hinta'], $item['yksikko'], $item['tyyppi_nimi'], $id, $toimittaja]
+                    );
+                    if ($r === false) {
+                        $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);
+                        $ok = false;
+                        break;
+                    }
+                    unset($olemassa[$id]);
+                } else {
+                    $r = pg_query_params(
+                        $yhteys,
+                        'INSERT INTO tarvike (id, nimi, merkki, toimittaja, sis_hinta, yksikko, varasto, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+                        [$id, $item['nimi'], $item['merkki'], $toimittaja, $item['sis_hinta'], $item['yksikko'], 0, $item['tyyppi_nimi']]
+                    );
+                    if ($r === false) {
+                        $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);
+                        $ok = false;
+                        break;
+                    }
+                }
+            }
+
+            if ($ok) {
+                // Siirrä XML:ssä poistetut tarvikkeet historiaan ja poista ne tarvike-taulusta
+                foreach ($olemassa as $id => $row) {
+                    $h = pg_query_params(
+                        $yhteys,
+                        'INSERT INTO tarvike_historia (id, nimi, merkki, toimittaja, sis_hinta, yksikko, poistettu_pvm, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+                        [$histora_id, $row['nimi'], $row['merkki'], $row['toimittaja'], $row['sis_hinta'], $row['yksikko'], $poistettu_pvm, $row['tyyppi_nimi']]
+                    );
+                    if ($h === false) {
+                        $virheviesti = "Virhe tarvike_historia-taulun päivityksessä: " . pg_last_error($yhteys);
+                        $ok = false;
+                        break;
+                    }
+                    
+                    $qtar = pg_query_params(
+                        $yhteys,
+                        'SELECT tyosuoritus_id, maara, alennus FROM tarvikkeet WHERE tarvike_id = $1',
+                        [$id]
+                    );
+                    if ($qtar === false) {
+                        $virheviesti = "Tietokantavirhe: tarvikkeet-haku epäonnistui: " . pg_last_error($yhteys);
+                        $ok = false;
+                        break;
+                    }
+
+                    while ($tarrow = pg_fetch_assoc($qtar)) {
+                        $insertHist = pg_query_params(
+                            $yhteys,
+                            'INSERT INTO historia_tarvikkeet (historia_id, tyosuoritus_id, maara, alennus) VALUES ($1, $2, $3, $4)',
+                            [$histora_id, $tarrow['tyosuoritus_id'], $tarrow['maara'], $tarrow['alennus']]
+                        );
+                        if ($insertHist === false) {
+                            $virheviesti = "Virhe historia_tarvikkeet-taulun päivityksessä: " . pg_last_error($yhteys);
                             $ok = false;
-                            break;
+                            break 2;
                         }
+                    }
+
+                    // Poistetaan vanhat viittaukset tarvikkeeseen
+                    $u = pg_query_params(
+                        $yhteys,
+                        'DELETE FROM tarvikkeet WHERE tarvike_id=$1',
+                        [$id]
+                    );
+                    if ($u === false) {
+                        $virheviesti = "Virhe tarvikkeet-taulun päivityksessä: " . pg_last_error($yhteys);
+                        $ok = false;
+                        break;
+                    }
+
+                    $histora_id++;
+
+                    $d = pg_query_params($yhteys, 'DELETE FROM tarvike WHERE id=$1 AND toimittaja=$2', [$id, $toimittaja]);
+                    if ($d === false) {
+                        $virheviesti = "Virhe tarvike-taulun päivityksessä: " .  pg_last_error($yhteys);
+                        $ok = false;
+                        break;
                     }
                 }
             }
