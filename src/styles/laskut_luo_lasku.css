@@ -68,3 +68,11 @@ input[type=checkbox]+label {
 input[type=checkbox]:disabled+label {
     color: #ccc;
 }
+
+#erapaiva {
+    text-decoration: line-through;
+}
+
+.seuraava-lasku {
+    display: none;
+}

@@ -14,6 +14,11 @@ require_once('data/tarvikkeet_data.php');
 require_once('luo_lasku.php');
 
 $laskutiedot = $_SESSION['laskutiedot'] ?? [];
+
+$laskuPvm = date('d.m.Y');
+$laskuEraPvm = date('d.m.Y', strtotime('+2 weeks', strtotime(date('Y-m-d'))));
+$seuraavaLaskuPvm = date('d.m.Y', strtotime('first day of january next year'));
+$seuraavaLaskuEraPvm = date('d.m.Y', strtotime('+2 weeks', strtotime($seuraavaLaskuPvm)));
 ?>
 
 <!DOCTYPE html>
@@ -40,10 +45,14 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
         <h3>Lasku</h3>
         <form method="post" class="luo-lasku">
             <div class="laskuarvio-container flex-container">
-                <div class="perustiedot-container">
+                <div class="perustiedot-container flex-container">
                     <p><strong>Asiakas:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></p>
                     <p><strong>Työkohde:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></p>
                     <p><strong>Tyyppi:</strong> <?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></p>
+                    <p><strong>Päiväys:</strong> <?= htmlspecialchars($laskuPvm) ?></p>
+                    <p id="erapaiva"><strong>Eräpäivä:</strong> <?= htmlspecialchars($laskuEraPvm) ?></p>
+                    <p id="seuraavaPvm" class="seuraava-lasku"><strong>Seuraavan laskun päiväys:</strong> <?= htmlspecialchars($seuraavaLaskuPvm) ?></p>
+                    <p id="seuraavaEraPvm" class="seuraava-lasku"><strong>Seuraavan laskun eräpäivä:</strong> <?= htmlspecialchars($seuraavaLaskuEraPvm) ?></p>
                 </div>
 
                 <?php if(!empty($laskutiedot['tuntityöt']) || $laskutiedot['työtyyppi'] === 'urakka'): ?>
@@ -310,6 +319,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
     <script>
         const valmisCheckbox = document.getElementById('valmis');
         const tuplalaskuCheckbox = document.getElementById('tuplalasku');
+        const erapaiva = document.getElementById('erapaiva');
+
+        if(valmisCheckbox !== null & erapaiva !== null) {
+            valmisCheckbox.addEventListener('change', () => {
+                if(!valmisCheckbox.checked) {
+                    erapaiva.style.textDecoration = 'line-through';
+                }
+                else {
+                    erapaiva.style.textDecoration = 'none';
+                }
+            });
+        }
         
         if(valmisCheckbox !== null && tuplalaskuCheckbox !== null) {
             valmisCheckbox.addEventListener('change', () => {
@@ -317,6 +338,15 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                 if(!valmisCheckbox.checked) {
                     tuplalaskuCheckbox.checked = false;
                 }
+            });
+        }
+
+        if(tuplalaskuCheckbox !== null) {
+            tuplalaskuCheckbox.addEventListener('change', () => {
+                const checked = tuplalaskuCheckbox.checked;
+
+                document.getElementById('seuraavaPvm').style.display = checked ? 'block' : 'none';
+                document.getElementById('seuraavaEraPvm').style.display = checked ? 'block' : 'none';
             });
         }
     </script>
