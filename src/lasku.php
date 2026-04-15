@@ -146,6 +146,12 @@ else {
     $alvsumma = $tuntityotAlv + $tarvikkeetAlv;
     $kotitalousVahennys = $tuntityotNetto + $tuntityotAlv;
 }
+
+if($lasku['puolitettu'] === 1) {
+    $nettosumma = $nettosumma / 2;
+    $alvsumma = $alvsumma / 2;
+    $kotitalousVahennys = $kotitalousVahennys / 2;
+}
 ?>
 
 
@@ -488,7 +494,7 @@ if (!$q_lisalaskut) {
 }
 ?>
 
-<h3>Laskun hintaerittely</h3>
+<h3>Laskun hintaerittely <?= $lasku['puolitettu'] === 1 ? '(lasku on puolitettu)' : '' ?></h3>
 <div class="flex-container">
     <table class="table-with-borders">
         <tr>
