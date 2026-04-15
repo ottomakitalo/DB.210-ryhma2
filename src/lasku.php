@@ -512,8 +512,19 @@ if (!$q_lisalaskut) {
     </table>
 </div>
 
+<?php if($lasku['status'] !== 'Maksettu' && $lasku['erapvm'] === ''): ?>
+    <form method="post" action="lasku.php?id=<?= $id ?>">
+        <div class="submit-button-container">
+            <button type="submit" name="laskuta">Laskuta lasku</button>
+            <div>
+                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
+                <label for="valmis">Valmis laskutettavaksi</label>
+            </div>
+        </div>
+    </form>
+<?php endif; ?>
 
-<?php if($lasku['maksettu_pvm'] === '' && $lasku['erapvm'] !== ''): ?>
+<?php if($lasku['status'] !== 'Maksettu' && $lasku['erapvm'] !== ''): ?>
     <form method="post" action="lasku.php?id=<?= $id ?>">
         <div class="submit-button-container">
             <button type="submit" name="maksa_lasku">Merkitse maksetuksi</button>
@@ -525,17 +536,6 @@ if (!$q_lisalaskut) {
     </form>
 <?php endif; ?>
 
-<?php if($lasku['erapvm'] === ''): ?>
-    <form method="post" action="lasku.php?id=<?= $id ?>">
-        <div class="submit-button-container">
-            <button type="submit" name="laskuta">Laskuta lasku</button>
-            <div>
-                <input type="checkbox" name="valmis" value="valmis" id="valmis" required>
-                <label for="valmis">Valmis laskutettavaksi</label>
-            </div>
-        </div>
-    </form>
-<?php endif; ?>
 
 
 <?php
