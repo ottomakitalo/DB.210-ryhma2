@@ -175,7 +175,7 @@ $seuraavaLaskuEraPvm = date('d.m.Y', strtotime('+2 weeks', strtotime($seuraavaLa
                                 </td>
                                 <td>
                                     <div>
-                                        <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['nettosumma'] : $tuntityotYhteensa, 2, ',', ' ') ?></span>
+                                        <span><?= number_format($laskutiedot['työtyyppi'] === 'urakka' ? $laskutiedot['urakkaNetto'] + $laskutiedot['urakkaAlv'] : $tuntityotYhteensa, 2, ',', ' ') ?></span>
                                         <span>€</span>
                                     </div>
                                 </td>

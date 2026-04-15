@@ -142,7 +142,7 @@ if(isset($_POST['luo_lasku'])) {
  */
 function createLaskuWithTyosuoritus($yhteys, $laskutiedot, $annettuPvm, $eraPvm, $laskuValmis, $yhteensa, $puolitettuLasku) { 
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $urakkahinta = $tyotyyppi === 'urakka' ? $laskutiedot['nettosumma'] : NULL;
+    $urakkahinta = $tyotyyppi === 'urakka' ? $laskutiedot['urakkaNetto'] : NULL;
     $urakkaAlennus = $laskutiedot['urakka-alennus'];
     $tyokohdeId = $laskutiedot['kohde'];
     $tyosuoritusId = createNewTyosuoritus($yhteys, $tyotyyppi, $urakkahinta, $urakkaAlennus, $tyokohdeId);
