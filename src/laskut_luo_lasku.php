@@ -14,6 +14,11 @@ require_once('data/tarvikkeet_data.php');
 require_once('luo_lasku.php');
 
 $laskutiedot = $_SESSION['laskutiedot'] ?? [];
+
+$laskuPvm = date('d.m.Y');
+$laskuEraPvm = date('d.m.Y', strtotime('+2 weeks', strtotime(date('Y-m-d'))));
+$seuraavaLaskuPvm = date('d.m.Y', strtotime('first day of january next year'));
+$seuraavaLaskuEraPvm = date('d.m.Y', strtotime('+2 weeks', strtotime($seuraavaLaskuPvm)));
 ?>
 
 <!DOCTYPE html>
@@ -41,30 +46,25 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
         <form method="post" class="luo-lasku">
             <div class="laskuarvio-container flex-container">
                 <div class="perustiedot-container flex-container">
-                    <div>
-                        <span class="tieto-label">Asiakas:</span>
-                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></span>
-                    </div>
-            
-                    <div>
-                        <span class="tieto-label">Kohde:</span>
-                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></span>
-                    </div>
-
-                    <div>
-                        <span class="tieto-label">Työtyyppi:</span>
-                        <span><?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></span>
-                    </div>
+                    <p><strong>Asiakas:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></p>
+                    <p><strong>Työkohde:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></p>
+                    <p><strong>Tyyppi:</strong> <?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></p>
+                    <p><strong>Päiväys:</strong> <?= htmlspecialchars($laskuPvm) ?></p>
+                    <p id="erapaiva"><strong>Eräpäivä:</strong> <?= htmlspecialchars($laskuEraPvm) ?></p>
+                    <p id="seuraavaPvm" class="seuraava-lasku"><strong>Seuraavan laskun päiväys:</strong> <?= htmlspecialchars($seuraavaLaskuPvm) ?></p>
+                    <p id="seuraavaEraPvm" class="seuraava-lasku"><strong>Seuraavan laskun eräpäivä:</strong> <?= htmlspecialchars($seuraavaLaskuEraPvm) ?></p>
                 </div>
 
                 <?php if(!empty($laskutiedot['tuntityöt']) || $laskutiedot['työtyyppi'] === 'urakka'): ?>
                 <div class="yhteenveto-container flex-container">
-                    <span class="tieto-label">Työerittely:</span>
+                    <h4>Työerittely:</h4>
                     <table>
                         <thead>
                             <tr>
                                 <th>Työtyyppi</th>
+                                <?php if(!empty($laskutiedot['tuntityöt'])): ?>
                                 <th>Tunnit</th>
+                                <?php endif; ?>
                                 <th>Alv-%</th>
                                 <th>Alennus-%</th>
                                 <th>Nettosumma</th>
@@ -137,6 +137,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                         <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'urakka' : 'Yhteensä:' ?></span>
                                     </div>
                                 </td>
+                                <?php if(!empty($laskutiedot['tuntityöt'])): ?>
                                 <td>
                                     <?php if($laskutiedot['työtyyppi'] === 'tunti'): ?>
                                     <div>
@@ -145,6 +146,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     </div>
                                     <?php endif; ?>
                                 </td>
+                                <?php endif; ?>
                                 <td>
                                     <?php if($laskutiedot['työtyyppi'] === 'urakka'): ?>
                                     <div>
@@ -185,7 +187,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
             
                 <?php if(!empty($laskutiedot['tarvikkeet'])): ?>
                 <div class="yhteenveto-container flex-container">
-                    <span class="tieto-label">Tarvikkeet:</span>
+                    <h4>Tarvikkeet:</h4>
                     <table>
                         <tr>
                             <th>Tarvike</th>
@@ -280,19 +282,19 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                 <?php endif; ?>
 
                 <div class="summat-container flex-container">
-                    <span class="tieto-label">Laskun hintaerittely:</span>
+                    <h4>Laskun hintaerittely:</h4>
                     <table>
                         <tr>
                             <th>Nettosumma</th>
                             <th>Alv</th>
-                            <th>Yhteensä</th>
                             <th>Kotitalousvähennys</th>        
+                            <th>Yhteensä</th>
                         </tr>
                         <tr>
                             <td><?= number_format($laskutiedot['nettosumma'], 2, ',', ' ') . ' €' ?></td>
                             <td><?= number_format($laskutiedot['alvsumma'], 2, ',', ' ') . ' €' ?></td>
-                            <td><?= number_format(($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']), 2, ',', ' ') . ' €' ?></td>
                             <td><?= number_format($laskutiedot['kt-vähennys'], 2, ',', ' ') . ' €' ?></td>        
+                            <td><?= number_format(($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']), 2, ',', ' ') . ' €' ?></td>
                         </tr>                    
                     </table>
                 </div>
@@ -317,6 +319,18 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
     <script>
         const valmisCheckbox = document.getElementById('valmis');
         const tuplalaskuCheckbox = document.getElementById('tuplalasku');
+        const erapaiva = document.getElementById('erapaiva');
+
+        if(valmisCheckbox !== null & erapaiva !== null) {
+            valmisCheckbox.addEventListener('change', () => {
+                if(!valmisCheckbox.checked) {
+                    erapaiva.style.textDecoration = 'line-through';
+                }
+                else {
+                    erapaiva.style.textDecoration = 'none';
+                }
+            });
+        }
         
         if(valmisCheckbox !== null && tuplalaskuCheckbox !== null) {
             valmisCheckbox.addEventListener('change', () => {
@@ -324,6 +338,15 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                 if(!valmisCheckbox.checked) {
                     tuplalaskuCheckbox.checked = false;
                 }
+            });
+        }
+
+        if(tuplalaskuCheckbox !== null) {
+            tuplalaskuCheckbox.addEventListener('change', () => {
+                const checked = tuplalaskuCheckbox.checked;
+
+                document.getElementById('seuraavaPvm').style.display = checked ? 'block' : 'none';
+                document.getElementById('seuraavaEraPvm').style.display = checked ? 'block' : 'none';
             });
         }
     </script>

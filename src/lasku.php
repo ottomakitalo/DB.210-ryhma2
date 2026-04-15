@@ -155,7 +155,6 @@ else {
     <meta charset="UTF-8">
     <title>Lasku <?= $id ?></title>
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/taulu.css">
     <link rel="stylesheet" href="styles/laskut.css">
 </head>
 <body>
@@ -181,7 +180,9 @@ else {
         <thead>
             <tr>
                 <th>Työtyyppi</th>
+                <?php if($tyotehtavat !== []): ?>
                 <th>Tunnit</th>
+                <?php endif; ?>
                 <th>Alv-%</th>
                 <th>Alennus-%</th>
                 <th>Nettosumma</th>
@@ -249,6 +250,7 @@ else {
                         <span><?= $lasku['tyyppi'] === 'Urakka' ? 'Urakka' : 'Yhteensä:' ?></span>
                     </div>
                 </td>
+                <?php if($tyotehtavat !== []): ?>
                 <td>
                     <?php if($lasku['tyyppi'] === 'Tuntityö'): ?>
                     <div>
@@ -257,6 +259,7 @@ else {
                     </div>
                     <?php endif; ?>
                 </td>
+                <?php endif; ?>
                 <td>
                     <?php if($lasku['tyyppi'] === 'Urakka'): ?>
                     <div>
@@ -428,7 +431,7 @@ if (!$q_lisalaskut) {
 } else {
 ?>
 
-    <table class="lisalasku-table">
+    <table class="lisalasku-table table-with-borders">
         <tr>
             <th>Lisälasku</th>
             <th>Antopäivä</th>
@@ -486,25 +489,25 @@ if (!$q_lisalaskut) {
 ?>
 
 <h3>Laskun hintaerittely</h3>
-<div class="summat-container flex-container">
-    <table>
+<div class="flex-container">
+    <table class="table-with-borders">
         <tr>
             <th>Nettosumma</th>
             <th>Alv</th>
+            <th>Kotitalousvähennys</th>        
             <th>Yhteensä</th>
             <?php if ($lasku['lisalaskuja'] > 0): ?>
             <th>Yhteensä + erääntymismaksut</th>
             <?php endif; ?> 
-            <th>Kotitalousvähennys</th>        
         </tr>
         <tr>
             <td><?= number_format($nettosumma, 2, ',', ' ') . ' €' ?></td>
             <td><?= number_format($alvsumma, 2, ',', ' ') . ' €' ?></td>
+            <td><?= number_format($kotitalousVahennys, 2, ',', ' ') . ' €' ?></td>        
             <td><?= number_format(($nettosumma + $alvsumma), 2, ',', ' ') . ' €' ?></td>
             <?php if ($lasku['lisalaskuja'] > 0): ?>
             <td><?= number_format(($nettosumma + $alvsumma) + $viimeisinLisalaskuSumma, 2, ',', ' ') . ' €' ?></td>
             <?php endif; ?>
-            <td><?= number_format($kotitalousVahennys, 2, ',', ' ') . ' €' ?></td>        
         </tr>                    
     </table>
 </div>
