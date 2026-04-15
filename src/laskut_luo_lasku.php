@@ -40,26 +40,15 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
         <h3>Lasku</h3>
         <form method="post" class="luo-lasku">
             <div class="laskuarvio-container flex-container">
-                <div class="perustiedot-container flex-container">
-                    <div>
-                        <span class="tieto-label">Asiakas:</span>
-                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></span>
-                    </div>
-            
-                    <div>
-                        <span class="tieto-label">Kohde:</span>
-                        <span><?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></span>
-                    </div>
-
-                    <div>
-                        <span class="tieto-label">Työtyyppi:</span>
-                        <span><?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></span>
-                    </div>
+                <div class="perustiedot-container">
+                    <p><strong>Asiakas:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['nimi']) ?></p>
+                    <p><strong>Työkohde:</strong> <?= htmlspecialchars($asiakkaat[$laskutiedot['asiakas']]['tyokohteet'][$laskutiedot['kohde']]['osoite']) ?></p>
+                    <p><strong>Tyyppi:</strong> <?= htmlspecialchars($laskutiedot['työtyyppi'] === 'urakka' ? 'Urakka' : 'Tuntityö') ?></p>
                 </div>
 
                 <?php if(!empty($laskutiedot['tuntityöt']) || $laskutiedot['työtyyppi'] === 'urakka'): ?>
                 <div class="yhteenveto-container flex-container">
-                    <span class="tieto-label">Työerittely:</span>
+                    <h4>Työerittely:</h4>
                     <table>
                         <thead>
                             <tr>
@@ -189,7 +178,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
             
                 <?php if(!empty($laskutiedot['tarvikkeet'])): ?>
                 <div class="yhteenveto-container flex-container">
-                    <span class="tieto-label">Tarvikkeet:</span>
+                    <h4>Tarvikkeet:</h4>
                     <table>
                         <tr>
                             <th>Tarvike</th>
@@ -284,7 +273,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                 <?php endif; ?>
 
                 <div class="summat-container flex-container">
-                    <span class="tieto-label">Laskun hintaerittely:</span>
+                    <h4>Laskun hintaerittely:</h4>
                     <table>
                         <tr>
                             <th>Nettosumma</th>

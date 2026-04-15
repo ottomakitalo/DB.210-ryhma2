@@ -1,5 +1,5 @@
-.luo-lasku .tieto-label {
-    font-weight: bold;
+.luo-lasku h4 {
+    margin: 4px 0;
 }
 
 .luo-lasku .laskuarvio-container{
@@ -7,9 +7,16 @@
 }
 
 .luo-lasku .yhteenveto-container,
-.luo-lasku .summat-container,
-.luo-lasku .perustiedot-container {
+.luo-lasku .summat-container {
     gap: 8px;
+}
+
+.luo-lasku .perustiedot-container {
+    gap: 16px;
+}
+
+.luo-lasku .perustiedot-container p {
+    margin: 0;
 }
 
 table {
