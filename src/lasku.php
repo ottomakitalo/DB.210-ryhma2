@@ -155,7 +155,6 @@ else {
     <meta charset="UTF-8">
     <title>Lasku <?= $id ?></title>
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/taulu.css">
     <link rel="stylesheet" href="styles/laskut.css">
 </head>
 <body>
@@ -428,7 +427,7 @@ if (!$q_lisalaskut) {
 } else {
 ?>
 
-    <table class="lisalasku-table">
+    <table class="lisalasku-table table-with-borders">
         <tr>
             <th>Lisälasku</th>
             <th>Antopäivä</th>
@@ -486,8 +485,8 @@ if (!$q_lisalaskut) {
 ?>
 
 <h3>Laskun hintaerittely</h3>
-<div class="summat-container flex-container">
-    <table>
+<div class="flex-container">
+    <table class="table-with-borders">
         <tr>
             <th>Nettosumma</th>
             <th>Alv</th>

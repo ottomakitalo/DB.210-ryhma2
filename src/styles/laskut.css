@@ -58,6 +58,6 @@ tr:not(:last-child) {
     border-bottom: 1px solid;
 }
 
-.summat-container td:not(:last-child), th:not(:last-child) {
+.table-with-borders td:not(:last-child), th:not(:last-child) {
     border-right: 1px solid #e3e3e3;
 }
