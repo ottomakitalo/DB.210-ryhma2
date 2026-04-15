@@ -64,7 +64,9 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                         <thead>
                             <tr>
                                 <th>Työtyyppi</th>
+                                <?php if(!empty($laskutiedot['tuntityöt'])): ?>
                                 <th>Tunnit</th>
+                                <?php endif; ?>
                                 <th>Alv-%</th>
                                 <th>Alennus-%</th>
                                 <th>Nettosumma</th>
@@ -137,6 +139,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                         <span><?= $laskutiedot['työtyyppi'] === 'urakka' ? 'urakka' : 'Yhteensä:' ?></span>
                                     </div>
                                 </td>
+                                <?php if(!empty($laskutiedot['tuntityöt'])): ?>
                                 <td>
                                     <?php if($laskutiedot['työtyyppi'] === 'tunti'): ?>
                                     <div>
@@ -145,6 +148,7 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                                     </div>
                                     <?php endif; ?>
                                 </td>
+                                <?php endif; ?>
                                 <td>
                                     <?php if($laskutiedot['työtyyppi'] === 'urakka'): ?>
                                     <div>

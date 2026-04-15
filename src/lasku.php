@@ -180,7 +180,9 @@ else {
         <thead>
             <tr>
                 <th>Työtyyppi</th>
+                <?php if($tyotehtavat !== []): ?>
                 <th>Tunnit</th>
+                <?php endif; ?>
                 <th>Alv-%</th>
                 <th>Alennus-%</th>
                 <th>Nettosumma</th>
@@ -248,6 +250,7 @@ else {
                         <span><?= $lasku['tyyppi'] === 'Urakka' ? 'Urakka' : 'Yhteensä:' ?></span>
                     </div>
                 </td>
+                <?php if($tyotehtavat !== []): ?>
                 <td>
                     <?php if($lasku['tyyppi'] === 'Tuntityö'): ?>
                     <div>
@@ -256,6 +259,7 @@ else {
                     </div>
                     <?php endif; ?>
                 </td>
+                <?php endif; ?>
                 <td>
                     <?php if($lasku['tyyppi'] === 'Urakka'): ?>
                     <div>
