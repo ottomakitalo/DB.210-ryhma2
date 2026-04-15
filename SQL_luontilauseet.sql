@@ -58,7 +58,7 @@ CREATE TABLE lasku (
   FOREIGN KEY (tyosuoritus_id) REFERENCES tyosuoritus(id) 
 );
 
-INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', null, true, 130.20, 1, 1);
+INSERT INTO lasku VALUES (1, true, '2025-10-01', '2025-10-01', '2025-10-15', '2025-12-01', true, 130.20, 1, 1);
 INSERT INTO lasku VALUES (2, true, '2025-02-01', '2025-02-01', '2025-02-15', '2025-12-01', true, 716.06, 2, 2);
 INSERT INTO lasku VALUES (3, true, '2026-02-01', '2026-02-01', '2026-02-15', null, false, 2488.18, 3, 3);
 INSERT INTO lasku VALUES (4, true, '2026-03-01', '2026-03-01', '2026-03-15', null, false, 74.40, 2, 4);
@@ -150,17 +150,16 @@ CREATE TABLE lisalasku (
   id INT PRIMARY KEY, 
   annettu_pvm DATE NOT NULL, 
   era_pvm DATE NOT NULL, 
-  maksettu_pvm DATE, 
   edellinen_id INT, 
   alkp_id INT NOT NULL, 
   FOREIGN KEY (edellinen_id) REFERENCES lisalasku(id), 
   FOREIGN KEY (alkp_id) REFERENCES lasku(id) 
 );
 
-INSERT INTO lisalasku VALUES (1, '2025-10-25', '2025-11-10', null, null, 1);
-INSERT INTO lisalasku VALUES (2, '2025-11-27', '2025-12-13', '2025-12-01', 1, 1);
-INSERT INTO lisalasku VALUES (3, '2026-02-15', '2026-03-01', null, null, 3);
-INSERT INTO lisalasku VALUES (4, '2026-03-05', '2026-03-20', null, 3, 3);
+INSERT INTO lisalasku VALUES (1, '2025-10-25', '2025-11-10', null, 1);
+INSERT INTO lisalasku VALUES (2, '2025-11-27', '2025-12-13', 1, 1);
+INSERT INTO lisalasku VALUES (3, '2026-02-15', '2026-03-01', null, 3);
+INSERT INTO lisalasku VALUES (4, '2026-03-05', '2026-03-20', 3, 3);
 
 CREATE TABLE tarvike_historia ( 
   id INT PRIMARY KEY, 
