@@ -491,20 +491,20 @@ if (!$q_lisalaskut) {
         <tr>
             <th>Nettosumma</th>
             <th>Alv</th>
+            <th>Kotitalousvähennys</th>        
             <th>Yhteensä</th>
             <?php if ($lasku['lisalaskuja'] > 0): ?>
             <th>Yhteensä + erääntymismaksut</th>
             <?php endif; ?> 
-            <th>Kotitalousvähennys</th>        
         </tr>
         <tr>
             <td><?= number_format($nettosumma, 2, ',', ' ') . ' €' ?></td>
             <td><?= number_format($alvsumma, 2, ',', ' ') . ' €' ?></td>
+            <td><?= number_format($kotitalousVahennys, 2, ',', ' ') . ' €' ?></td>        
             <td><?= number_format(($nettosumma + $alvsumma), 2, ',', ' ') . ' €' ?></td>
             <?php if ($lasku['lisalaskuja'] > 0): ?>
             <td><?= number_format(($nettosumma + $alvsumma) + $viimeisinLisalaskuSumma, 2, ',', ' ') . ' €' ?></td>
             <?php endif; ?>
-            <td><?= number_format($kotitalousVahennys, 2, ',', ' ') . ' €' ?></td>        
         </tr>                    
     </table>
 </div>

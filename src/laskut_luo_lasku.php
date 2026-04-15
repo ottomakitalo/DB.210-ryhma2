@@ -285,14 +285,14 @@ $laskutiedot = $_SESSION['laskutiedot'] ?? [];
                         <tr>
                             <th>Nettosumma</th>
                             <th>Alv</th>
-                            <th>Yhteensä</th>
                             <th>Kotitalousvähennys</th>        
+                            <th>Yhteensä</th>
                         </tr>
                         <tr>
                             <td><?= number_format($laskutiedot['nettosumma'], 2, ',', ' ') . ' €' ?></td>
                             <td><?= number_format($laskutiedot['alvsumma'], 2, ',', ' ') . ' €' ?></td>
-                            <td><?= number_format(($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']), 2, ',', ' ') . ' €' ?></td>
                             <td><?= number_format($laskutiedot['kt-vähennys'], 2, ',', ' ') . ' €' ?></td>        
+                            <td><?= number_format(($laskutiedot['nettosumma'] + $laskutiedot['alvsumma']), 2, ',', ' ') . ' €' ?></td>
                         </tr>                    
                     </table>
                 </div>
