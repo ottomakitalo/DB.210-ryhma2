@@ -118,7 +118,7 @@ if(isset($_POST['luo_lasku'])) {
 
     $laskuValmis = (int)!empty($_POST['valmis']);
     $tyotyyppi = $laskutiedot['työtyyppi'];
-    $puolitettuLasku = !empty($_POST['tuplalasku']) && $tyotyyppi === 'urakka' && $laskuValmis;
+    $puolitettuLasku = (!empty($_POST['tuplalasku']) && $tyotyyppi === 'urakka' && $laskuValmis) ? 1 : 0;
     
     $annettuPvm = $laskuValmis ? date('Y-m-d') : NULL;
     $eraPvm = $laskuValmis ? date('Y-m-d', strtotime('+2 weeks', strtotime($annettuPvm))) : NULL;
