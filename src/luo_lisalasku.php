@@ -94,8 +94,8 @@ $newId = pg_fetch_result(
 $ok = pg_query_params(
     $yhteys,
     "INSERT INTO lisalasku
-     (id, annettu_pvm, era_pvm, maksettu_pvm, edellinen_id, alkp_id)
-     VALUES ($1, $2, $3, NULL, $4, $5)",
+     (id, annettu_pvm, era_pvm, edellinen_id, alkp_id)
+     VALUES ($1, $2, $3, $4, $5)",
     [$newId, $annettu, $era, $edellinen_id, $alkuperainen]
 );
 
