@@ -10,6 +10,10 @@ if ($_SESSION['rooli'] !== 'admin') {
 require_once('data/asiakkaat_data.php');
 require_once('data/tyotehtavat_data.php');
 require_once('data/tarvikkeet_data.php');
+
+usort($kaikki_tarvikkeet, function ($a, $b) {
+    return strcasecmp($a['tarvike'], $b['tarvike']);
+});
 ?>
 
 <!DOCTYPE html>
