@@ -125,8 +125,8 @@ foreach($tarvikkeet as $tarvike) {
 }
 
 $tyotyyppi = $lasku['tyyppi'];
-$urakkahinta = NULL;
-$urakkaAlennus = NULL;
+$urakkaNetto = NULL;
+$urakkaAlv = NULL;
 if($tyotyyppi === 'Urakka') {
     $urakkahinta = $lasku['urakkahinta'];
     $urakkaAlennus = $lasku['urakka_alennus'];
@@ -282,19 +282,19 @@ if($lasku['puolitettu'] === 1) {
                 </td>
                 <td>
                     <div>
-                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] : $tuntityotNetto, 2, ',', ' ') ?></span>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $urakkaNetto : $tuntityotNetto, 2, ',', ' ') ?></span>
                         <span>€</span>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] * 0.24 : $tuntityotAlv, 2, ',', ' ') ?></span>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $urakkaAlv : $tuntityotAlv, 2, ',', ' ') ?></span>
                         <span>€</span>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $lasku['urakkahinta'] + ($lasku['urakkahinta'] * 0.24) : $tuntityotNetto + $tuntityotAlv, 2, ',', ' ') ?></span>
+                        <span><?= number_format($lasku['tyyppi'] === 'Urakka' ? $urakkaNetto + $urakkaAlv : $tuntityotNetto + $tuntityotAlv, 2, ',', ' ') ?></span>
                         <span>€</span>
                     </div>
                 </td>
