@@ -22,6 +22,7 @@ require_once('data/historia_data.php');
         <h2>Tarvikehistoria</h2>
         <table>
             <tr>
+                <th>ID</th>
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
@@ -32,6 +33,7 @@ require_once('data/historia_data.php');
             </tr>
             <?php foreach ($historia as $tarvike): ?>
             <tr>
+                <td><?= htmlspecialchars($tarvike['id']) ?></td>
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>

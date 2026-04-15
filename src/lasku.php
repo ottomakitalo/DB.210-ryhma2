@@ -123,6 +123,20 @@ foreach($tarvikkeet as $tarvike) {
         $tarvikkeetAlv += $tarvikeAlv;
     }
 }
+foreach($historia_tarvikkeet as $tarvike) {
+    $kappaleMaara = $tarvike['maara'];
+    $alennusprosentti = $tarvike['alennus'];
+
+    if($kappaleMaara > 0) {
+        $tarvikeNetto = ($kappaleMaara * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($alennusprosentti / 100));
+        $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
+
+        $tarvikeYhteensa = $tarvikeNetto + $tarvikeAlv;
+
+        $tarvikkeetNetto += $tarvikeNetto;
+        $tarvikkeetAlv += $tarvikeAlv;
+    }
+}
 
 $tyotyyppi = $lasku['tyyppi'];
 $urakkaNetto = NULL;
@@ -309,11 +323,12 @@ if($lasku['puolitettu'] === 1) {
     <p><a href="<?= $hrefTyotehtavat ?>" class="link-button">Muokkaa työtehtäviä</a></p>
 <?php endif; ?>
 
-<h3>Tarvikkeet</h3>
-<?php if($tarvikkeet !== []): ?>
+<?php if($tarvikkeet !== [] || $historia_tarvikkeet !== []): ?>
 <div class="yhteenveto-container flex-container">
+    <h3>Tarvikkeet</h3>
     <table>
         <tr>
+            <th>Hinnasto ID</th>
             <th>Tarvike</th>
             <th>Määrä</th>
             <th>Alv-%</th>
@@ -322,14 +337,27 @@ if($lasku['puolitettu'] === 1) {
             <th>Alv</th>
             <th>Yhteensä</th>
         </tr>
-
+        <?php if ($tarvikkeet === []): ?>
+        <tr>
+            <td colspan="8">Ei hinnaston tarvikkeita.</td>
+        </tr>
+        <?php endif; ?>
         <?php 
         foreach($tarvikkeet as $tarvike):
             $tarvikeNetto = ($tarvike['maara'] * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($tarvike['alennus'] / 100));
             $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
-            ?>
+        ?>
         <tr>
-            <td><div><span><?= htmlspecialchars($tarvike['tarvike']) ?></span></div></td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['id']) ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['tarvike']) ?></span>
+                </div>
+            </td>
             <td>
                 <div>
                     <span><?= htmlspecialchars($tarvike['maara']) ?></span>
@@ -365,7 +393,85 @@ if($lasku['puolitettu'] === 1) {
                 </div>
             </td>
         </tr>
-        <?php  ?>
+        <?php endforeach; ?>
+        <colgroup>
+            <col style="width: 10%">
+            <col style="width: 20%">
+            <col style="width: 15%">
+            <col style="width: 10%">
+            <col style="width: 10%">
+            <col style="width: 12.5%">
+            <col style="width: 12.5%">
+            <col style="width: 10%">
+        </colgroup>
+    </table>
+    <table>
+        <tr>
+            <th>Historia ID</th>
+            <th>Tarvike</th>
+            <th>Määrä</th>
+            <th>Alv-%</th>
+            <th>Alennus-%</th>
+            <th>Nettosumma</th>
+            <th>Alv</th>
+            <th>Yhteensä</th>
+        </tr>
+        <?php if ($historia_tarvikkeet === []): ?>
+        <tr>
+            <td colspan="8">Ei arkistoituja tarvikkeita.</td>
+        </tr>
+        <?php endif; ?>
+
+        <?php foreach($historia_tarvikkeet as $tarvike):
+            $tarvikeNetto = ($tarvike['maara'] * ($tarvike['hinta'] * $myyntihintakerroin)) * (1 - ($tarvike['alennus'] / 100));
+            $tarvikeAlv = $tarvikeNetto * ($tarvike['alv'] / 100);
+        ?>
+        <tr>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['id']) ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['tarvike']) ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['maara']) ?></span>
+                    <span><?= htmlspecialchars($tarvike['yksikko']) ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['alv']) . ' %' ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= htmlspecialchars($tarvike['alennus']) . ' %' ?></span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeNetto, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeAlv, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <span><?= number_format($tarvikeNetto + $tarvikeAlv, 2, ',', ' ') ?></span>
+                    <span>€</span>
+                </div>
+            </td>
+        </tr>
         <?php endforeach; ?>
         <tfoot>
             <tr>
@@ -374,6 +480,7 @@ if($lasku['puolitettu'] === 1) {
                         <span>Yhteensä:</span>
                     </div>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -397,6 +504,16 @@ if($lasku['puolitettu'] === 1) {
                 </td>
             </tr>
         </tfoot>
+        <colgroup>
+            <col style="width: 10%">
+            <col style="width: 20%">
+            <col style="width: 15%">
+            <col style="width: 10%">
+            <col style="width: 10%">
+            <col style="width: 12.5%">
+            <col style="width: 12.5%">
+            <col style="width: 10%">
+        </colgroup>
     </table>
 </div>
 <?php else: ?>

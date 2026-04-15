@@ -23,9 +23,27 @@ $q = pg_query_params(
      JOIN tyyppi ty ON ty.nimi = tv.tyyppi_nimi
      WHERE ts.id = (
         SELECT tyosuoritus_id FROM lasku WHERE id = $1
-     )
-     UNION ALL
-     SELECT h.id, h.nimi, tvt.maara, h.yksikko, tvt.alennus, h.sis_hinta, ty.alv_prosentti
+     )",
+    [$id]
+);
+
+while ($row = pg_fetch_assoc($q)) {
+    $tarvikkeet[$row['id']] = [
+        'id' => $row['id'],
+        'tarvike' => $row['nimi'],
+        'maara'   => (float)$row['maara'],
+        'yksikko' => $row['yksikko'],
+        'alennus' => (float)$row['alennus'],
+        'hinta'   => (float)$row['sis_hinta'],
+        'alv'     => (float)$row['alv_prosentti'] * 100
+    ];
+}
+
+// Hae historian tarvikkeet laskulle
+$historia_tarvikkeet = [];
+$q = pg_query_params(
+    $yhteys,
+    "     SELECT h.id, h.nimi, tvt.maara, h.yksikko, tvt.alennus, h.sis_hinta, ty.alv_prosentti
      FROM tarvike_historia h
      JOIN historia_tarvikkeet tvt ON tvt.historia_id = h.id
      JOIN tyosuoritus ts ON ts.id = tvt.tyosuoritus_id
@@ -37,7 +55,7 @@ $q = pg_query_params(
 );
 
 while ($row = pg_fetch_assoc($q)) {
-    $tarvikkeet[] = [
+    $historia_tarvikkeet[$row['id']] = [
         'id' => $row['id'],
         'tarvike' => $row['nimi'],
         'maara'   => (float)$row['maara'],

@@ -291,6 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
 
         <table>
             <tr>
+                <th>ID</th>
                 <th>Tarvike</th>
                 <th>Merkki</th>
                 <th>Toimittaja</th>
@@ -301,6 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
             </tr>
             <?php foreach ($kaikki_tarvikkeet as $tarvike): ?>
             <tr>
+                <td><?= htmlspecialchars($tarvike['id']) ?></td>
                 <td><?= htmlspecialchars($tarvike['tarvike']) ?></td>
                 <td><?= htmlspecialchars($tarvike['merkki']) ?></td>
                 <td><?= htmlspecialchars($tarvike['toimittaja']) ?></td>

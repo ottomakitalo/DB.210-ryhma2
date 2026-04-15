@@ -17,6 +17,7 @@ $q = pg_query($yhteys,
 
 while ($row = pg_fetch_assoc($q)) {
     $historia[(int)$row['id']] = [
+        'id'         => (int)$row['id'],
         'tarvike'    => $row['nimi'],
         'yksikkö'    => $row['yksikko'],
         'hinta'      => (float)$row['sis_hinta'],
