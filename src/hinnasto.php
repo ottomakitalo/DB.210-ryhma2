@@ -76,17 +76,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                 $poistettu_pvm = date('Y-m-d');
             }
 
-            foreach ($uudet_tarvikkeet as $item) {
-                $id = $item['id'];
+            foreach ($uudet_tarvikkeet as $tarvike) {
+                $id = $tarvike['id'];
                 if (isset($olemassa[$id])) {
                     // Tarkistetaan, onko jokin kenttä muuttunut
                     $vanha = $olemassa[$id];
                     $muuttunut = (
-                        trim((string)$vanha['nimi']) !== $item['nimi'] ||
-                        trim((string)$vanha['merkki']) !== $item['merkki'] ||
-                        (float)$vanha['sis_hinta'] !== (float)$item['sis_hinta'] ||
-                        trim((string)$vanha['yksikko']) !== $item['yksikko'] ||
-                        trim((string)$vanha['tyyppi_nimi']) !== $item['tyyppi_nimi']
+                        trim((string)$vanha['nimi']) !== $tarvike['nimi'] ||
+                        trim((string)$vanha['merkki']) !== $tarvike['merkki'] ||
+                        (float)$vanha['sis_hinta'] !== (float)$tarvike['sis_hinta'] ||
+                        trim((string)$vanha['yksikko']) !== $tarvike['yksikko'] ||
+                        trim((string)$vanha['tyyppi_nimi']) !== $tarvike['tyyppi_nimi']
                     );
 
                     // Jos jokin kenttä on muuttunut, tallenna vanha rivi historiaan ja päivitä uusi tieto samaan id:hen
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                     $r = pg_query_params(
                         $yhteys,
                         'UPDATE tarvike SET nimi=$1, merkki=$2, sis_hinta=$3, yksikko=$4, tyyppi_nimi=$5 WHERE id=$6 AND toimittaja=$7',
-                        [$item['nimi'], $item['merkki'], $item['sis_hinta'], $item['yksikko'], $item['tyyppi_nimi'], $id, $toimittaja]
+                        [$tarvike['nimi'], $tarvike['merkki'], $tarvike['sis_hinta'], $tarvike['yksikko'], $tarvike['tyyppi_nimi'], $id, $toimittaja]
                     );
                     if ($r === false) {
                         $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);
@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paivita_hinnasto'])
                     $r = pg_query_params(
                         $yhteys,
                         'INSERT INTO tarvike (id, nimi, merkki, toimittaja, sis_hinta, yksikko, varasto, tyyppi_nimi) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                        [$id, $item['nimi'], $item['merkki'], $toimittaja, $item['sis_hinta'], $item['yksikko'], 0, $item['tyyppi_nimi']]
+                        [$id, $tarvike['nimi'], $tarvike['merkki'], $toimittaja, $tarvike['sis_hinta'], $tarvike['yksikko'], 0, $tarvike['tyyppi_nimi']]
                     );
                     if ($r === false) {
                         $virheviesti = "Virhe tarvike-taulun päivityksessä: " . pg_last_error($yhteys);

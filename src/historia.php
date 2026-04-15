@@ -38,7 +38,7 @@ require_once('data/historia_data.php');
                 <td><?= htmlspecialchars($tarvike['hinta']) ?> €</td>
                 <td><?= htmlspecialchars($tarvike['yksikkö']) ?></td>
                 <td><?= htmlspecialchars($tarvike['alv']) ?> %</td>
-                <td><?= htmlspecialchars($tarvike['poistettu_pvm']) ?></td>
+                <td><?= htmlspecialchars(date('d.m.Y', strtotime($tarvike['poistettu_pvm']))) ?></td>
             </tr>
             <?php endforeach; ?>
         </table>

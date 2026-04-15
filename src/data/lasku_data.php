@@ -24,7 +24,7 @@ $q = pg_query_params(
      WHERE ts.id = (
         SELECT tyosuoritus_id FROM lasku WHERE id = $1
      )
-     UNION
+     UNION ALL
      SELECT h.id, h.nimi, tvt.maara, h.yksikko, tvt.alennus, h.sis_hinta, ty.alv_prosentti
      FROM tarvike_historia h
      JOIN historia_tarvikkeet tvt ON tvt.historia_id = h.id
@@ -37,8 +37,8 @@ $q = pg_query_params(
 );
 
 while ($row = pg_fetch_assoc($q)) {
-    $tarvikkeet[$row['id']] = [
-        'id'      => $row['id'],
+    $tarvikkeet[] = [
+        'id' => $row['id'],
         'tarvike' => $row['nimi'],
         'maara'   => (float)$row['maara'],
         'yksikko' => $row['yksikko'],
