@@ -1,8 +1,9 @@
 <?php
+//Lisää tietokannan tiedot tähän 
+//Huom!! ohjelma ei toimi ilman tietoja
+$yhteys_tiedot = "dbname=sxhero user=sxhero password=";
 
-$yhteys_tiedot = "dbname=sxhero user=sxhero password=WBOvZ9sx7Wb0Wzq";
-
-// Try to open the connection.
+// Yhteyden luominen
 $yhteys = pg_connect($yhteys_tiedot);
 
 if (!$yhteys) {
